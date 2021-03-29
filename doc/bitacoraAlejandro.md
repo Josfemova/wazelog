@@ -60,3 +60,7 @@
 - Se termina la implementación del algoritmo de Dijkstra. Se prueba la misma
   contra el grafo de prueba y se obtienen resultados satisfactorios,
   demostrando que la idea original es funcional.
+- Para el procesamiento de lenguaje natural, se diseña de manera informal una
+  gramática libre de contexto, que será declarada en forma EBNF posteriormente.
+  La entrada de usuario se parseará como una lista de oraciones. Se definen
+  hechos para los tokens que separarán oraciones.
