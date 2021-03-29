@@ -1,5 +1,8 @@
 :- module(routes, [shortest_path_through/5]).
 
+use_module(library(heaps)).
+use_module(library(dicts)).
+
 arco(1, 2, 7, 10, 25).
 arco(2, 1, 7, 10, 25).
 arco(1, 6, 14, 10, 25).
@@ -28,4 +31,18 @@ shortest_path_through(Source, [Stop | Stops], Target, Path, Cost) :-
 	Cost is FirstCost + NextCost,
 	append(FirstPath, NextPath, Path).
 
-shortest_path(_, _, _, _) :- fail.
+shortest_path(Source, Target, Path, Cost) :-
+	empty_heap(Empty),
+	add_to_heap(Empty, 0, Source, Heap),
+	dict_create(Initial, nodes, [Source: node('', 0, unvisited)]),
+	shortest_path(Source, Target, Heap, Initial, Nodes),
+	traceback(Source, Target, Nodes, ReversePath, Cost),
+	reverse(ReversePath, Path).
+
+traceback(Source, Source, _, [Source], 0) :-
+	!.
+traceback(Source, Target, Nodes, [Target | ReversePath], Cost) :-
+	get_dict(Target, Nodes, node(Parent, Cost, _)),
+	traceback(Source, Parent, Nodes, ReversePath, _).
+
+shortest_path(_, _, _, _, _) :- fail.

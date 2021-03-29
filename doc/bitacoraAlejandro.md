@@ -54,3 +54,6 @@
 	mejores distancias, los mejores padres y el estado de visitado.
   - `library(heaps)`: Se utilizará para la cola de prioridad de nodos sin
 	visitar que requiere el algoritmo de Dijkstra.
+- Se implementan las condiciones iniciales del algoritmo de Dijkstra, con lo
+  cual se ponen a prueba inicial ambas bibliotecas, en intención de encontrar
+  si la solución será eficaz.
