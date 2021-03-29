@@ -36,3 +36,7 @@
   Para el caso donde la lista de intermedios es vacía, se define a la ruta más
   corta pasando por cero intermedios como la ruta «directa» más corta entre el
   origen y el destino.
+- Se define el costo de la ruta con paradas como la suma de los costos mínimos
+  de las subrutas, las cuales a su vez se definen como la suma de las
+  distancias entre nodos en kilómetros. Lo anterior es en respuesta a
+  indicaciones generales del profesor a los grupos de trabajo.
