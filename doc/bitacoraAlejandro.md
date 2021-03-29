@@ -40,3 +40,17 @@
   de las subrutas, las cuales a su vez se definen como la suma de las
   distancias entre nodos en kilómetros. Lo anterior es en respuesta a
   indicaciones generales del profesor a los grupos de trabajo.
+- Tras realizar pruebas de viabilidad, se escoge al algoritmo de Dijkstra para
+  el cálculo de rutas directas más cortas entre nodos. Las alternativas,
+  incluyendo algunos abusos de las técnicas de backtracking de Prolog, fueron
+  descartadas por múltiples inconvenientes. El más importante de ellos es que
+  no existen garantías de terminación correcta con tamaños de grafo no
+  particularmente grandes, pero tampoco triviales. Además, el compañero de
+  trabajo intentó prototipar una solución basada en filtrado de todas las
+  posibles rutas, pero encontramos problemas análogos.
+- Para la implementación del algoritmo de Dijkstra se decide utilizar las
+  siguientes bibliotecas, ambas ofrecidas por SWI-Prolog:
+  - `library(dicts)`: Se utilizarán diccionarios para llevar cuenta de las
+	mejores distancias, los mejores padres y el estado de visitado.
+  - `library(heaps)`: Se utilizará para la cola de prioridad de nodos sin
+	visitar que requiere el algoritmo de Dijkstra.
