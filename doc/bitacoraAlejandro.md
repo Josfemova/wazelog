@@ -24,3 +24,15 @@
   probar la futura implementación de búsqueda de mejor ruta. El grafo fue
   tomado de
   <https://upload.wikimedia.org/wikipedia/commons/5/57/Dijkstra_Animation.gif>.
+- Se agrega un predicado para buscar la ruta más corta de un origen a un
+  destino, pasando obligatoriamente por una lista de paradas intermedias.  De
+  momento el predicado siempre falla, ya que está escrito en términos de un
+  algoritmo de búsqueda de ruta más corta entre solamente dos nodos que no ha
+  sido implementado. Específicamente, mientras que la lista de intermedios no
+  sea vacía, busca la ruta más corta entre el origen y el primer intermedio, y
+  la une con la ruta más corta dada por el mismo predicado cuando el origen es
+  lo que antes era el primer intermedio, los intermedios son los mismos excepto
+  que ya no contienen al que antes era el primero, y el destino se preserva.
+  Para el caso donde la lista de intermedios es vacía, se define a la ruta más
+  corta pasando por cero intermedios como la ruta «directa» más corta entre el
+  origen y el destino.
