@@ -30,7 +30,7 @@ linestretch: 1.5
 
 # wazelog
 
-## 1.1. Desacripción de los hechos y reglas implementadas
+## 1.1. Descripción de los hechos y reglas implementadas
 
 ## 1.2. Descripción de las estructuras de datso desarrolladas
 
@@ -42,7 +42,7 @@ linestretch: 1.5
 
 ## 1.6. Problemas solucionados
 
-## 1.7. Conclusiones y Recomendaciones del proyecto
+## 1.7. Conclusiones y Recomendaciones del Proyecto
 
 ## 1.8. Bibliografía
 
