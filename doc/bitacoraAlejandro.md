@@ -64,3 +64,10 @@
   gramática libre de contexto, que será declarada en forma EBNF posteriormente.
   La entrada de usuario se parseará como una lista de oraciones. Se definen
   hechos para los tokens que separarán oraciones.
+- Se define un tipo especial de oración: las «exclamativas». Estas incluyen a
+  palabras como «sí», «no» y «hola». Todas las demás oraciones esperan una
+  estructura sujeto-verbo-objeto potencialmente recursiva. Las oraciones
+  exclamativas pueden terminarse sin un separador explícito, con tal de
+  acomodar errores gramaticales que posee la especificación. Se incluyen
+  algunas formas verbales y palabras de relleno que se observan en la
+  especificación.
