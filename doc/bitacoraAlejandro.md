@@ -57,3 +57,6 @@
 - Se implementan las condiciones iniciales del algoritmo de Dijkstra, con lo
   cual se ponen a prueba inicial ambas bibliotecas, en intención de encontrar
   si la solución será eficaz.
+- Se termina la implementación del algoritmo de Dijkstra. Se prueba la misma
+  contra el grafo de prueba y se obtienen resultados satisfactorios,
+  demostrando que la idea original es funcional.
