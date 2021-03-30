@@ -86,6 +86,13 @@ classify(word(Atom, _), exclamation(Atom)) :-
 	!.
 classify(word(Atom, Original), nominal(Atom, Original)).
 
+clause(_). /* to do
+clause(exclamation(_, _)).
+clause(nominal([_ | _])).
+clause(svo(nominal([_ | _]), _, _)).
+clause(svo(nominal([]), verbal([_ | _]), O)) :-
+	clause(O).*/
+
 ast_join(Tree, filler, Tree).
 ast_join(nomatch, nominal(A, Orig), nominal(A, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).
@@ -132,7 +139,8 @@ unbounded([FailureHead | _], Sentences, Sentences, FailureHead).
 
 sentence(Tokens, Rest, Sentence) :- sentence(Tokens, Rest, Sentence, nomatch).
 sentence([], [], Sentence, Sentence) :-
-	!.
+	!,
+	clause(Sentence).
 sentence([punct(Sep) | Rest], Rest, Sentence, Acc) :-
 	sentence_sep(Sep),
 	!,

@@ -91,3 +91,5 @@
   situaciones como predicados anidados, así como mantener una sola estructura
   SVO sin anidación al agregar un nominal inmediatamente después de un SVO con
   objeto tácito.
+- Se agrega un prototipo de predicado para determinar si un AST construido es
+  válido o no. Se implementará luego.
