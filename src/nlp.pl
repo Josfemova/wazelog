@@ -1,4 +1,4 @@
-:- module(nlp, [parse_user_input/3]).
+:- module(nlp, [parse_user_input/3,n/3]).
 
 sentence_sep('.').
 sentence_sep(',').
@@ -10,6 +10,10 @@ exclamation(no).
 exclamation(hola).
 
 verbal(estoy).
+verbal(voy).
+verbal(necesito).
+verbal(ir).
+verbal(es).
 verbal(llegar).
 verbal(pasar).
 verbal(ubica).
@@ -26,6 +30,7 @@ filler(en).
 filler(un).
 filler(una).
 filler(tengo).
+filler(por).
 
 parse_user_input(Input, Sentences, FailureHead) :-
 	lex(Input, Tokens),
@@ -160,3 +165,9 @@ sentence([T | Tokens], Rest, Sentence, Ast) :-
 	classify(T, Term),
 	ast_join(Ast, Term, NextAst),
 	sentence(Tokens, Rest, Sentence, NextAst).
+
+
+n([nominal(A, Orig)], A, Orig):-!.
+n([svo(_, _, O)], A, Orig) :-!, n([O], A, Orig).
+n([_ | Es], A, Orig) :- n(Es, A, Orig).
+
