@@ -29,7 +29,7 @@ filler(tengo).
 
 parse_user_input(Input, Sentences, FailureHead) :-
 	lex(Input, Tokens),
-	fail.
+	unbounded(Tokens, Sentences, FailureHead).
 
 lex(Input, Tokens) :-
 	string_chars(Input, Chars),
@@ -70,3 +70,20 @@ undecorate(['ó' | Cs], ['o' | Us]) :- !, undecorate(Cs, Us).
 undecorate(['ú' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate(['ü' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate([C | Cs], [C | Us])     :- undecorate(Cs, Us).
+
+unbounded(Tokens, Sentences, FailureHead) :-
+	unbounded(Tokens, Sentences, [], FailureHead).
+unbounded([], Sentences, Sentences, ok) :-
+	!.
+unbounded([punct(Sep) | Tokens], Sentences, Previous, FailureHead) :-
+	sentence_sep(Sep),
+	!,
+	unbounded(Tokens, Sentences, Previous, FailureHead).
+unbounded(Tokens, Sentences, Previous, FailureHead) :-
+	sentence(Tokens, Rest, Sentence),
+	!,
+	append(Previous, [Sentence], Next),
+	unbounded(Rest, Sentences, Next, FailureHead).
+unbounded([FailureHead | _], Sentences, Sentences, FailureHead).
+
+sentence(_, _, _) :- fail.

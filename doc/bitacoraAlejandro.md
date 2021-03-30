@@ -78,3 +78,7 @@
   caracteres no vacíos se vuelven tokens de puntuación.
 - Se implementa la reducción de tildes al transformar segmentos de caracteres
   en átomos.
+- Se implementa el parsing de una lista de oraciones a partir de una lista de
+  tokens. Las oraciones pueden partirse por separadores explícitos, y la última
+  oración de la entrada no necesita separador final. No se implementa todavía
+  el parsing de oraciones propiamente, por lo cual esto no sirve de momento.
