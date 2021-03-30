@@ -86,8 +86,34 @@ classify(word(Atom, _), exclamation(Atom)) :-
 	!.
 classify(word(Atom, Original), nominal(Atom, Original)).
 
-ast_join(_, _, _) :- fail.
-nominal_join(_, _, _) :- fail.
+ast_join(Tree, filler, Tree).
+ast_join(nomatch, nominal(A, Orig), nominal(A, Orig)).
+ast_join(nomatch, verbal(V), verbal([V])).
+ast_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)) :-
+	nominal_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)).
+ast_join(nominal(A, Orig), verbal(V), svo(nominal(A, Orig), verbal([V]), nominal('', ""))).
+ast_join(verbal(V), nominal(A, Orig), svo(nominal('', ""), verbal(V), nominal(A, Orig))).
+ast_join(verbal(LeftV), verbal(RightV), verbal(NextV)) :-
+	append(LeftV, [RightV], NextV).
+ast_join(svo(S, V, svo(InnerS, InnerV, InnerO)), Term, svo(S, V, O)) :-
+	!,
+	ast_join(svo(InnerS, InnerV, InnerO), Term, O).
+ast_join(svo(S, V, nominal(LeftA, LeftOrig)), nominal(RightA, RightOrig), svo(S, V, nominal(NextA, NextOrig))) :-
+	!,
+	ast_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)).
+ast_join(svo(S, verbal(LeftV), nominal('', "")), verbal(RightV), svo(S, verbal(NextV), nominal('', ""))) :-
+	!,
+	ast_join(verbal(LeftV), verbal(RightV), verbal(NextV)).
+ast_join(svo(S, V, O), verbal(Verbal), svo(S, V, svo(O, verbal([Verbal]), nominal('', "")))).
+
+nominal_join(nominal('', ""), nominal(A, Orig), nominal(A, Orig)) :-
+	!.
+nominal_join(nominal(A, Orig), nominal('', ""), nominal(A, Orig)) :-
+	!.
+nominal_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)) :-
+	atom_concat(LeftA, RightA, NextA),
+	string_concat(LeftOrig, " ", WithSpace),
+	string_concat(WithSpace, RightOrig, NextOrig).
 
 unbounded(Tokens, Sentences, FailureHead) :-
 	unbounded(Tokens, Sentences, [], FailureHead).

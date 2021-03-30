@@ -86,3 +86,8 @@
   gramaticales establecidas con anterioridad. Todavía hace falta agrupar grupos
   de árboles sintácticos para estructurar propiamente las oraciones, así como
   la unión de formas nominales en compuestos.
+- Se agrega la lógica faltante para construir árboles sintácticos SVO conforme
+  se parsean las oraciones no exclamativas. Esta lógica toma en cuenta
+  situaciones como predicados anidados, así como mantener una sola estructura
+  SVO sin anidación al agregar un nominal inmediatamente después de un SVO con
+  objeto tácito.
