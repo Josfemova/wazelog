@@ -55,7 +55,18 @@ lex([Alpha | Rest], Tokens, Previous, WordChars) :-
 	lex(Rest, Tokens, Previous, NextChars).
 lex(Rest, Tokens, Previous, WordChars) :-
 	atom_string(WordChars, WordString),
-	string_lower(WordString, LoweredString),
-	atom_string(Lowered, LoweredString),
-	append(Previous, [word(Lowered, WordString)], Next),
+	string_lower(WordString, Lowered),
+	string_chars(Lowered, LoweredChars),
+	undecorate(LoweredChars, UndecoratedChars),
+	atom_chars(Undecorated, UndecoratedChars),
+	append(Previous, [word(Undecorated, WordString)], Next),
 	lex(Rest, Tokens, Next).
+
+undecorate([], []).
+undecorate(['á' | Cs], ['a' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['é' | Cs], ['e' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['í' | Cs], ['i' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['ó' | Cs], ['o' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['ú' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['ü' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
+undecorate([C | Cs], [C | Us])     :- undecorate(Cs, Us).

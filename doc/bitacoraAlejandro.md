@@ -76,3 +76,5 @@
   reducido (reduciendo, por ejemplo, mayúsculas) y una cadena con la forma
   original, ya que esta última puede ser necesaria a futuro.  Todos los demás
   caracteres no vacíos se vuelven tokens de puntuación.
+- Se implementa la reducción de tildes al transformar segmentos de caracteres
+  en átomos.
