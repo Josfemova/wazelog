@@ -71,3 +71,8 @@
   acomodar errores gramaticales que posee la especificación. Se incluyen
   algunas formas verbales y palabras de relleno que se observan en la
   especificación.
+- Se implementa análisis léxico de cadenas de entrada. Los caracteres
+  alfabéticos consecutivos se vuelven tokens que contienen a tanto un átomo
+  reducido (reduciendo, por ejemplo, mayúsculas) y una cadena con la forma
+  original, ya que esta última puede ser necesaria a futuro.  Todos los demás
+  caracteres no vacíos se vuelven tokens de puntuación.
