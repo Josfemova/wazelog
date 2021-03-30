@@ -8,7 +8,7 @@ sentence_sep(':').
 exclamation(si).
 exclamation(no).
 exclamation(hola).
-
+exclamation(gracias).
 verbal(estoy).
 verbal(voy).
 verbal(necesito).
@@ -23,8 +23,8 @@ filler(me).
 filler(que).
 filler(a).
 filler(al).
-filler(el).
-filler(la).
+%filler(el).
+%filler(la).
 filler(se).
 filler(en).
 filler(un).

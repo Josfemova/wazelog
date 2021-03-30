@@ -1,5 +1,6 @@
 :-use_module(library(readutil)).
 :-use_module(nlp).
+:-use_module(routes).
 %Instituto Tecnologico de Costa Rica
 %Area Academica de Ingenieria en Computadores
 %Lenguajes, Compialdores e Interpretes
@@ -47,7 +48,7 @@ ciudad(paseocolon).
 ciudad(desamparados).
 ciudad(guadalupe).
 ciudad(curridabat).
-
+ciudad(sabana).
 %arco(ciudad1, ciudad2, distancia, tiempo)
 %El grafo es no dirigido
 arco(cartago,taras,3,5).
@@ -67,31 +68,37 @@ conectados(C2,C1,Dist,Time):-arco(C2,C1,Dist,Time).
 %suponiendo que se construye la ruta como [peso|ruta]
 saludo:-writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino"),
 	writeln("Por favor indiqueme donde se encuentra"),!.
-preg_destino:-writeln("Genial, cual es su destino?").
+preg_destino:-writeln("Perfecto, cual es su destino?").
 despedida:-writeln("Muchas gracias por utilizar Wazelog!").
 preg_intermedio(1):-writeln("Genial, Algun destino intermedio?"),!.
 preg_intermedio(_):-writeln("Algun otro destino intermedio?").
-preg_direccion(Lugar):-format("Donde se encuentra ~w?", [Lugar]).
-
-
-%	n(Descomp, Lugar, _).
-
+preg_direccion(Lugar):-format("Donde se encuentra ~w?\n", [Lugar]).
+preg_cual(Place):-format("Cual ~w?\n", [Place]).
 read_user_input(Descomp,Test):-current_input(Stdin),
 	read_string(Stdin, "\n","\r\t",_,Text), 
 	parse_user_input(Text, Descomp, Test).
 
-start:-!,
+start(Src, Dest, Paradas):-!,
 	saludo,read_user_input(Src,Test), preg_destino, read_user_input(Dest,Test),
 	intermed(Active,Paradas,1).%falta calculo de rutas aca
 
 
-intermed(Src, Lista, It):- 
+intermed(Src, Lista, It):-
 	preg_intermedio(It),read_user_input(Input, Test),
 	resultadoRespuesta(Input, Lista, It, Test).
 
-resultadoRespuesta(Src, Lista, It, Test):-Test = ok, n(Src, Lugar, _), ciudad(Lugar),write(1).
-resultadoRespuesta(Src, Lista, It, Test):-Test = ok, n(Src, Lugar, _), not(ciudad(Lugar)),write(2).
+intermed_extra(Src, Lista,It,PlaceType):-
+	preg_cual(PlaceType), 
+	read_user_input(Input, Test), n(Input, _,Place),
+	preg_direccion(Place),
+	read_user_input(Input2, Test2),
+	resultadoRespuesta(Input2, Lista, It, Test2).
+
+resultadoRespuesta(Src, Lista, It, Test):-Test = ok, n(Src, Lugar, _),
+	ciudad(Lugar),list_push(Lugar, Lista, L2),Itx is It+1, intermed(Src, L2, Itx).
+resultadoRespuesta(Src, Lista, It, Test):-Test = ok, n(Src, Lugar, Lugar_orig),
+	not(ciudad(Lugar)), intermed_extra(Src, Lista, It, Lugar_orig).
 resultadoRespuesta(Src, Lista, It, Test):-Test = ok,!.
-resultadoRespuesta(Src, Lista, It, Test):-Test \=ok, write(4), 
+resultadoRespuesta(Src, Lista, It, Test):-Test \=ok, 
 	writeln("Perdon, no he podido entenderle, repito mi pregunta."),
 	intermed(Src, Lista, It).
