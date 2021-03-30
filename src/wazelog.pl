@@ -79,7 +79,8 @@ read_user_input(Descomp,Test):-current_input(Stdin),
 	parse_user_input(Text, Descomp, Test).
 
 start(Src, Dest, Paradas):-!,
-	saludo,read_user_input(Src,Test), preg_destino, read_user_input(Dest,Test),
+	saludo,read_user_input(SrcRaw,Test),n(SrcRaw, Src,_),
+	preg_destino, read_user_input(DestRaw,Test),n(DestRaw,Dest,_),
 	intermed(Active,Paradas,1).%falta calculo de rutas aca
 
 
