@@ -82,3 +82,7 @@
   tokens. Las oraciones pueden partirse por separadores explícitos, y la última
   oración de la entrada no necesita separador final. No se implementa todavía
   el parsing de oraciones propiamente, por lo cual esto no sirve de momento.
+- Se agrega la implementación de parseo de oraciones, siguiendo las reglas
+  gramaticales establecidas con anterioridad. Todavía hace falta agrupar grupos
+  de árboles sintácticos para estructurar propiamente las oraciones, así como
+  la unión de formas nominales en compuestos.
