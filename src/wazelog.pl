@@ -35,6 +35,7 @@ contains_all(L1,[H1|T1]):-miembro(H1, L1), contains_all(L1, T1).
 
 list_push(X,L,[X|L]).
 
+
 %ciudad('lugar').
 ciudad(sanjose).
 ciudad(cartago).
@@ -66,11 +67,13 @@ conectados(C2,C1,Dist,Time):-arco(C2,C1,Dist,Time).
 
 
 %suponiendo que se construye la ruta como [peso|ruta]
-saludo:-writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino"),
-	writeln("Por favor indiqueme donde se encuentra"),!.
-preg_destino:-writeln("Perfecto, cual es su destino?").
+saludo(1):-writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino"),
+	writeln("Por favor indiqueme donde se encuentra").
+saludo(_):-writeln("Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
+preg_destino(1):-writeln("Perfecto, cual es su destino?").
+preg_destino(_):-writeln("Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
 despedida:-writeln("Muchas gracias por utilizar Wazelog!").
-preg_intermedio(1):-writeln("Genial, Algun destino intermedio?"),!.
+preg_intermedio(1):-writeln("Genial, Algun destino intermedio?").
 preg_intermedio(_):-writeln("Algun otro destino intermedio?").
 preg_direccion(Lugar):-format("Donde se encuentra ~w?\n", [Lugar]).
 preg_cual(Place):-format("Cual ~w?\n", [Place]).
@@ -78,28 +81,49 @@ read_user_input(Descomp,Test):-current_input(Stdin),
 	read_string(Stdin, "\n","\r\t",_,Text), 
 	parse_user_input(Text, Descomp, Test).
 
-start(Src, Dest, Paradas):-!,
-	saludo,read_user_input(SrcRaw,Test),key_nominal(SrcRaw, nominal(Src, _, _)),
-	preg_destino, read_user_input(DestRaw,Test),key_nominal(DestRaw, nominal(Dest, _, _)),
-	intermed(Active,Paradas,1).%falta calculo de rutas aca
+start(Src, Dest, Paradas):-
+	ask_src(Src,1),ask_dest(Dest,1),intermed(Paradas,1).%falta calculo de rutas ac
 
+ask_src(Src, Cnt):-saludo(Cnt), read_user_input(SrcRaw, Test),!, valid_src(SrcRaw, Src, Test, Cnt).
+valid_src(SrcRaw, Src, Test, _):- Test = ok, key_nominal(SrcRaw, nominal(Src,_,_)),ciudad(Src),!.
+valid_src(SrcRaw, Src, Test, Cnt):- Test = ok, key_nominal(SrcRaw, nominal(BadSrc,_,_)),not(ciudad(BadSrc)),!,
+	Cntx is Cnt+1,ask_src(Src, Cntx).
+valid_src(SrcRaw, Src, Test, Cnt):- Test = ok,not(key_nominal(SrcRaw, _)),!, Cntx is Cnt+1, ask_src(Src, Cntx).
+valid_src(_, Src, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_src(Src, Cntx).
 
-intermed(Src, Lista, It):-
-	preg_intermedio(It),read_user_input(Input, Test),
-	resultadoRespuesta(Input, Lista, It, Test).
+ask_dest(Dest, Cnt):-preg_destino(Cnt), read_user_input(DestRaw, Test),!, valid_src(DestRaw, Dest, Test, Cnt).
+valid_dest(DestRaw, Dest, Test, _):- Test = ok, key_nominal(DestRaw, nominal(Dest,_,_)), ciudad(Dest),!.
+valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, key_nominal(DestRaw, nominal(BadDest,_,_)), not(ciudad(BadDest)),!,
+	Cntx is Cnt+1,ask_dest(Dest, Cntx).
+valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, not(key_nomical(DestRaw,_)),!, Cntx is Cnt+1, ask_dest(Dest, Cntx).
+valid_dest(_, Dest, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_src(Dest, Cntx).
 
-intermed_extra(Src, Lista,It,PlaceType):-
+intermed(Lista, Cnt, Stops):-
+	preg_intermedio(Cnt),!,read_user_input(Input, Test),
+	resultadoRespuesta(Input, Lista, Cnt, Test, Stops).
+
+intermed_extra(Lista,Cnt,PlaceType, Stops):-
 	preg_cual(PlaceType), 
-	read_user_input(Input, Test), key_nominal(Input, nominal(_, Place, _)),
+	read_user_input(Input, _), key_nominal(Input, nominal(_, Place, _)),
 	preg_direccion(Place),
 	read_user_input(Input2, Test2),
-	resultadoRespuesta(Input2, Lista, It, Test2).
+	resultadoRespuesta(Input2, Lista, Cnt, Test2, Stops).
 
-resultadoRespuesta(Src, Lista, It, Test):-Test = ok, key_nominal(Src, nominal(Lugar, _, _)),
-	ciudad(Lugar),list_push(Lugar, Lista, L2),Itx is It+1, intermed(Src, L2, Itx).
-resultadoRespuesta(Src, Lista, It, Test):-Test = ok, key_nominal(Src, nominal(Lugar, _, Lugar_orig)),
-	not(ciudad(Lugar)), intermed_extra(Src, Lista, It, Lugar_orig).
-resultadoRespuesta(Src, Lista, It, Test):-Test = ok,!.
-resultadoRespuesta(Src, Lista, It, Test):-Test \=ok, 
+stop_asking_intermed(Input):-miembro(exclamation(no), Input).
+stop_asking_intermed(Input):-miembro(exclamation(no,_), Input).
+
+resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-write(1),Test = ok, key_nominal(Input, nominal(Lugar, _, _)),
+	ciudad(Lugar),!,list_push(Lugar, Lista, Stops),Cntx is Cnt+1, intermed(Lista, Cntx, Stops).
+
+resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-write(2),Test = ok, key_nominal(Input, nominal(Lugar, _, Lugar_orig)),
+	not(ciudad(Lugar)),!, intermed_extra(Lista, Cnt, Lugar_orig, Stops),!.
+
+resultadoRespuesta(Input, _, _, Test, _):-write(3),Test = ok,not(key_nominal(Input,_)),stop_asking_intermed(Input),!.
+
+resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-write(4),Test = ok,not(key_nominal(Input,_)),not(stop_asking_intermed(Input)),!,
 	writeln("Perdon, no he podido entenderle, repito mi pregunta."),
-	intermed(Src, Lista, It).
+	intermed(Lista, Cnt, Stops),!.
+
+resultadoRespuesta(_, Lista, Cnt, Test, Stops):-write(5),Test \=ok,!, 
+	writeln("Perdon, no he podido entenderle, repito mi pregunta."),
+	intermed(Lista, Cnt, Stops),!.
