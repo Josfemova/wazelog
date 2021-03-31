@@ -11,32 +11,39 @@
 
 %reglas de utilidad --------------
 
-%miembro
+%Regla:
+%Ejemplo:
+%Descripción:
 miembro(X,[X|_]).
 miembro(X,[_|T]):-miembro(X,T).
 
-%Hechos y deducciones para función inversa 
+%Regla:
+%Ejemplo:
+%Descripción:
 inversa(X,Y):-inversa(X,Y,[]).
-%condición de paro, el acumulador es igual a la lista y se recorrió la lista entera
 inversa([],Z,Z).
-%Si el acumulador no es igual a Z y la lista no es vacía, toma Head, la concatena al acumulador y sigue buscando
 inversa([H|T],Z,Acumulador) :- inversa(T,Z,[H|Acumulador]).
 
-%Cláusulas para longitud 
+%Regla:
+%Ejemplo:
+%Descripción:
 longitud([],0). %la longitud de una lista vacia es 0
 longitud([_|T],X):-longitud(T, Y), X is Y+1.
-%se corta la lista hasta llegar a una lista vacia
 
-%rutas en forma [inicio, destino, intermedios ]
-
-%contains_all chequea que todos los elementos de una lista estén en otra
+%Regla:
+%Ejemplo:
+%Descripción:
 contains_all(_,[]).
 contains_all(L1,[H1|T1]):-miembro(H1, L1), contains_all(L1, T1).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 list_push(X,L,[X|L]).
 
-
-%ciudad('lugar').
+%Regla:
+%Ejemplo:
+%Descripción:
 ciudad(sanjose).
 ciudad(cartago).
 ciudad(sanpedro).
@@ -51,7 +58,9 @@ ciudad(guadalupe).
 ciudad(curridabat).
 ciudad(sabana).
 
-%city_name('lugar').
+%Regla:
+%Ejemplo:
+%Descripción:
 city_name(sanjose, "San Jose").
 city_name(cartago, "Cartago").
 city_name(sanpedro, "San Pedro").
@@ -81,27 +90,53 @@ arco(sanjose,curridabat,3,5,25).
 conectados(C1,C2,Dist,Time):-arco(C2,C1,Dist,Time).
 conectados(C2,C1,Dist,Time):-arco(C2,C1,Dist,Time).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 wazelog_writeln(Msg):-write("[Wazelog]:::| "), write(Msg), write(" :::| \n").
+%Regla:
+%Ejemplo:
+%Descripción:
 spacing:-writeln("====================================================================================================").
-%suponiendo que se construye la ruta como [peso|ruta]
+%Regla:
+%Ejemplo:
+%Descripción:
 saludo(1):-wazelog_writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino, por favor indiqueme donde se encuentra.").
 saludo(_):-wazelog_writeln("Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
 
+%Regla:
+%Ejemplo:
+%Descripción:
 preg_destino(1):-wazelog_writeln("Perfecto, cual es su destino?").
 preg_destino(_):-wazelog_writeln("Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
 
+%Regla:
+%Ejemplo:
+%Descripción:
 despedida:-wazelog_writeln("Muchas gracias por utilizar Wazelog!").
 
+%Regla:
+%Ejemplo:
+%Descripción:
 preg_intermedio(1):-wazelog_writeln("Genial, Algun destino intermedio?").
 preg_intermedio(_):-wazelog_writeln("Algun otro destino intermedio?").
 
+%Regla:
+%Ejemplo:
+%Descripción:
 preg_direccion(Lugar):-format(atom(Msg),"Donde se encuentra ~w?", [Lugar]),wazelog_writeln(Msg).
 preg_cual(Place):-format(atom(Msg),"Cual ~w?", [Place]),wazelog_writeln(Msg).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 read_user_input(Descomp,Test):-write("@Usuario: "),current_input(Stdin),
 	read_string(Stdin, "\n","\r\t",_,Text), 
 	parse_user_input(Text, Descomp, Test).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 translate([],S,SRes):-atomics_to_string(S, ", ", SRes).
 translate([City|Path], S, SRes):- city_name(City,Trad), translate(Path, [Trad|S], SRes).
 
@@ -112,25 +147,43 @@ start:-
 	spacing,format("Su ruta seria ~w. Longitud estimada de ~d Km.\nMuchas Gracias por utilizar WazeLog!\n", [StrPath, Peso]),
 	spacing.
 
+%Regla:
+%Ejemplo:
+%Descripción:
 ask_src(Src, Cnt):-saludo(Cnt),!, read_user_input(SrcRaw, Test), valid_src(SrcRaw, Src, Test, Cnt).
 valid_src(SrcRaw, Src, Test, _):- Test = ok, key_nominal(SrcRaw, nominal(Src,_,_)),ciudad(Src),!.
+%Regla:
+%Ejemplo:
+%Descripción:
 valid_src(SrcRaw, Src, Test, Cnt):- Test = ok, key_nominal(SrcRaw, nominal(BadSrc,_,_)),not(ciudad(BadSrc)),!,
 	Cntx is Cnt+1,ask_src(Src, Cntx).
 valid_src(SrcRaw, Src, Test, Cnt):- Test = ok,not(key_nominal(SrcRaw, _)),!, Cntx is Cnt+1, ask_src(Src, Cntx).
 valid_src(_, Src, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_src(Src, Cntx).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 ask_dest(Dest, Cnt):-preg_destino(Cnt), read_user_input(DestRaw, Test),!, valid_src(DestRaw, Dest, Test, Cnt).
 valid_dest(DestRaw, Dest, Test, _):- Test = ok, key_nominal(DestRaw, nominal(Dest,_,_)), ciudad(Dest),!.
+%Regla:
+%Ejemplo:
+%Descripción:
 valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, key_nominal(DestRaw, nominal(BadDest,_,_)), not(ciudad(BadDest)),!,
 	Cntx is Cnt+1,ask_dest(Dest, Cntx).
 valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, not(key_nomical(DestRaw,_)),!, Cntx is Cnt+1, ask_dest(Dest, Cntx).
 valid_dest(_, Dest, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_dest(Dest, Cntx).
 
 %lista debe comenzar []
+%Regla:
+%Ejemplo:
+%Descripción:
 intermed(Lista, Cnt, Stops):-
 	preg_intermedio(Cnt),read_user_input(Input, Test),!,
 	resultadoRespuesta(Input, Lista, Cnt, Test, Stops).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 intermed_extra(Lista,Cnt,PlaceType, Stops):-
 	preg_cual(PlaceType), 
 	read_user_input(Input, _), key_nominal(Input, nominal(_, Place, _)),
@@ -138,9 +191,15 @@ intermed_extra(Lista,Cnt,PlaceType, Stops):-
 	read_user_input(Input2, Test2),
 	resultadoRespuesta(Input2, Lista, Cnt, Test2, Stops).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 stop_asking_intermed(Input):-miembro(exclamation(no), Input).
 stop_asking_intermed(Input):-miembro(exclamation(no,_), Input).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-Test = ok, key_nominal(Input, nominal(Lugar, _, _)),
 	ciudad(Lugar),!,list_push(Lugar, Lista, NewList),Cntx is Cnt+1, intermed(NewList, Cntx, Stops).
 
@@ -158,4 +217,3 @@ resultadoRespuesta(_, Lista, Cnt, Test, Stops):-Test \=ok,!,
 	intermed(Lista, Cnt, Stops).
 
 
-%. mi problema es que fallo al concatenar la puta lista
