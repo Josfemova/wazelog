@@ -22,6 +22,9 @@ use_module(library(dicts)).
 %arco(5, 4, 6, 10, 25).
 %arco(4, 5, 6, 10, 25).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 shortest_path_through(Source, [], Target, Path, Cost) :-
 	!,
 	shortest_path(Source, Target, Path, Cost).
@@ -31,6 +34,9 @@ shortest_path_through(Source, [Stop | Stops], Target, Path, Cost) :-
 	Cost is FirstCost + NextCost,
 	append(FirstPath, NextPath, Path).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 shortest_path(Source, Target, Path, Cost) :-
 	empty_heap(Empty),
 	add_to_heap(Empty, 0, Source, Heap),
@@ -39,6 +45,10 @@ shortest_path(Source, Target, Path, Cost) :-
 	traceback(Source, Target, Nodes, ReversePath, Cost),
 	reverse(ReversePath, Path).
 
+
+%Regla:
+%Ejemplo:
+%Descripción:
 traceback(Source, Source, _, [Source], 0) :-
 	!.
 traceback(Source, Target, Nodes, [Target | ReversePath], Cost) :-
@@ -51,6 +61,9 @@ shortest_path(Source, Target, Heap, Known, Nodes) :-
 	get_dict(Key, Known, State),
 	visit(Source, Target, Key, Distance, State, NextHeap, Known, Nodes).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 visit(_, Target, Target, Distance, node(_, Distance, unvisited), _, Nodes, Nodes) :-
 	!.
 visit(Source, Target, Key, Distance, node(Parent, Distance, unvisited), Heap, Known, Nodes) :-
@@ -62,6 +75,9 @@ visit(Source, Target, Key, Distance, node(Parent, Distance, unvisited), Heap, Kn
 visit(Source, Target, _, _, _, Heap, Known, Nodes) :-
 	shortest_path(Source, Target, Heap, Known, Nodes).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 test_neighbors([], _, _, Heap, Known, Heap, Known).
 test_neighbors([Neighbor | Neighbors], Key, Distance, Heap, Known, NextHeap, NextKnown) :-
 	get_dict(Neighbor, Known, State),
@@ -73,6 +89,9 @@ test_neighbors([Neighbor | Neighbors], Key, Distance, Heap, Known, NextHeap, Nex
 	override_distance(Key, Distance, Neighbor, FakeNode, Heap, Known, HeapWithNeighbor, KnownWithNeighbor),
 	test_neighbors(Neighbors, Key, Distance, HeapWithNeighbor, KnownWithNeighbor, NextHeap, NextKnown).
 
+%Regla:
+%Ejemplo:
+%Descripción:
 override_distance(Key, Distance, Neighbor, node(_, OldDistance, unvisited), Heap, Known, NextHeap, NextKnown) :-
 	arco(Key, Neighbor, Cost, _, _),
 	NewDistance is Distance + Cost,
