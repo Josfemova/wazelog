@@ -24,3 +24,12 @@
 
 - Se realizó gran parte de la implementación del autómata, incluyendo las preguntas de origen, destino, y las paradas intermedias en un viaje. 
 - Se realizaron pruebas de calidad relacionadas al desempeño del autómata y el acoplamiento con el procesador de lenguaje natural de manera que posteriormente se puedan hacer ajustes para mejorar la coherencia de los mensajes del autómata.
+
+### 31 de Marzo
+
+- Se integro la parte de pathfinding con el autómata. 
+- Se resolvieron la mayoría de problemas relacionados al funcionamiento del autómata. Falta cubrir algunos corner cases pero en su mayoría parece estar listo.
+- Se agregaron algunas clausulas para facilitar la traducción de átomos correspondientes a ciudades. Esto podría ser innecesario de modificarse un poco el código para procesar los elementos del pathfinding conservando los strings originales obtenidos del parser. 
+- Se agregaron adornos a la comunicación entre el usuario y WazeLog para hacer la comunicación con el usuario más clara y agradable.
+- De la parte de pathfinding noté que se deben resolver casos bidireccionales, le comuniqué al compañero al respecto para que pueda procesarlo a como lo vea mejor. 
+- Seria agradable agregar los datos de tiempo de viaje en caso de ser necesarios. Debo discutir esto con el compañero.
