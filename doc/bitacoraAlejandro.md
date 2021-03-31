@@ -103,3 +103,5 @@
   pero otros como «el TEC» no lo tienen.
 - Se ajustan aspectos de la interfaz de usuario necesarios para acomodar el
   cambio anterior.
+- El cambio anterior rompió el manejo de oraciones exclamativas debido a que no
+  se cambió un `nominal(_, _)` por un `nominal(_, _, _)`. Se arregla esto.

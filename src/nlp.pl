@@ -40,6 +40,7 @@ filler(un).
 filler(una).
 filler(tengo).
 filler(por).
+filler(muchas).
 filler(Word) :-
 	before_nominal(Word);
 	contraction(Word, _).
@@ -120,12 +121,21 @@ classify(word(Atom, _), exclamation(Atom)) :-
 	!.
 classify(word(Atom, Original), nominal(Atom, Original)).
 
-clause(_). /* to do
-clause(exclamation(_, _)).
-clause(nominal([_ | _])).
-clause(svo(nominal([_ | _]), _, _)).
-clause(svo(nominal([]), verbal([_ | _]), O)) :-
-	clause(O).*/
+clause(verbal(_)) :-
+	!,
+	fail.
+clause(Clause) :-
+	well_formed(Clause).
+
+well_formed(exclamation(_)).
+well_formed(verbal([_ | _])).
+well_formed(nominal('', _, _)) :-
+	!,
+	fail.
+well_formed(nominal(_, _, _)).
+well_formed(svo(S, V, O)) :-
+	well_formed(S);
+	well_formed(V), well_formed(O).
 
 ast_join(nomatch, nominal(A, Orig), nominal(A, Orig, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).
@@ -190,13 +200,12 @@ sentence([punct(Sep) | Rest], Rest, Sentence, Acc) :-
 sentence([word(Exclamation, _) | Tokens], Rest, Sentence, nomatch) :-
 	exclamation(Exclamation),
 	!,
-	sentence(Tokens, Rest, Sentence, exclamation(Exclamation, nominal('', ""))).
-sentence([word(Nominal, Original) | Tokens], Rest, Sentence, exclamation(E, Detail)) :-
-	nominal(Nominal),
+	sentence(Tokens, Rest, Sentence, exclamation(Exclamation)).
+sentence([word(Word, _) | Tokens], Rest, Sentence, exclamation(E)) :-
+	not(verbal(Word)),
 	!,
-	nominal_join(Detail, nominal(Nominal, Original), Next),
-	sentence(Tokens, Rest, Sentence, exclamation(E, Next)).
-sentence(Rest, Rest, exclamation(E, Detail), exclamation(E, Detail)) :-
+	sentence(Tokens, Rest, Sentence, exclamation(E)).
+sentence(Rest, Rest, exclamation(E), exclamation(E)) :-
 	!.
 sentence([T | Tokens], Rest, Sentence, Ast) :-
 	classify(T, Term),
