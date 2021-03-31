@@ -95,8 +95,8 @@ despedida:-wazelog_writeln("Muchas gracias por utilizar Wazelog!").
 preg_intermedio(1):-wazelog_writeln("Genial, Algun destino intermedio?").
 preg_intermedio(_):-wazelog_writeln("Algun otro destino intermedio?").
 
-preg_direccion(Lugar):-format("Donde se encuentra ~w?\n", [Lugar]).
-preg_cual(Place):-format("Cual ~w?\n", [Place]).
+preg_direccion(Lugar):-format(atom(Msg),"Donde se encuentra ~w?", [Lugar]),wazelog_writeln(Msg).
+preg_cual(Place):-format(atom(Msg),"Cual ~w?", [Place]),wazelog_writeln(Msg).
 
 read_user_input(Descomp,Test):-write("@Usuario: "),current_input(Stdin),
 	read_string(Stdin, "\n","\r\t",_,Text), 
