@@ -50,11 +50,27 @@ ciudad(desamparados).
 ciudad(guadalupe).
 ciudad(curridabat).
 ciudad(sabana).
+
+%city_name('lugar').
+city_name(sanjose, "San Jose").
+city_name(cartago, "Cartago").
+city_name(sanpedro, "San Pedro").
+city_name(tresrios, "Tres Rios").
+city_name(zapote, "Zapote").
+city_name(taras, "Taras").
+city_name(paraiso, "Paraiso").
+city_name(quircot, "El Quircot").
+city_name(paseocolon, "Paseo Colon").
+city_name(desamparados, "Desamparados").
+city_name(guadalupe, "Guadalupe").
+city_name(curridabat, "Curridabat").
+city_name(sabana, "La Sabana").
 %arco(ciudad1, ciudad2, distancia, tiempo)
 %El grafo es no dirigido
 arco(cartago,taras,3,5,25).
 arco(cartago,paraiso,5,10,25).
 arco(taras, tresrios,3,5,25).
+arco(tresrios, sanpedro, 10,25,25).
 arco(sanpedro,tresrios,10,25,25).
 arco(sanpedro,zapote,2,5,25).
 arco(sanpedro, curridabat,2,10,25).
@@ -65,26 +81,38 @@ arco(sanjose,curridabat,3,5,25).
 conectados(C1,C2,Dist,Time):-arco(C2,C1,Dist,Time).
 conectados(C2,C1,Dist,Time):-arco(C2,C1,Dist,Time).
 
-
+wazelog_writeln(Msg):-write("[Wazelog]:::| "), write(Msg), write(" :::| \n").
+spacing:-writeln("====================================================================================================").
 %suponiendo que se construye la ruta como [peso|ruta]
-saludo(1):-writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino"),
-	writeln("Por favor indiqueme donde se encuentra").
-saludo(_):-writeln("Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
-preg_destino(1):-writeln("Perfecto, cual es su destino?").
-preg_destino(_):-writeln("Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
-despedida:-writeln("Muchas gracias por utilizar Wazelog!").
-preg_intermedio(1):-writeln("Genial, Algun destino intermedio?").
-preg_intermedio(_):-writeln("Algun otro destino intermedio?").
+saludo(1):-wazelog_writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino, por favor indiqueme donde se encuentra.").
+saludo(_):-wazelog_writeln("Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
+
+preg_destino(1):-wazelog_writeln("Perfecto, cual es su destino?").
+preg_destino(_):-wazelog_writeln("Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
+
+despedida:-wazelog_writeln("Muchas gracias por utilizar Wazelog!").
+
+preg_intermedio(1):-wazelog_writeln("Genial, Algun destino intermedio?").
+preg_intermedio(_):-wazelog_writeln("Algun otro destino intermedio?").
+
 preg_direccion(Lugar):-format("Donde se encuentra ~w?\n", [Lugar]).
 preg_cual(Place):-format("Cual ~w?\n", [Place]).
-read_user_input(Descomp,Test):-current_input(Stdin),
+
+read_user_input(Descomp,Test):-write("@Usuario: "),current_input(Stdin),
 	read_string(Stdin, "\n","\r\t",_,Text), 
 	parse_user_input(Text, Descomp, Test).
 
-start(Src, Dest, Paradas):-
-	ask_src(Src,1),ask_dest(Dest,1),intermed([],1,Paradas).%falta calculo de rutas ac
+translate([],S,SRes):-atomics_to_string(S, ", ", SRes).
+translate([City|Path], S, SRes):- city_name(City,Trad), translate(Path, [Trad|S], SRes).
 
-ask_src(Src, Cnt):-saludo(Cnt), read_user_input(SrcRaw, Test),!, valid_src(SrcRaw, Src, Test, Cnt).
+%start(Src, Dest, Paradas):-
+start:-
+	ask_src(Src,1),ask_dest(Dest,1),intermed([],1,Paradas),
+	shortest_path_through(Src, Paradas,Dest, Ruta,Peso),inversa(Ruta, RutaInv),translate(RutaInv, [], StrPath), %falta hacer el el pathfinder sea no dirigido
+	spacing,format("Su ruta seria ~w. Longitud estimada de ~d Km.\nMuchas Gracias por utilizar WazeLog!\n", [StrPath, Peso]),
+	spacing.
+
+ask_src(Src, Cnt):-saludo(Cnt),!, read_user_input(SrcRaw, Test), valid_src(SrcRaw, Src, Test, Cnt).
 valid_src(SrcRaw, Src, Test, _):- Test = ok, key_nominal(SrcRaw, nominal(Src,_,_)),ciudad(Src),!.
 valid_src(SrcRaw, Src, Test, Cnt):- Test = ok, key_nominal(SrcRaw, nominal(BadSrc,_,_)),not(ciudad(BadSrc)),!,
 	Cntx is Cnt+1,ask_src(Src, Cntx).
@@ -96,7 +124,7 @@ valid_dest(DestRaw, Dest, Test, _):- Test = ok, key_nominal(DestRaw, nominal(Des
 valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, key_nominal(DestRaw, nominal(BadDest,_,_)), not(ciudad(BadDest)),!,
 	Cntx is Cnt+1,ask_dest(Dest, Cntx).
 valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, not(key_nomical(DestRaw,_)),!, Cntx is Cnt+1, ask_dest(Dest, Cntx).
-valid_dest(_, Dest, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_src(Dest, Cntx).
+valid_dest(_, Dest, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_dest(Dest, Cntx).
 
 %lista debe comenzar []
 intermed(Lista, Cnt, Stops):-
@@ -122,11 +150,11 @@ resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-Test = ok, key_nominal(Input
 resultadoRespuesta(Input, Lista, _, Test, Stops):-Test = ok,not(key_nominal(Input,_)),stop_asking_intermed(Input),!,Stops=Lista.
 
 resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-Test = ok,not(key_nominal(Input,_)),not(stop_asking_intermed(Input)),!,
-	writeln("Perdon, no he podido entenderle, repito mi pregunta."),
+	wazelog_writeln("Perdon, no he podido entenderle, repito mi pregunta."),
 	intermed(Lista, Cnt, Stops).
 
 resultadoRespuesta(_, Lista, Cnt, Test, Stops):-Test \=ok,!, 
-	writeln("Perdon, no he podido entenderle, repito mi pregunta."),
+	wazelog_writeln("Perdon, no he podido entenderle, repito mi pregunta."),
 	intermed(Lista, Cnt, Stops).
 
 

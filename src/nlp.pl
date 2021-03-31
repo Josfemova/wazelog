@@ -12,6 +12,7 @@ exclamation(gracias).
 
 verbal(estoy).
 verbal(encuentro).
+verbal(encuentra).
 verbal(voy).
 verbal(necesito).
 verbal(ir).
