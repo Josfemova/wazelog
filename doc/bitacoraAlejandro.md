@@ -93,3 +93,13 @@
   objeto tácito.
 - Se agrega un prototipo de predicado para determinar si un AST construido es
   válido o no. Se implementará luego.
+
+  ## 30 de marzo
+
+- La clasificación de formas nominales ahora resulta en tres elementos en vez
+  de los dos anteriores: un átomo, una cadena «original» y una cadena con
+  artículos eliminados. Esto resuelve un problema con conversaciones donde
+  lugares como «La Sabana» tienen al artículo como parte de su nombre completo,
+  pero otros como «el TEC» no lo tienen.
+- Se ajustan aspectos de la interfaz de usuario necesarios para acomodar el
+  cambio anterior.

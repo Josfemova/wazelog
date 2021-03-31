@@ -79,8 +79,8 @@ read_user_input(Descomp,Test):-current_input(Stdin),
 	parse_user_input(Text, Descomp, Test).
 
 start(Src, Dest, Paradas):-!,
-	saludo,read_user_input(SrcRaw,Test),n(SrcRaw, Src,_),
-	preg_destino, read_user_input(DestRaw,Test),n(DestRaw,Dest,_),
+	saludo,read_user_input(SrcRaw,Test),key_nominal(SrcRaw, nominal(Src, _, _)),
+	preg_destino, read_user_input(DestRaw,Test),key_nominal(DestRaw, nominal(Dest, _, _)),
 	intermed(Active,Paradas,1).%falta calculo de rutas aca
 
 
@@ -90,14 +90,14 @@ intermed(Src, Lista, It):-
 
 intermed_extra(Src, Lista,It,PlaceType):-
 	preg_cual(PlaceType), 
-	read_user_input(Input, Test), n(Input, _,Place),
+	read_user_input(Input, Test), key_nominal(Input, nominal(_, Place, _)),
 	preg_direccion(Place),
 	read_user_input(Input2, Test2),
 	resultadoRespuesta(Input2, Lista, It, Test2).
 
-resultadoRespuesta(Src, Lista, It, Test):-Test = ok, n(Src, Lugar, _),
+resultadoRespuesta(Src, Lista, It, Test):-Test = ok, key_nominal(Src, nominal(Lugar, _, _)),
 	ciudad(Lugar),list_push(Lugar, Lista, L2),Itx is It+1, intermed(Src, L2, Itx).
-resultadoRespuesta(Src, Lista, It, Test):-Test = ok, n(Src, Lugar, Lugar_orig),
+resultadoRespuesta(Src, Lista, It, Test):-Test = ok, key_nominal(Src, nominal(Lugar, _, Lugar_orig)),
 	not(ciudad(Lugar)), intermed_extra(Src, Lista, It, Lugar_orig).
 resultadoRespuesta(Src, Lista, It, Test):-Test = ok,!.
 resultadoRespuesta(Src, Lista, It, Test):-Test \=ok, 

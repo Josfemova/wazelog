@@ -1,4 +1,4 @@
-:- module(nlp, [parse_user_input/3,n/3]).
+:- module(nlp, [parse_user_input/3, key_nominal/2]).
 
 sentence_sep('.').
 sentence_sep(',').
@@ -9,7 +9,9 @@ exclamation(si).
 exclamation(no).
 exclamation(hola).
 exclamation(gracias).
+
 verbal(estoy).
+verbal(encuentro).
 verbal(voy).
 verbal(necesito).
 verbal(ir).
@@ -19,22 +21,52 @@ verbal(pasar).
 verbal(ubica).
 verbal(gustaria).
 
+before_nominal(el).
+before_nominal(los).
+before_nominal(la).
+before_nominal(las).
+before_nominal(de).
+
+contraction(al, [a, el]).
+contraction(del, [de, el]).
+
 filler(me).
 filler(que).
 filler(a).
-filler(al).
-%filler(el).
-%filler(la).
 filler(se).
 filler(en).
+filler(de).
 filler(un).
 filler(una).
 filler(tengo).
 filler(por).
+filler(Word) :-
+	before_nominal(Word);
+	contraction(Word, _).
+
+nominal(N) :-
+	not(exclamation(N)), not(verbal(N)), not(filler(N)).
+
+expand([], []).
+expand([word(Contraction, _) | Tokens], NextTokens) :-
+	contraction(Contraction, Expanded),
+	!,
+	atoms_to_words(Expanded, ExpandedWords),
+	expand(Tokens, NextExpanded),
+	append(ExpandedWords, NextExpanded, NextTokens).
+expand([T | Tokens], [T | NextTokens]) :-
+	expand(Tokens, NextTokens).
+
+atoms_to_words([], []) :-
+	!.
+atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
+	atom_string(Atom, Orig),
+	atoms_to_words(Atoms, NextWords).
 
 parse_user_input(Input, Sentences, FailureHead) :-
 	lex(Input, Tokens),
-	unbounded(Tokens, Sentences, FailureHead).
+	expand(Tokens, Expanded),
+	unbounded(Expanded, Sentences, FailureHead).
 
 lex(Input, Tokens) :-
 	string_chars(Input, Chars),
@@ -76,11 +108,8 @@ undecorate(['ú' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate(['ü' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate([C | Cs], [C | Us])     :- undecorate(Cs, Us).
 
-nominal(N) :-
-	not(exclamation(N)), not(verbal(N)), not(filler(N)).
-
 classify(punct(_), punct).
-classify(word(Atom, _), filler) :-
+classify(word(Atom, Orig), filler(Atom, Orig)) :-
 	filler(Atom),
 	!.
 classify(word(Atom, _), verbal(Atom)) :-
@@ -98,34 +127,42 @@ clause(svo(nominal([_ | _]), _, _)).
 clause(svo(nominal([]), verbal([_ | _]), O)) :-
 	clause(O).*/
 
-ast_join(Tree, filler, Tree).
-ast_join(nomatch, nominal(A, Orig), nominal(A, Orig)).
+ast_join(nomatch, nominal(A, Orig), nominal(A, Orig, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).
-ast_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)) :-
-	nominal_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)).
-ast_join(nominal(A, Orig), verbal(V), svo(nominal(A, Orig), verbal([V]), nominal('', ""))).
-ast_join(verbal(V), nominal(A, Orig), svo(nominal('', ""), verbal(V), nominal(A, Orig))).
+ast_join(nomatch, filler(F, Orig), nominal('', Orig, "")) :-
+	before_nominal(F).
+ast_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextOrig, NextBare)) :-
+	nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextOrig, NextBare)).
+ast_join(nominal(A, Orig, Bare), verbal(V), svo(nominal(A, Orig, Bare), verbal([V]), nominal('', "", ""))).
+ast_join(nominal(A, LeftOrig, Bare), filler(F, RightOrig), nominal(A, NextOrig, Bare)) :-
+	before_nominal(F),
+	nominal_join(nominal(A, LeftOrig, Bare), nominal('', RightOrig), nominal(A, NextOrig, _)).
+ast_join(verbal(V), nominal(A, Orig), svo(nominal('', "", ""), verbal(V), nominal(A, Orig, Orig))).
 ast_join(verbal(LeftV), verbal(RightV), verbal(NextV)) :-
 	append(LeftV, [RightV], NextV).
-ast_join(svo(S, V, svo(InnerS, InnerV, InnerO)), Term, svo(S, V, O)) :-
-	!,
-	ast_join(svo(InnerS, InnerV, InnerO), Term, O).
-ast_join(svo(S, V, nominal(LeftA, LeftOrig)), nominal(RightA, RightOrig), svo(S, V, nominal(NextA, NextOrig))) :-
-	!,
-	ast_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)).
-ast_join(svo(S, verbal(LeftV), nominal('', "")), verbal(RightV), svo(S, verbal(NextV), nominal('', ""))) :-
+ast_join(verbal(V), filler(F, Orig), svo(nominal('', "", ""), verbal(V), nominal('', Orig, ""))) :-
+	before_nominal(F).
+ast_join(svo(S, verbal(LeftV), nominal('', "", "")), verbal(RightV), svo(S, verbal(NextV), nominal('', "", ""))) :-
 	!,
 	ast_join(verbal(LeftV), verbal(RightV), verbal(NextV)).
-ast_join(svo(S, V, O), verbal(Verbal), svo(S, V, svo(O, verbal([Verbal]), nominal('', "")))).
+ast_join(svo(S, V, O), verbal(Verbal), svo(S, V, svo(O, verbal([Verbal]), nominal('', "", "")))) :-
+	!.
+ast_join(svo(S, V, O), Term, svo(S, V, NextO)) :-
+	!,
+	ast_join(O, Term, NextO).
+ast_join(Tree, filler(_, _), Tree).
 
-nominal_join(nominal('', ""), nominal(A, Orig), nominal(A, Orig)) :-
+nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextOrig, NextBare)) :-
+	atom_concat(LA, RA, NextA),
+	append_space(LOrig, OrigWithSpace),
+	append_space(LBare, BareWithSpace),
+	string_concat(OrigWithSpace, ROrig, NextOrig),
+	string_concat(BareWithSpace, ROrig, NextBare).
+
+append_space("", "") :-
 	!.
-nominal_join(nominal(A, Orig), nominal('', ""), nominal(A, Orig)) :-
-	!.
-nominal_join(nominal(LeftA, LeftOrig), nominal(RightA, RightOrig), nominal(NextA, NextOrig)) :-
-	atom_concat(LeftA, RightA, NextA),
-	string_concat(LeftOrig, " ", WithSpace),
-	string_concat(WithSpace, RightOrig, NextOrig).
+append_space(String, WithSpace) :-
+	string_concat(String, " ", WithSpace).
 
 unbounded(Tokens, Sentences, FailureHead) :-
 	unbounded(Tokens, Sentences, [], FailureHead).
@@ -167,7 +204,10 @@ sentence([T | Tokens], Rest, Sentence, Ast) :-
 	sentence(Tokens, Rest, Sentence, NextAst).
 
 
-n([nominal(A, Orig)], A, Orig):-!.
-n([svo(_, _, O)], A, Orig) :-!, n([O], A, Orig).
-n([_ | Es], A, Orig) :- n(Es, A, Orig).
-
+key_nominal([nominal(A, Orig, Bare)], nominal(A, Orig, Bare)) :-
+	!.
+key_nominal([svo(_, _, O)], N) :-
+	!,
+	key_nominal([O], N).
+key_nominal([_ | Es], N) :-
+	key_nominal(Es, N).
