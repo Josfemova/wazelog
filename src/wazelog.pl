@@ -52,15 +52,15 @@ ciudad(curridabat).
 ciudad(sabana).
 %arco(ciudad1, ciudad2, distancia, tiempo)
 %El grafo es no dirigido
-arco(cartago,taras,3,5).
-arco(cartago,paraiso,5,10).
-arco(taras, tresrios,3,5).
-arco(sanpedro,tresrios,10,25).
-arco(sanpedro,zapote,2,5).
-arco(sanpedro, curridabat,2,10).
-arco(zapote,sanjose,3,5).
-arco(sanpedro,sanjose,3,5).
-arco(curridabat,sanjose,3,5).
+arco(cartago,taras,3,5,25).
+arco(cartago,paraiso,5,10,25).
+arco(taras, tresrios,3,5,25).
+arco(sanpedro,tresrios,10,25,25).
+arco(sanpedro,zapote,2,5,25).
+arco(sanpedro, curridabat,2,10,25).
+arco(sanpedro,sanjose,3,5,25).
+arco(sanjose,zapote,3,5,25).
+arco(sanjose,curridabat,3,5,25).
 
 conectados(C1,C2,Dist,Time):-arco(C2,C1,Dist,Time).
 conectados(C2,C1,Dist,Time):-arco(C2,C1,Dist,Time).
@@ -82,7 +82,7 @@ read_user_input(Descomp,Test):-current_input(Stdin),
 	parse_user_input(Text, Descomp, Test).
 
 start(Src, Dest, Paradas):-
-	ask_src(Src,1),ask_dest(Dest,1),intermed(Paradas,1).%falta calculo de rutas ac
+	ask_src(Src,1),ask_dest(Dest,1),intermed([],1,Paradas).%falta calculo de rutas ac
 
 ask_src(Src, Cnt):-saludo(Cnt), read_user_input(SrcRaw, Test),!, valid_src(SrcRaw, Src, Test, Cnt).
 valid_src(SrcRaw, Src, Test, _):- Test = ok, key_nominal(SrcRaw, nominal(Src,_,_)),ciudad(Src),!.
@@ -98,8 +98,9 @@ valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, key_nominal(DestRaw, nominal(B
 valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, not(key_nomical(DestRaw,_)),!, Cntx is Cnt+1, ask_dest(Dest, Cntx).
 valid_dest(_, Dest, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_src(Dest, Cntx).
 
+%lista debe comenzar []
 intermed(Lista, Cnt, Stops):-
-	preg_intermedio(Cnt),!,read_user_input(Input, Test),
+	preg_intermedio(Cnt),read_user_input(Input, Test),!,
 	resultadoRespuesta(Input, Lista, Cnt, Test, Stops).
 
 intermed_extra(Lista,Cnt,PlaceType, Stops):-
@@ -112,18 +113,21 @@ intermed_extra(Lista,Cnt,PlaceType, Stops):-
 stop_asking_intermed(Input):-miembro(exclamation(no), Input).
 stop_asking_intermed(Input):-miembro(exclamation(no,_), Input).
 
-resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-write(1),Test = ok, key_nominal(Input, nominal(Lugar, _, _)),
-	ciudad(Lugar),!,list_push(Lugar, Lista, Stops),Cntx is Cnt+1, intermed(Lista, Cntx, Stops).
+resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-Test = ok, key_nominal(Input, nominal(Lugar, _, _)),
+	ciudad(Lugar),!,list_push(Lugar, Lista, NewList),Cntx is Cnt+1, intermed(NewList, Cntx, Stops).
 
-resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-write(2),Test = ok, key_nominal(Input, nominal(Lugar, _, Lugar_orig)),
+resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-Test = ok, key_nominal(Input, nominal(Lugar, _, Lugar_orig)),
 	not(ciudad(Lugar)),!, intermed_extra(Lista, Cnt, Lugar_orig, Stops),!.
 
-resultadoRespuesta(Input, _, _, Test, _):-write(3),Test = ok,not(key_nominal(Input,_)),stop_asking_intermed(Input),!.
+resultadoRespuesta(Input, Lista, _, Test, Stops):-Test = ok,not(key_nominal(Input,_)),stop_asking_intermed(Input),!,Stops=Lista.
 
-resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-write(4),Test = ok,not(key_nominal(Input,_)),not(stop_asking_intermed(Input)),!,
+resultadoRespuesta(Input, Lista, Cnt, Test, Stops):-Test = ok,not(key_nominal(Input,_)),not(stop_asking_intermed(Input)),!,
 	writeln("Perdon, no he podido entenderle, repito mi pregunta."),
-	intermed(Lista, Cnt, Stops),!.
+	intermed(Lista, Cnt, Stops).
 
-resultadoRespuesta(_, Lista, Cnt, Test, Stops):-write(5),Test \=ok,!, 
+resultadoRespuesta(_, Lista, Cnt, Test, Stops):-Test \=ok,!, 
 	writeln("Perdon, no he podido entenderle, repito mi pregunta."),
-	intermed(Lista, Cnt, Stops),!.
+	intermed(Lista, Cnt, Stops).
+
+
+%. mi problema es que fallo al concatenar la puta lista
