@@ -134,8 +134,8 @@ well_formed(nominal('', _, _)) :-
 	fail.
 well_formed(nominal(_, _, _)).
 well_formed(svo(S, V, O)) :-
-	well_formed(S);
-	well_formed(V), well_formed(O).
+	(not(well_formed(V)); well_formed(O)),
+	(well_formed(V); well_formed(S)).
 
 ast_join(nomatch, nominal(A, Orig), nominal(A, Orig, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).

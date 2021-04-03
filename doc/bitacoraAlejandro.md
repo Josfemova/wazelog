@@ -105,3 +105,15 @@
   cambio anterior.
 - El cambio anterior rompió el manejo de oraciones exclamativas debido a que no
   se cambió un `nominal(_, _)` por un `nominal(_, _, _)`. Se arregla esto.
+
+## 2 de abril
+
+- Se termina de implementar la verificación de validez de oraciones que fue
+  propuesta el 29 de marzo. En particular, las estructuras SVO deben de cumplir
+  las siguientes condiciones. Si hay un componente verbal presente, deben tener
+  un objeto/predicado válido según aplicación recursiva de estas reglas. Si no
+  hay un verbo presente, debe haber un sujeto válido según estas reglas. Un
+  nominal se considera válido si su átomo no es el átomo vacío. Una forma
+  verbal es válida si no está constituida por una lista vacía. Una forma
+  nominal de primer nivel es una oración válida, pero una forma verbal de
+  primer nivel, sin estructura SVO, es un error.
