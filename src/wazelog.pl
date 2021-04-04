@@ -1,6 +1,7 @@
 :- module(wazelog, [start/1]).
 :- use_module(library(readutil)).
 :- use_module(nlp).
+:- use_module(lang).
 :- use_module(path).
 :- use_module(routes).
 
@@ -82,7 +83,8 @@ translate([City | Path], S, SRes) :-
 	translate(Path, [Trad | S], SRes).
 
 start(Then) :-
-	run(start, _, Then).
+	run(start, _, Then),
+	!.
 
 run(bye, _, stop) :-
 	writeln("Muchas Gracias por utilizar WazeLog!").
@@ -93,7 +95,7 @@ run(city(Src), start, Then) :-
 	ask_in_loop(ask_city(ask_dest), Dest),
 	run(Dest, src(Src), Then).
 run(city(Dest), src(Src), Then) :-
-	intermed([], Paradas),
+	ask_in_loop(ask_stops, Paradas),
 	run(Paradas, src_dest(Src, Dest), Then).
 run(stops(Paradas), src_dest(Src, Dest), continue) :-
 	shortest_path_through(Src, Paradas, Dest, Result),
@@ -114,27 +116,29 @@ run(stops(Paradas), src_dest(Src, Dest), continue) :-
 
 ask_in_loop(Predicate, Input) :-
 	ask_in_loop(first, Predicate, Input).
-ask_in_loop(Repeat, Predicate, Input) :-
-	call(Predicate, Tentative, repeat(Repeat, Then)),
+ask_in_loop(Iteration, Predicate, Input) :-
+	call(Predicate, repeat(Iteration, Then)),
 	!,
 	(
-		Then = done,
-		!,
-		Input = Tentative;
+		Then = done(Input),
+		!;
 
 		ask_in_loop(Then, Predicate, Input)
 	).
-ask_in_loop(_, Predicate, Input) :-
-	ask_in_loop(again, Predicate, Input).
+ask_in_loop(again(Iteration), Predicate, Input) :-
+	!,
+	ask_in_loop(again(Iteration), Predicate, Input).
+ask_in_loop(Iteration, Predicate, Input) :-
+	ask_in_loop(again(Iteration), Predicate, Input).
 
 ask_src(first, "Bienvenido a WazeLog, la mejor logica de llegar a su destino, por favor indiqueme donde se encuentra.").
-ask_src(again, "Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
+ask_src(again(_), "Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
 
 ask_dest(first, "Perfecto, cual es su destino?").
-ask_dest(again, "Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
+ask_dest(again(_), "Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
 
-ask_city(Prompter, Out, repeat(Repeat, done)) :-
-	call(Prompter, Repeat, Prompt),
+ask_city(Prompter, repeat(Iteration, done(Out))) :-
+	call(Prompter, Iteration, Prompt),
 	wazelog_writeln(Prompt),
 	read_user_input(Input),
 	(
@@ -147,28 +151,59 @@ ask_city(Prompter, Out, repeat(Repeat, done)) :-
 		Out = city(City)
 	).
 
-%lista debe comenzar []
-%Regla:
-%Ejemplo:
-%Descripción:
-intermed(Lista, Stops) :-
+ask_stops(repeat(Iteration, Then)) :-
 	(
-		Lista = [],
+		Iteration = first,
 		wazelog_writeln("Genial, Algun destino intermedio?");
 
-		Lista = [_ | _],
-		wazelog_writeln("Algun otro destino intermedio?")
-	),
-	read_user_input(Input),
-	answer(Input, Lista, Stops).
+		Iteration = stops(_),
+		wazelog_writeln("Algun otro destino intermedio?");
 
-intermed_extra(Lista, PlaceType, Stops) :-
-	q_which(PlaceType), 
+		Iteration = again(first),
+		wazelog_writeln("Perdon, no he podido entenderle, desea un destino intermedio?");
+
+		Iteration = again(stops(_)),
+		wazelog_writeln("Perdon, no he podido entenderle, desea otro destino intermedio?")
+	),
+	last_stops(Iteration, Stops),
+	read_user_input(Result),
+	(
+		Result = bye,
+		Then = done(bye);
+
+		Result = ok(Input),
+		(
+			key_nominal(Input, Nominal),
+			!,
+			not(stop_asking_intermed(Input)),
+			pinpoint(Nominal, Stop),
+			append(Stops, [Stop], NextStops),
+			Then = stops(NextStops);
+
+			stop_asking_intermed(Input),
+			Then = done(stops(Stops))
+		)
+	).
+
+last_stops(first, []).
+last_stops(stops(Stops), Stops).
+last_stops(again(Iteration), Stops) :-
+	last_stops(Iteration, Stops).
+
+pinpoint(nominal(Stop, _, _), Stop) :-
+	city(Stop, _),
+	!.
+pinpoint(nominal(Place, Orig, Bare), Stop) :-
+	(
+		place_type(Place),
+		!,
+		q_which(Bare);
+
+		q_direction(Orig)
+	),
 	read_user_input(ok(Input)),
-	key_nominal(Input, nominal(_, Place, _)),
-	q_direction(Place),
-	read_user_input(Input2),
-	answer(Input2, Lista, Stops).
+	key_nominal(Input, Nominal),
+	pinpoint(Nominal, Stop).
 
 %Regla: stop_asking_intermed(Input).
 %Ejemplo: stop_asking_intermed([exclamation(no)]). true.
@@ -178,25 +213,3 @@ stop_asking_intermed(Input) :-
 
 stop(Input) :- 
 	contains_term(exclamation(adios), Input).
-
-%Regla: 
-%Ejemplo:
-%Descripción:
-answer(ok(Input), Lista, Stops) :-
-	key_nominal(Input, nominal(Lugar, _, _)),
-	city(Lugar, _),
-	!,
-	intermed([Lugar | Lista], Stops).
-answer(ok(Input), Lista, Stops) :-
-	key_nominal(Input, nominal(Lugar, _, Lugar_orig)),
-	not(city(Lugar, _)),
-	!,
-	intermed_extra(Lista, Lugar_orig, Stops),
-	!.
-answer(ok(Input), Lista, stops(Lista)) :-
-	not(key_nominal(Input, _)),
-	stop_asking_intermed(Input),
-	!.
-answer(_, Lista, Stops) :-
-	wazelog_writeln("Perdon, no he podido entenderle, repito mi pregunta."),
-	intermed(Lista, Stops).

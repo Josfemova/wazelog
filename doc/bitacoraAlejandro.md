@@ -145,3 +145,6 @@
 - Se elimina `test.pdf`.
 - Se arregla bucle infinito de pregunta de destino introducido hace poco.
 - Se implementa cálculo de duraciones mínimas y máximas.
+- Ahora se clasifican los tipos de lugares intermedios, con tal de poder
+  diferenciar entre preguntas de "¿cuál [lugar]?" y "¿dónde se encuentra
+  [lugar]?"

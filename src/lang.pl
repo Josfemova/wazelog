@@ -1,5 +1,17 @@
-:- module(lang, [sentence_sep/1, exclamation/1, verbal/1,
-                 before_nominal/1, contraction/2, unclassified/1]).
+:- module(lang, [sentence_sep/1, exclamation/1, verbal/1, before_nominal/1,
+                 contraction/2, unclassified/1, place_type/1]).
+
+%Regla: 
+%Ejemplo:
+%Descripción:
+place_type(supermercado).
+place_type(mercado).
+place_type(tienda).
+place_type(banco).
+place_type(escuela).
+place_type(restaurante).
+place_type(parque).
+place_type(instituto).
 
 %Regla: 
 %Ejemplo:
