@@ -66,7 +66,10 @@ lex([Punct | Rest], Tokens, Previous) :-
 	append(Previous, [punct(Punct)], Next),
 	lex(Rest, Tokens, Next).
 lex([Alpha | Rest], Tokens, Previous, WordChars) :-
-	is_alpha(Alpha),
+	(
+		is_alpha(Alpha);
+		Alpha = '\''
+	),
 	!,
 	append(WordChars, [Alpha], NextChars),
 	lex(Rest, Tokens, Previous, NextChars).
