@@ -135,3 +135,5 @@
   en vez de tener dos parámetros de salida para ello. Se modifica código
   relacionado para considerar este cambio.
 - Se agrega el verbo «está» a la lista de formas verbales.
+- Se implementa repetición de la rutina principal del programa. De momento no
+  existe suficiente transfondo para que esto funcione correctamente.

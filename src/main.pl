@@ -3,4 +3,14 @@
 :- use_module(wazelog).
 :- initialization(main, main).
 
-main(_) :- start.
+main(_) :-
+	loop.
+
+loop :-
+	start,
+	(
+		true, % Cambiar por Out = bye
+		!;
+
+		loop
+	).
