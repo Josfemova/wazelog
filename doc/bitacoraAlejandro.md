@@ -122,3 +122,4 @@
 
 - Se elimina el grafo de prueba original, ya que ahora puede ser reemplazado
   con uno más apropiado al contexto del proyecto.
+- Se separan los hechos contextuales (lenguaje y rutas) de la lógica.

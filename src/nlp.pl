@@ -1,48 +1,8 @@
 :- module(nlp, [parse_user_input/3, key_nominal/2]).
+:- use_module(lang).
 
-sentence_sep('.').
-sentence_sep(',').
-sentence_sep(';').
-sentence_sep(':').
-
-exclamation(si).
-exclamation(no).
-exclamation(hola).
-exclamation(gracias).
-
-verbal(estoy).
-verbal(encuentro).
-verbal(encuentra).
-verbal(voy).
-verbal(necesito).
-verbal(ir).
-verbal(es).
-verbal(llegar).
-verbal(pasar).
-verbal(ubica).
-verbal(gustaria).
-
-before_nominal(el).
-before_nominal(los).
-before_nominal(la).
-before_nominal(las).
-before_nominal(de).
-
-contraction(al, [a, el]).
-contraction(del, [de, el]).
-
-filler(me).
-filler(que).
-filler(a).
-filler(se).
-filler(en).
-filler(de).
-filler(un).
-filler(una).
-filler(tengo).
-filler(por).
-filler(muchas).
 filler(Word) :-
+	unclassified(Word);
 	before_nominal(Word);
 	contraction(Word, _).
 

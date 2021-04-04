@@ -1,6 +1,8 @@
-:-use_module(library(readutil)).
-:-use_module(nlp).
-:-use_module(routes).
+:- module(wazelog, [start/0]).
+:- use_module(library(readutil)).
+:- use_module(nlp).
+:- use_module(path).
+:- use_module(routes).
 %Instituto Tecnologico de Costa Rica
 %Area Academica de Ingenieria en Computadores
 %Lenguajes, Compialdores e Interpretes
@@ -34,52 +36,6 @@ longitud([_|T],X):-longitud(T, Y), X is Y+1.
 %Ejemplo:
 %Descripción:
 list_push(X,L,[X|L]).
-
-%Regla:
-%Ejemplo:
-%Descripción:
-city(sanjose).
-city(cartago).
-city(sanpedro).
-city(tresrios).
-city(zapote).
-city(taras).
-city(paraiso).
-city(quircot).
-city(paseocolon).
-city(desamparados).
-city(guadalupe).
-city(curridabat).
-city(sabana).
-
-%Regla:
-%Ejemplo:
-%Descripción:
-city_name(sanjose, "San Jose").
-city_name(cartago, "Cartago").
-city_name(sanpedro, "San Pedro").
-city_name(tresrios, "Tres Rios").
-city_name(zapote, "Zapote").
-city_name(taras, "Taras").
-city_name(paraiso, "Paraiso").
-city_name(quircot, "El Quircot").
-city_name(paseocolon, "Paseo Colon").
-city_name(desamparados, "Desamparados").
-city_name(guadalupe, "Guadalupe").
-city_name(curridabat, "Curridabat").
-city_name(sabana, "La Sabana").
-%arco(ciudad1, ciudad2, distancia, tiempo)
-%El grafo es no dirigido
-arco(cartago,taras,3,5,25).
-arco(cartago,paraiso,5,10,25).
-arco(taras, tresrios,3,5,25).
-arco(tresrios, sanpedro, 10,25,25).
-arco(sanpedro,tresrios,10,25,25).
-arco(sanpedro,zapote,2,5,25).
-arco(sanpedro, curridabat,2,10,25).
-arco(sanpedro,sanjose,3,5,25).
-arco(sanjose,zapote,3,5,25).
-arco(sanjose,curridabat,3,5,25).
 
 conectados(C1,C2,Dist,Time):-arco(C2,C1,Dist,Time).
 conectados(C2,C1,Dist,Time):-arco(C2,C1,Dist,Time).
@@ -132,7 +88,7 @@ read_user_input(Descomp,Test):-write("@Usuario: "),current_input(Stdin),
 %Ejemplo:
 %Descripción:
 translate([],S,SRes):-atomics_to_string(S, ", ", SRes).
-translate([City|Path], S, SRes):- city_name(City,Trad), translate(Path, [Trad|S], SRes).
+translate([City|Path], S, SRes):- city(City,Trad), translate(Path, [Trad|S], SRes).
 
 %start(Src, Dest, Paradas):-
 start:-
@@ -145,11 +101,11 @@ start:-
 %Ejemplo:
 %Descripción:
 ask_src(Src, Cnt):-greeting(Cnt),!, read_user_input(SrcRaw, Test), valid_src(SrcRaw, Src, Test, Cnt).
-valid_src(SrcRaw, Src, Test, _):- Test = ok, key_nominal(SrcRaw, nominal(Src,_,_)),city(Src),!.
+valid_src(SrcRaw, Src, Test, _):- Test = ok, key_nominal(SrcRaw, nominal(Src,_,_)),city(Src, _),!.
 %Regla:
 %Ejemplo:
 %Descripción:
-valid_src(SrcRaw, Src, Test, Cnt):- Test = ok, key_nominal(SrcRaw, nominal(BadSrc,_,_)),not(city(BadSrc)),!,
+valid_src(SrcRaw, Src, Test, Cnt):- Test = ok, key_nominal(SrcRaw, nominal(BadSrc,_,_)),not(city(BadSrc, _)),!,
 	Cntx is Cnt+1,ask_src(Src, Cntx).
 valid_src(SrcRaw, Src, Test, Cnt):- Test = ok,not(key_nominal(SrcRaw, _)),!, Cntx is Cnt+1, ask_src(Src, Cntx).
 valid_src(_, Src, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_src(Src, Cntx).
@@ -158,11 +114,11 @@ valid_src(_, Src, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_src(Src, Cntx).
 %Ejemplo:
 %Descripción:
 ask_dest(Dest, Cnt):-q_dest(Cnt), read_user_input(DestRaw, Test),!, valid_src(DestRaw, Dest, Test, Cnt).
-valid_dest(DestRaw, Dest, Test, _):- Test = ok, key_nominal(DestRaw, nominal(Dest,_,_)), city(Dest),!.
+valid_dest(DestRaw, Dest, Test, _):- Test = ok, key_nominal(DestRaw, nominal(Dest,_,_)), city(Dest, _),!.
 %Regla:
 %Ejemplo:
 %Descripción:
-valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, key_nominal(DestRaw, nominal(BadDest,_,_)), not(city(BadDest)),!,
+valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, key_nominal(DestRaw, nominal(BadDest,_,_)), not(city(BadDest, _)),!,
 	Cntx is Cnt+1,ask_dest(Dest, Cntx).
 valid_dest(DestRaw, Dest, Test, Cnt):- Test = ok, not(key_nomical(DestRaw,_)),!, Cntx is Cnt+1, ask_dest(Dest, Cntx).
 valid_dest(_, Dest, Test, Cnt):- Test \= ok,!,Cntx is Cnt+1, ask_dest(Dest, Cntx).
@@ -195,10 +151,10 @@ stop_asking_intermed(Input):-list_member(exclamation(no,_), Input).
 %Ejemplo:
 %Descripción:
 answer(Input, Lista, Cnt, Test, Stops):-Test = ok, key_nominal(Input, nominal(Lugar, _, _)),
-	city(Lugar),!,list_push(Lugar, Lista, NewList),Cntx is Cnt+1, intermed(NewList, Cntx, Stops).
+	city(Lugar, _),!,list_push(Lugar, Lista, NewList),Cntx is Cnt+1, intermed(NewList, Cntx, Stops).
 
 answer(Input, Lista, Cnt, Test, Stops):-Test = ok, key_nominal(Input, nominal(Lugar, _, Lugar_orig)),
-	not(city(Lugar)),!, intermed_extra(Lista, Cnt, Lugar_orig, Stops),!.
+	not(city(Lugar, _)),!, intermed_extra(Lista, Cnt, Lugar_orig, Stops),!.
 
 answer(Input, Lista, _, Test, Stops):-Test = ok,not(key_nominal(Input,_)),stop_asking_intermed(Input),!,Stops=Lista.
 
