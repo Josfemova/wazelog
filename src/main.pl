@@ -4,9 +4,12 @@
 :- use_module(lang).
 :- initialization(main, main).
 
-main(_) :-
-	find_language,
+main(['--lang', Lang]) :-
+	set_lang(Lang),
+	!,
 	loop.
+main(_) :-
+	writeln("Usage: main.pl --lang <lang>").
 
 loop :-
 	start(Out),

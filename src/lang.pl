@@ -1,14 +1,18 @@
 :- module(lang, [sentence_sep/1, exclamation/2, verbal/1, before_nominal/1,
-                 contraction/2, unclassified/1, place_type/1, find_language/0,
+                 contraction/2, unclassified/1, place_type/1, set_lang/1,
 				 q_src/2, q_dest/2, q_direction/2, q_which/2, q_stops/2,
 				 farewell/1, user_title/1, display_path/3, display_no_route/3]).
+
+supported_lang(es).
+supported_lang(en).
 
 lang(es).
 :- dynamic lang/1.
 
-find_language :-
+set_lang(Lang) :-
+	supported_lang(Lang),
 	retractall(lang(_)),
-	asserta(lang(en)).
+	asserta(lang(Lang)).
 
 %Regla: 
 %Ejemplo:

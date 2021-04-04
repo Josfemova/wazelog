@@ -154,3 +154,4 @@
   el idioma, para ser todos específicos al español. La intención es soportar
   internacionalización.
 - Se agrega soporte para el idioma inglés.
+- Se agrega una opción mandatoria de línea de comandos para escoger idioma.
