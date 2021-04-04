@@ -1,5 +1,10 @@
-:- module(nlp, [parse_user_input/3, key_nominal/2]).
+:- module(nlp, [parse_user_input/2, key_nominal/2]).
 :- use_module(lang).
+
+parse_user_input(Input, Result) :-
+	lex(Input, Tokens),
+	expand(Tokens, Expanded),
+	unbounded(Expanded, Result).
 
 filler(Word) :-
 	unclassified(Word);
@@ -24,11 +29,6 @@ atoms_to_words([], []) :-
 atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
 	atom_string(Atom, Orig),
 	atoms_to_words(Atoms, NextWords).
-
-parse_user_input(Input, Sentences, FailureHead) :-
-	lex(Input, Tokens),
-	expand(Tokens, Expanded),
-	unbounded(Expanded, Sentences, FailureHead).
 
 lex(Input, Tokens) :-
 	string_chars(Input, Chars),
@@ -135,20 +135,20 @@ append_space("", "") :-
 append_space(String, WithSpace) :-
 	string_concat(String, " ", WithSpace).
 
-unbounded(Tokens, Sentences, FailureHead) :-
-	unbounded(Tokens, Sentences, [], FailureHead).
-unbounded([], Sentences, Sentences, ok) :-
+unbounded(Tokens, Result) :-
+	unbounded(Tokens, [], Result).
+unbounded([], Sentences, ok(Sentences)) :-
 	!.
-unbounded([punct(Sep) | Tokens], Sentences, Previous, FailureHead) :-
+unbounded([punct(Sep) | Tokens], Previous, Result) :-
 	sentence_sep(Sep),
 	!,
-	unbounded(Tokens, Sentences, Previous, FailureHead).
-unbounded(Tokens, Sentences, Previous, FailureHead) :-
+	unbounded(Tokens, Previous, Result).
+unbounded(Tokens, Previous, Result) :-
 	sentence(Tokens, Rest, Sentence),
 	!,
 	append(Previous, [Sentence], Next),
-	unbounded(Rest, Sentences, Next, FailureHead).
-unbounded([FailureHead | _], Sentences, Sentences, FailureHead).
+	unbounded(Rest, Next, Result).
+unbounded([FailureHead | _], _, fail(FailureHead)).
 
 sentence(Tokens, Rest, Sentence) :- sentence(Tokens, Rest, Sentence, nomatch).
 sentence([], [], Sentence, Sentence) :-

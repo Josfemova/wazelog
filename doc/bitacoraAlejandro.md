@@ -125,4 +125,12 @@
 - Se separan los hechos contextuales (lenguaje y rutas) de la lógica.
 - Se implementan aspectos de conversación para casos donde no existe una ruta
   con los puntos solicitados.
-- Se limpian y reescriben partes de `wazelog.pl`. No se altera la lógica observable.
+- Se limpian y reescriben partes de `wazelog.pl`. No se altera la lógica
+  observable.
+
+## 4 de abril
+
+- Se reestructura el predicado `parse_user_input/3`, ahora
+  `parse_user_input/2`, para contener su salida en una sola unidad estructural,
+  en vez de tener dos parámetros de salida para ello. Se modifica código
+  relacionado para considerar este cambio.

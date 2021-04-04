@@ -51,17 +51,21 @@ q_which(Place) :-
 	format(atom(Msg), "Cual ~w?", [Place]),
 	wazelog_writeln(Msg).
 
-%Regla: read_user_input(Descomp, Test)
-%Ejemplo: read_user_input(A, B).
-%			@usuario: yo voy a cartago.
-%		A = [svo(nominal(yo, "yo", "yo"), verbal([voy]), nominal(cartago, "cartago", "cartago"))],
-%		B = ok.
-%Descripción: Una entrada de un usuario se puede descomponer en una estructura definida por la gramática libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Esta descomposición se denomina Descomp. La prueba de coherencia de dicha descomposición está dada por el argumento Test, el cual toma el valor "ok" si la oración es coherente, un valor de los términos conflictivos si no hay coherencia. 
-read_user_input(Descomp, Test) :-
+%Regla: read_user_input(Result)
+%Ejemplo: read_user_input(R).
+%			@usuario: yo voy a la sabana.
+%		R = ok([svo(nominal(yo, "yo", "yo"), verbal([voy]), nominal(sabana, "la sabana", "sabana"))]).
+%Descripción: Una entrada de un usuario se puede descomponer en una estructura definida por la gramática libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Si esta descomposición es exitosa, `R` será `ok(Descomp)` donde `Descomp` es esta descomposición. `R` es `eof` si el usuario detiene la entrada, y `fail(T)` si hay un fallo sintáctico, donde `T` es un token.
+read_user_input(Result) :-
 	write("@Usuario: "),
 	current_input(Stdin),
-	read_string(Stdin, "\n", "\r\t", _, Text), 
-	parse_user_input(Text, Descomp, Test).
+	(
+		read_string(Stdin, "\n", "\r\t", _, Text), 
+		!,
+		parse_user_input(Text, Result);
+
+		Result = eof
+	).
 
 translate([], S, SRes) :-
 	atomics_to_string(S, ", ", SRes),
@@ -114,7 +118,7 @@ ask_src(Src, repeat(Repeat, done)) :-
 		Repeat = again,
 		wazelog_writeln("Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?")
 	),
-	read_user_input(SrcRaw, ok),
+	read_user_input(ok(SrcRaw)),
 	key_nominal(SrcRaw, nominal(Src, _, _)),
 	city(Src, _).
 
@@ -126,7 +130,7 @@ ask_dest(Dest, repeat(Repeat, done)) :-
 		Repeat = again,
 		wazelog_writeln("Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?")
 	),
-	read_user_input(DestRaw, ok),
+	read_user_input(ok(DestRaw)),
 	key_nominal(DestRaw, nominal(Dest, _, _)),
 	city(Dest, _).
 
@@ -142,16 +146,16 @@ intermed(Lista, Stops) :-
 		Lista = [_ | _],
 		wazelog_writeln("Algun otro destino intermedio?")
 	),
-	read_user_input(Input, Test),
-	answer(Input, Lista, Test, Stops).
+	read_user_input(Input),
+	answer(Input, Lista, Stops).
 
 intermed_extra(Lista, PlaceType, Stops) :-
 	q_which(PlaceType), 
-	read_user_input(Input, _),
+	read_user_input(ok(Input)),
 	key_nominal(Input, nominal(_, Place, _)),
 	q_direction(Place),
-	read_user_input(Input2, Test2),
-	answer(Input2, Lista, Test2, Stops).
+	read_user_input(Input2),
+	answer(Input2, Lista, Stops).
 
 %Regla: stop_asking_intermed(Input).
 %Ejemplo: stop_asking_intermed([exclamation(no)]). true.
@@ -162,21 +166,21 @@ stop_asking_intermed(Input) :-
 %Regla: 
 %Ejemplo:
 %Descripción:
-answer(Input, Lista, ok, Stops) :-
+answer(ok(Input), Lista, Stops) :-
 	key_nominal(Input, nominal(Lugar, _, _)),
 	city(Lugar, _),
 	!,
 	intermed([Lugar | Lista], Stops).
-answer(Input, Lista, ok, Stops) :-
+answer(ok(Input), Lista, Stops) :-
 	key_nominal(Input, nominal(Lugar, _, Lugar_orig)),
 	not(city(Lugar, _)),
 	!,
 	intermed_extra(Lista, Lugar_orig, Stops),
 	!.
-answer(Input, Lista, ok, Lista) :-
+answer(ok(Input), Lista, Lista) :-
 	not(key_nominal(Input, _)),
 	stop_asking_intermed(Input),
 	!.
-answer(_, Lista, _, Stops) :-
+answer(_, Lista, Stops) :-
 	wazelog_writeln("Perdon, no he podido entenderle, repito mi pregunta."),
 	intermed(Lista, Stops).
