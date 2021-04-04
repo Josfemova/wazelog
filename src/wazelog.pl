@@ -1,4 +1,4 @@
-:- module(wazelog, [start/0]).
+:- module(wazelog, [start/1]).
 :- use_module(library(readutil)).
 :- use_module(nlp).
 :- use_module(path).
@@ -55,16 +55,23 @@ q_which(Place) :-
 %Ejemplo: read_user_input(R).
 %			@usuario: yo voy a la sabana.
 %		R = ok([svo(nominal(yo, "yo", "yo"), verbal([voy]), nominal(sabana, "la sabana", "sabana"))]).
-%Descripción: Una entrada de un usuario se puede descomponer en una estructura definida por la gramática libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Si esta descomposición es exitosa, `R` será `ok(Descomp)` donde `Descomp` es esta descomposición. `R` es `eof` si el usuario detiene la entrada, y `fail(T)` si hay un fallo sintáctico, donde `T` es un token.
+%Descripción: Una entrada de un usuario se puede descomponer en una estructura definida por la gramática libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Si esta descomposición es exitosa, `R` será `ok(Descomp)` donde `Descomp` es esta descomposición. `R` es `bye` si el usuario detiene la entrada, y `fail(T)` si hay un fallo sintáctico, donde `T` es un token.
 read_user_input(Result) :-
 	write("@Usuario: "),
 	current_input(Stdin),
+	read_string(Stdin, "\n", "\r\t ", _, Text), 
+	parse_user_input(Text, ParseResult),
 	(
-		read_string(Stdin, "\n", "\r\t", _, Text), 
+		ParseResult = ok(Input),
+		not(stop(Input)),
 		!,
-		parse_user_input(Text, Result);
+		ParseResult = Result;
 
-		Result = eof
+		ParseResult \= ok(_),
+		!,
+		ParseResult = Result;
+
+		Result = bye
 	).
 
 translate([], S, SRes) :-
@@ -74,10 +81,21 @@ translate([City | Path], S, SRes) :-
 	city(City, Trad),
 	translate(Path, [Trad | S], SRes).
 
-start :-
+start(Then) :-
+	run(start, _, Then).
+
+run(bye, _, stop) :-
+	writeln("Muchas Gracias por utilizar WazeLog!").
+run(start, _, Then) :-
 	ask_in_loop(ask_src, Src),
+	run(Src, start, Then).
+run(src(Src), _, Then) :-
 	ask_in_loop(ask_dest, Dest),
+	run(Dest, src(Src), Then).
+run(dest(Dest), src(Src), Then) :-
 	intermed([], Paradas),
+	run(Paradas, src_dest(Src, Dest), Then).
+run(stops(Paradas), src_dest(Src, Dest), continue) :-
 	shortest_path_through(Src, Paradas, Dest, Result),
 	spacing,
 	(
@@ -92,7 +110,7 @@ start :-
 		format("No hay una ruta conocida entre ~w y ~w.\n", [StrFrom, StrTo])
 	),
 	!,
-	writeln("Muchas Gracias por utilizar WazeLog!"),
+	run(bye, _, _),
 	spacing.
 
 ask_in_loop(Predicate, Input) :-
@@ -110,7 +128,7 @@ ask_in_loop(Repeat, Predicate, Input) :-
 ask_in_loop(_, Predicate, Input) :-
 	ask_in_loop(again, Predicate, Input).
 
-ask_src(Src, repeat(Repeat, done)) :-
+ask_src(Out, repeat(Repeat, done)) :-
 	(
 		Repeat = first,
 		wazelog_writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino, por favor indiqueme donde se encuentra.");
@@ -118,11 +136,18 @@ ask_src(Src, repeat(Repeat, done)) :-
 		Repeat = again,
 		wazelog_writeln("Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?")
 	),
-	read_user_input(ok(SrcRaw)),
-	key_nominal(SrcRaw, nominal(Src, _, _)),
-	city(Src, _).
+	read_user_input(Input),
+	(
+		Input = bye,
+		Out = bye;
 
-ask_dest(Dest, repeat(Repeat, done)) :-
+		Input = ok(SrcRaw),
+		key_nominal(SrcRaw, nominal(Src, _, _)),
+		city(Src, _),
+		Out = src(Src)
+	).
+
+ask_dest(Out, repeat(Repeat, done)) :-
 	(
 		Repeat = first,
 		wazelog_writeln("Perfecto, cual es su destino?");
@@ -130,9 +155,16 @@ ask_dest(Dest, repeat(Repeat, done)) :-
 		Repeat = again,
 		wazelog_writeln("Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?")
 	),
-	read_user_input(ok(DestRaw)),
-	key_nominal(DestRaw, nominal(Dest, _, _)),
-	city(Dest, _).
+	read_user_input(Input),
+	(
+		Input = bye,
+		Out = bye;
+
+		Input = ok(DestRaw),
+		key_nominal(DestRaw, nominal(Dest, _, _)),
+		city(Dest, _),
+		Out = dest(Dest)
+	).
 
 %lista debe comenzar []
 %Regla:
@@ -163,6 +195,9 @@ intermed_extra(Lista, PlaceType, Stops) :-
 stop_asking_intermed(Input) :- 
 	contains_term(exclamation(no), Input).
 
+stop(Input) :- 
+	contains_term(exclamation(adios), Input).
+
 %Regla: 
 %Ejemplo:
 %Descripción:
@@ -177,7 +212,7 @@ answer(ok(Input), Lista, Stops) :-
 	!,
 	intermed_extra(Lista, Lugar_orig, Stops),
 	!.
-answer(ok(Input), Lista, Lista) :-
+answer(ok(Input), Lista, stops(Lista)) :-
 	not(key_nominal(Input, _)),
 	stop_asking_intermed(Input),
 	!.

@@ -137,3 +137,5 @@
 - Se agrega el verbo «está» a la lista de formas verbales.
 - Se implementa repetición de la rutina principal del programa. De momento no
   existe suficiente transfondo para que esto funcione correctamente.
+- Se implementa el bucle recién mencionado, así como condiciones de terminación
+  con exclamaciones como «adiós» y variantes.

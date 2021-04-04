@@ -7,10 +7,10 @@ main(_) :-
 	loop.
 
 loop :-
-	start,
+	start(Out),
 	(
-		true, % Cambiar por Out = bye
-		!;
+		Out = stop;
 
+		Out = continue,
 		loop
 	).

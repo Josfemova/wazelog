@@ -9,6 +9,7 @@ sentence_sep(':').
 exclamation(si).
 exclamation(no).
 exclamation(hola).
+exclamation(adios).
 exclamation(gracias).
 
 verbal(esta).
