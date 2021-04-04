@@ -87,12 +87,12 @@ start(Then) :-
 run(bye, _, stop) :-
 	writeln("Muchas Gracias por utilizar WazeLog!").
 run(start, _, Then) :-
-	ask_in_loop(ask_src, Src),
+	ask_in_loop(ask_city(ask_src), Src),
 	run(Src, start, Then).
-run(src(Src), _, Then) :-
-	ask_in_loop(ask_dest, Dest),
+run(city(Src), _, Then) :-
+	ask_in_loop(ask_city(ask_dest), Dest),
 	run(Dest, src(Src), Then).
-run(dest(Dest), src(Src), Then) :-
+run(city(Dest), src(Src), Then) :-
 	intermed([], Paradas),
 	run(Paradas, src_dest(Src, Dest), Then).
 run(stops(Paradas), src_dest(Src, Dest), continue) :-
@@ -109,7 +109,6 @@ run(stops(Paradas), src_dest(Src, Dest), continue) :-
 		city(To, StrTo),
 		format("No hay una ruta conocida entre ~w y ~w.\n", [StrFrom, StrTo])
 	),
-	!,
 	run(bye, _, _),
 	spacing.
 
@@ -128,42 +127,24 @@ ask_in_loop(Repeat, Predicate, Input) :-
 ask_in_loop(_, Predicate, Input) :-
 	ask_in_loop(again, Predicate, Input).
 
-ask_src(Out, repeat(Repeat, done)) :-
-	(
-		Repeat = first,
-		wazelog_writeln("Bienvenido a WazeLog, la mejor logica de llegar a su destino, por favor indiqueme donde se encuentra.");
+ask_src(first, "Bienvenido a WazeLog, la mejor logica de llegar a su destino, por favor indiqueme donde se encuentra.").
+ask_src(again, "Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
 
-		Repeat = again,
-		wazelog_writeln("Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?")
-	),
+ask_dest(first, "Perfecto, cual es su destino?").
+ask_dest(again, "Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
+
+ask_city(Prompter, Out, repeat(Repeat, done)) :-
+	call(Prompter, Repeat, Prompt),
+	wazelog_writeln(Prompt),
 	read_user_input(Input),
 	(
 		Input = bye,
 		Out = bye;
 
-		Input = ok(SrcRaw),
-		key_nominal(SrcRaw, nominal(Src, _, _)),
-		city(Src, _),
-		Out = src(Src)
-	).
-
-ask_dest(Out, repeat(Repeat, done)) :-
-	(
-		Repeat = first,
-		wazelog_writeln("Perfecto, cual es su destino?");
-
-		Repeat = again,
-		wazelog_writeln("Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?")
-	),
-	read_user_input(Input),
-	(
-		Input = bye,
-		Out = bye;
-
-		Input = ok(DestRaw),
-		key_nominal(DestRaw, nominal(Dest, _, _)),
-		city(Dest, _),
-		Out = dest(Dest)
+		Input = ok(CityRaw),
+		key_nominal(CityRaw, nominal(City, _, _)),
+		city(City, _),
+		Out = city(City)
 	).
 
 %lista debe comenzar []

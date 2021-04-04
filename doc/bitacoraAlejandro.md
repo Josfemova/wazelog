@@ -139,3 +139,5 @@
   existe suficiente transfondo para que esto funcione correctamente.
 - Se implementa el bucle recién mencionado, así como condiciones de terminación
   con exclamaciones como «adiós» y variantes.
+- Se unifica `ask_src/2` y `ask_dest/2` en `ask_city/3`, ya que eran
+  prácticamente los mismos predicados.
