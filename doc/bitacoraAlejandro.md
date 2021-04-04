@@ -117,3 +117,8 @@
   verbal es válida si no está constituida por una lista vacía. Una forma
   nominal de primer nivel es una oración válida, pero una forma verbal de
   primer nivel, sin estructura SVO, es un error.
+
+## 3 de abril
+
+- Se elimina el grafo de prueba original, ya que ahora puede ser reemplazado
+  con uno más apropiado al contexto del proyecto.
