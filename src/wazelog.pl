@@ -12,16 +12,18 @@
 %		Alejandro Soto Chacon	2019008164
 %Semestre I 2021
 
-%reglas de utilidad --------------
+%reglas y hechos de programa------------------------
 
-%Regla:
-%Ejemplo:
-%Descripción:
+%Regla: wazelog_writeln(mensaje).
+%Ejemplo: wazelog_writeln("Hola, gracias por usar wazelog") ->>(mensaje en StdOut)->>
+%			[wazelog]:::| Hola, gracias por usar wazelog :::|
+%Descripción: Un mensaje de wazelog se compone por un string, el cual se imprime en pantalla utilizando el stream de salida por defecto.
 wazelog_writeln(Msg):-write("[Wazelog]:::| "), write(Msg), write(" :::| \n").
 
-%Regla:
-%Ejemplo:
-%Descripción:
+%Regla: spacing.
+%Ejemplo: spacing ->>(salida en StdOut)->>
+%			=========================================================================================
+%Descripción: Un espaciado es un agregado estético a la salida en en stream de salida por defecto conformado por una cadena de símbolos '='
 spacing :-
 	tty_size(Width, _),
 	string_repeat("=", Width, Repeated),
@@ -34,35 +36,33 @@ string_repeat(Base, Times, Repeated) :-
 	string_repeat(Base, Pred, Next),
 	string_concat(Base, Next, Repeated).
 
-%Regla:
-%Ejemplo:
-%Descripción:
-farewell :-
-	wazelog_writeln("Muchas gracias por utilizar Wazelog!").
-
-%Regla:
-%Ejemplo:
-%Descripción:
+%Regla: q_direction(Place).
+%Ejemplo: q_direction("AutoMercado"). ->>(mensaje por medio de wazelog_writeln)->>
+%			[wazelog]:::| Dónde se encuentra AutoMercado?  :::|
+%Descripción: Utiliza la regla de wazelog_writeln para comunicarle al usuario una pregunta sobre la localización de un lugar destino intermedio. 
 q_direction(Lugar) :-
 	format(atom(Msg), "Donde se encuentra ~w?", [Lugar]),
 	wazelog_writeln(Msg).
 
+%Ejemplo: q_which("supermercado"). ->>(mensaje por medio de wazelog_writeln)->>
+%			[wazelog]:::| Cuál supermercado?  :::|
+%Descripción: Utiliza la regla de wazelog_writeln para comunicar al usuario una pregunta para que se especifique precisamente cual lugar de tipo Place es el que quiere tomar como destino intermedio. 
 q_which(Place) :-
 	format(atom(Msg), "Cual ~w?", [Place]),
 	wazelog_writeln(Msg).
 
-%Regla:
-%Ejemplo:
-%Descripción:
+%Regla: read_user_input(Descomp, Test)
+%Ejemplo: read_user_input(A, B).
+%			@usuario: yo voy a cartago.
+%		A = [svo(nominal(yo, "yo", "yo"), verbal([voy]), nominal(cartago, "cartago", "cartago"))],
+%		B = ok.
+%Descripción: Una entrada de un usuario se puede descomponer en una estructura definida por la gramática libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Esta descomposición se denomina Descomp. La prueba de coherencia de dicha descomposición está dada por el argumento Test, el cual toma el valor "ok" si la oración es coherente, un valor de los términos conflictivos si no hay coherencia. 
 read_user_input(Descomp, Test) :-
 	write("@Usuario: "),
 	current_input(Stdin),
 	read_string(Stdin, "\n", "\r\t", _, Text), 
 	parse_user_input(Text, Descomp, Test).
 
-%Regla:
-%Ejemplo:
-%Descripción:
 translate([], S, SRes) :-
 	atomics_to_string(S, ", ", SRes),
 	!.
@@ -106,9 +106,6 @@ ask_in_loop(Repeat, Predicate, Input) :-
 ask_in_loop(_, Predicate, Input) :-
 	ask_in_loop(again, Predicate, Input).
 
-%Regla:
-%Ejemplo:
-%Descripción:
 ask_src(Src, repeat(Repeat, done)) :-
 	(
 		Repeat = first,
@@ -121,9 +118,6 @@ ask_src(Src, repeat(Repeat, done)) :-
 	key_nominal(SrcRaw, nominal(Src, _, _)),
 	city(Src, _).
 
-%Regla:
-%Ejemplo:
-%Descripción:
 ask_dest(Dest, repeat(Repeat, done)) :-
 	(
 		Repeat = first,
@@ -151,9 +145,6 @@ intermed(Lista, Stops) :-
 	read_user_input(Input, Test),
 	answer(Input, Lista, Test, Stops).
 
-%Regla:
-%Ejemplo:
-%Descripción:
 intermed_extra(Lista, PlaceType, Stops) :-
 	q_which(PlaceType), 
 	read_user_input(Input, _),
@@ -162,9 +153,9 @@ intermed_extra(Lista, PlaceType, Stops) :-
 	read_user_input(Input2, Test2),
 	answer(Input2, Lista, Test2, Stops).
 
-%Regla:
-%Ejemplo:
-%Descripción:
+%Regla: stop_asking_intermed(Input).
+%Ejemplo: stop_asking_intermed([exclamation(no)]). true.
+%Descripción: Describe si se debe dejar de preguntar al usuario por destinos intermedios. Esta condición se da solo si una exclamación negativa forma parte de la respuesta del usuario (la cual se encuentra descompuesta en Input).
 stop_asking_intermed(Input) :- 
 	contains_term(exclamation(no), Input).
 
