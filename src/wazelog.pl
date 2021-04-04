@@ -41,14 +41,14 @@ string_repeat(Base, Times, Repeated) :-
 %			[wazelog]:::| Dónde se encuentra AutoMercado?  :::|
 %Descripción: Utiliza la regla de wazelog_writeln para comunicarle al usuario una pregunta sobre la localización de un lugar destino intermedio. 
 q_direction(Lugar) :-
-	format(atom(Msg), "Donde se encuentra ~w?", [Lugar]),
+	format(string(Msg), "Donde se encuentra ~w?", [Lugar]),
 	wazelog_writeln(Msg).
 
 %Ejemplo: q_which("supermercado"). ->>(mensaje por medio de wazelog_writeln)->>
 %			[wazelog]:::| Cuál supermercado?  :::|
 %Descripción: Utiliza la regla de wazelog_writeln para comunicar al usuario una pregunta para que se especifique precisamente cual lugar de tipo Place es el que quiere tomar como destino intermedio. 
 q_which(Place) :-
-	format(atom(Msg), "Cual ~w?", [Place]),
+	format(string(Msg), "Cual ~w?", [Place]),
 	wazelog_writeln(Msg).
 
 %Regla: read_user_input(Result)
@@ -89,7 +89,7 @@ run(bye, _, stop) :-
 run(start, _, Then) :-
 	ask_in_loop(ask_city(ask_src), Src),
 	run(Src, start, Then).
-run(city(Src), _, Then) :-
+run(city(Src), start, Then) :-
 	ask_in_loop(ask_city(ask_dest), Dest),
 	run(Dest, src(Src), Then).
 run(city(Dest), src(Src), Then) :-

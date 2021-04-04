@@ -143,3 +143,4 @@
   prácticamente los mismos predicados.
 - Se escribe la gramática libre de contexto en forma BNF.
 - Se elimina `test.pdf`.
+- Se arregla bucle infinito de pregunta de destino introducido hace poco.
