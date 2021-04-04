@@ -6,20 +6,22 @@
 %Regla:
 %Ejemplo:
 %Descripción:
-shortest_path_through(Source, [], Target, shortest_path(Path, Cost)) :-
-	shortest_path(Source, Target, Path, Cost),
+shortest_path_through(Source, [], Target, shortest_path(Path, Cost, BestTime, WorstTime)) :-
+	shortest_path(Source, Target, Path, cost(Cost, BestTime, WorstTime)),
 	!.
 shortest_path_through(Source, [], Target, no_route(Source, Target)) :-
 	!.
 shortest_path_through(Source, [Stop | Stops], Target, Result) :-
-	shortest_path(Source, Stop, FirstPath, FirstCost),
+	shortest_path(Source, Stop, FirstPath, cost(FirstCost, FirstBestTime, FirstWorstTime)),
 	!,
 	shortest_path_through(Stop, Stops, Target, NextResult),
 	(
-		NextResult = shortest_path([Stop | NextPath], NextCost),
+		NextResult = shortest_path([Stop | NextPath], NextCost, NextBestTime, NextWorstTime),
 		Cost is FirstCost + NextCost,
+		BestTime is FirstBestTime + NextBestTime,
+		WorstTime is FirstWorstTime + NextWorstTime,
 		append(FirstPath, NextPath, Path),
-		Result = shortest_path(Path, Cost);
+		Result = shortest_path(Path, Cost, BestTime, WorstTime);
 
 		NextResult = Result
 	),
@@ -41,11 +43,14 @@ shortest_path(Source, Target, Path, Cost) :-
 %Regla:
 %Ejemplo:
 %Descripción:
-traceback(Source, Source, _, [Source], 0) :-
+traceback(Source, Source, _, [Source], cost(0, 0, 0)) :-
 	!.
-traceback(Source, Target, Nodes, [Target | ReversePath], Cost) :-
+traceback(Source, Target, Nodes, [Target | ReversePath], cost(Cost, BestTime, WorstTime)) :-
 	get_dict(Target, Nodes, node(Parent, Cost, _)),
-	traceback(Source, Parent, Nodes, ReversePath, _).
+	arco(Parent, Target, _, EdgeBestTime, EdgeWorstTime),
+	traceback(Source, Parent, Nodes, ReversePath, cost(_, NextBestTime, NextWorstTime)),
+	BestTime is EdgeBestTime + NextBestTime,
+	WorstTime is EdgeWorstTime + NextWorstTime.
 
 shortest_path(Source, Target, Heap, Known, Nodes) :-
 	get_from_heap(Heap, Distance, Key, NextHeap),

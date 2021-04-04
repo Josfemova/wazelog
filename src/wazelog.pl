@@ -99,10 +99,10 @@ run(stops(Paradas), src_dest(Src, Dest), continue) :-
 	shortest_path_through(Src, Paradas, Dest, Result),
 	spacing,
 	(
-		Result = shortest_path(Ruta, Peso),
+		Result = shortest_path(Ruta, Peso, Min, Max),
 		reverse(Ruta, RutaInv),
 		translate(RutaInv, [], StrPath),
-		format("Su ruta seria ~w. Longitud estimada de ~d Km.\n", [StrPath, Peso]);
+		format("Su ruta seria ~w. Longitud estimada de ~d Km. Duración ~d-~d min.\n", [StrPath, Peso, Min, Max]);
 
 		Result = no_route(From, To),
 		city(From, StrFrom),
