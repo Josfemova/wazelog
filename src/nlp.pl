@@ -1,19 +1,31 @@
 :- module(nlp, [parse_user_input/2, key_nominal/2]).
 :- use_module(lang).
 
+%Ejemplo: 
+%Descripción:
+%Descripción:
 parse_user_input(Input, Result) :-
 	lex(Input, Tokens),
 	expand(Tokens, Expanded),
 	unbounded(Expanded, Result).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 filler(Word) :-
 	unclassified(Word);
 	before_nominal(Word);
 	contraction(Word, _).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 nominal(N) :-
 	not(exclamation(N)), not(verbal(N)), not(filler(N)).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 expand([], []).
 expand([word(Contraction, _) | Tokens], NextTokens) :-
 	contraction(Contraction, Expanded),
@@ -24,12 +36,18 @@ expand([word(Contraction, _) | Tokens], NextTokens) :-
 expand([T | Tokens], [T | NextTokens]) :-
 	expand(Tokens, NextTokens).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 atoms_to_words([], []) :-
 	!.
 atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
 	atom_string(Atom, Orig),
 	atoms_to_words(Atoms, NextWords).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 lex(Input, Tokens) :-
 	string_chars(Input, Chars),
 	lex(Chars, Tokens, []).
@@ -61,6 +79,9 @@ lex(Rest, Tokens, Previous, WordChars) :-
 	append(Previous, [word(Undecorated, WordString)], Next),
 	lex(Rest, Tokens, Next).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 undecorate([], []).
 undecorate(['á' | Cs], ['a' | Us]) :- !, undecorate(Cs, Us).
 undecorate(['é' | Cs], ['e' | Us]) :- !, undecorate(Cs, Us).
@@ -70,6 +91,9 @@ undecorate(['ú' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate(['ü' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate([C | Cs], [C | Us])     :- undecorate(Cs, Us).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 classify(punct(_), punct).
 classify(word(Atom, Orig), filler(Atom, Orig)) :-
 	filler(Atom),
@@ -82,12 +106,18 @@ classify(word(Atom, _), exclamation(Atom)) :-
 	!.
 classify(word(Atom, Original), nominal(Atom, Original)).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 clause(verbal(_)) :-
 	!,
 	fail.
 clause(Clause) :-
 	well_formed(Clause).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 well_formed(exclamation(_)).
 well_formed(verbal([_ | _])).
 well_formed(nominal('', _, _)) :-
@@ -98,6 +128,9 @@ well_formed(svo(S, V, O)) :-
 	(not(well_formed(V)); well_formed(O)),
 	(well_formed(V); well_formed(S)).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 ast_join(nomatch, nominal(A, Orig), nominal(A, Orig, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).
 ast_join(nomatch, filler(F, Orig), nominal('', Orig, "")) :-
@@ -123,6 +156,9 @@ ast_join(svo(S, V, O), Term, svo(S, V, NextO)) :-
 	ast_join(O, Term, NextO).
 ast_join(Tree, filler(_, _), Tree).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextOrig, NextBare)) :-
 	atom_concat(LA, RA, NextA),
 	append_space(LOrig, OrigWithSpace),
@@ -130,11 +166,17 @@ nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextO
 	string_concat(OrigWithSpace, ROrig, NextOrig),
 	string_concat(BareWithSpace, ROrig, NextBare).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 append_space("", "") :-
 	!.
 append_space(String, WithSpace) :-
 	string_concat(String, " ", WithSpace).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 unbounded(Tokens, Result) :-
 	unbounded(Tokens, [], Result).
 unbounded([], Sentences, ok(Sentences)) :-
@@ -150,6 +192,9 @@ unbounded(Tokens, Previous, Result) :-
 	unbounded(Rest, Next, Result).
 unbounded([FailureHead | _], _, fail(FailureHead)).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 sentence(Tokens, Rest, Sentence) :- sentence(Tokens, Rest, Sentence, nomatch).
 sentence([], [], Sentence, Sentence) :-
 	!,
@@ -174,6 +219,9 @@ sentence([T | Tokens], Rest, Sentence, Ast) :-
 	sentence(Tokens, Rest, Sentence, NextAst).
 
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 key_nominal([nominal(A, Orig, Bare)], nominal(A, Orig, Bare)) :-
 	!.
 key_nominal([svo(_, _, O)], N) :-

@@ -1,5 +1,8 @@
 :- module(routes, [city/2, arco/5]).
 
+%Regla: 
+%Ejemplo:
+%Descripción:
 city(sanjose, "San Jose").
 city(cartago, "Cartago").
 city(sanpedro, "San Pedro").
@@ -15,6 +18,9 @@ city(curridabat, "Curridabat").
 city(sabana, "La Sabana").
 
 % El grafo es mixto
+%Regla: 
+%Ejemplo:
+%Descripción:
 arco_bi(cartago,taras,3,5,25).
 arco_bi(cartago,paraiso,5,10,25).
 arco_bi(taras, tresrios,3,5,25).
