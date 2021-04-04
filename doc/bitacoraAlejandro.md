@@ -141,3 +141,4 @@
   con exclamaciones como «adiós» y variantes.
 - Se unifica `ask_src/2` y `ask_dest/2` en `ask_city/3`, ya que eran
   prácticamente los mismos predicados.
+- Se escribe la gramática libre de contexto en forma BNF.

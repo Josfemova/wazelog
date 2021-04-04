@@ -1,0 +1,77 @@
+<input> ::= <sentence-sep> <input>
+          | <sentence> <extra-input>
+
+<extra-input> ::= <sentence-sep> <extra-input>
+                | EOF
+                | <sentece> <extra-input>
+
+<sentence> ::= <filler> <sentence>
+             | <exclamation> <after-exclamation>
+             | <svo>
+
+<svo> ::= <verbal> <after-verbal>
+        | <nominal> <after-nominal>
+
+<after-verbal> ::= <filler> <after-verbal>
+                 | <svo>
+
+<after-nominal> ::= <filler> <after-nominal>
+                  | EOF
+                  | <sentence-sep>
+                  | <svo>
+
+<after-exclamation> ::= EOF
+                      | <sentence-sep>
+                      | <nominal> <after-exclamation>
+                      | <filler> <after-exclamation>
+                      | <verbal> <after-verbal>
+
+<filler> ::= <unclassified>
+           | <before-nominal>
+           | <contraction>
+
+<sentence-sep> ::= '.'
+                 | ','
+                 | ';'
+                 | ':'
+
+<exclamation> ::= 'si'
+                | 'no'
+                | 'hola'
+                | 'adios'
+                | 'gracias'
+
+<nominal> ::= <(todo token que no sea <verbal> | <exclamation> | <filler>)>
+
+<verbal> ::= 'esta'
+           | 'estoy'
+           | 'encuentro'
+           | 'encuentra'
+           | 'voy'
+           | 'necesito'
+           | 'ir'
+           | 'es'
+           | 'llegar'
+           | 'pasar'
+           | 'ubica'
+           | 'gustaria'
+
+<unclassified> ::= 'me'
+                 | 'que'
+                 | 'a'
+                 | 'se'
+                 | 'en'
+                 | 'un'
+                 | 'una'
+                 | 'tengo'
+                 | 'por'
+                 | 'muchas'
+
+<before-nominal> ::= 'el'
+                   | 'los'
+                   | 'la'
+                   | 'las'
+                   | 'de'
+
+<contraction> ::= 'al'
+                | 'del'
