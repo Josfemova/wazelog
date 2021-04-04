@@ -134,3 +134,4 @@
   `parse_user_input/2`, para contener su salida en una sola unidad estructural,
   en vez de tener dos parámetros de salida para ello. Se modifica código
   relacionado para considerar este cambio.
+- Se agrega el verbo «está» a la lista de formas verbales.

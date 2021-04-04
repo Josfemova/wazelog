@@ -11,6 +11,7 @@ exclamation(no).
 exclamation(hola).
 exclamation(gracias).
 
+verbal(esta).
 verbal(estoy).
 verbal(encuentro).
 verbal(encuentra).
