@@ -148,3 +148,5 @@
 - Ahora se clasifican los tipos de lugares intermedios, con tal de poder
   diferenciar entre preguntas de "¿cuál [lugar]?" y "¿dónde se encuentra
   [lugar]?"
+- Se arregla la autodetección de columnas de TTY, que anteriormente realmente
+  estaba contando filas.

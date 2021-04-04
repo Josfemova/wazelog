@@ -26,7 +26,7 @@ wazelog_writeln(Msg):-write("[Wazelog]:::| "), write(Msg), write(" :::| \n").
 %			=========================================================================================
 %Descripción: Un espaciado es un agregado estético a la salida en en stream de salida por defecto conformado por una cadena de símbolos '='
 spacing :-
-	tty_size(Width, _),
+	tty_size(_, Width),
 	string_repeat("=", Width, Repeated),
 	writeln(Repeated).
 
