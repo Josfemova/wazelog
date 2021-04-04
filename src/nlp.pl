@@ -21,7 +21,7 @@ filler(Word) :-
 %Ejemplo:
 %Descripción:
 nominal(N) :-
-	not(exclamation(N)), not(verbal(N)), not(filler(N)).
+	not(exclamation(N, _)), not(verbal(N)), not(filler(N)).
 
 %Regla: 
 %Ejemplo:
@@ -101,8 +101,8 @@ classify(word(Atom, Orig), filler(Atom, Orig)) :-
 classify(word(Atom, _), verbal(Atom)) :-
 	verbal(Atom),
 	!.
-classify(word(Atom, _), exclamation(Atom)) :-
-	exclamation(Atom),
+classify(word(Atom, _), exclamation(Type)) :-
+	exclamation(Atom, Type),
 	!.
 classify(word(Atom, Original), nominal(Atom, Original)).
 
@@ -204,9 +204,9 @@ sentence([punct(Sep) | Rest], Rest, Sentence, Acc) :-
 	!,
 	sentence([], [], Sentence, Acc).
 sentence([word(Exclamation, _) | Tokens], Rest, Sentence, nomatch) :-
-	exclamation(Exclamation),
+	exclamation(Exclamation, Type),
 	!,
-	sentence(Tokens, Rest, Sentence, exclamation(Exclamation)).
+	sentence(Tokens, Rest, Sentence, exclamation(Type)).
 sentence([word(Word, _) | Tokens], Rest, Sentence, exclamation(E)) :-
 	not(verbal(Word)),
 	!,

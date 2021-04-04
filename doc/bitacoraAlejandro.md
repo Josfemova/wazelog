@@ -150,3 +150,6 @@
   [lugar]?"
 - Se arregla la autodetección de columnas de TTY, que anteriormente realmente
   estaba contando filas.
+- Se generalizan las cadenas que se imprime al usuario, así como hechos sobre
+  el idioma, para ser todos específicos al español. La intención es soportar
+  internacionalización.

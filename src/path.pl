@@ -6,8 +6,8 @@
 %Regla:
 %Ejemplo:
 %Descripción:
-shortest_path_through(Source, [], Target, shortest_path(Path, Cost, BestTime, WorstTime)) :-
-	shortest_path(Source, Target, Path, cost(Cost, BestTime, WorstTime)),
+shortest_path_through(Source, [], Target, shortest_path(Path, Cost)) :-
+	shortest_path(Source, Target, Path, Cost),
 	!.
 shortest_path_through(Source, [], Target, no_route(Source, Target)) :-
 	!.
