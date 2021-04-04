@@ -46,4 +46,6 @@ linestretch: 1.5
 
 ## 1.8. Bibliografía
 
+<https://www.swi-prolog.org/pldoc/doc_for?object=read_line_to_string/2>
+
 ## 1.9. Bitácoras

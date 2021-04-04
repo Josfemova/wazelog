@@ -33,3 +33,12 @@
 - Se agregaron adornos a la comunicación entre el usuario y WazeLog para hacer la comunicación con el usuario más clara y agradable.
 - De la parte de pathfinding noté que se deben resolver casos bidireccionales, le comuniqué al compañero al respecto para que pueda procesarlo a como lo vea mejor. 
 - Seria agradable agregar los datos de tiempo de viaje en caso de ser necesarios. Debo discutir esto con el compañero.
+
+### 1 de Abril
+
+- Se tradujeron varias de las reglas para mejorar la cohesión aparente del código, esto puesto que parte del código tenía reglas con argumentos y nombres en español, mientras otra sección se manejaba en inglés.
+- Se agregó documentación de algunas reglas principales
+
+### 3 de Aril
+
+- Se agregó mayor documentación de reglas, específicamente las correspondientes a la parte del programa que interactúa directamente con el usuario.
