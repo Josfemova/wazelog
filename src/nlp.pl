@@ -1,30 +1,38 @@
 :- module(nlp, [parse_user_input/2, key_nominal/2]).
 :- use_module(lang).
 
+%Regla: parse_user_input(Input, Result).
 %Ejemplo: 
-%Descripción:
-%Descripción:
+%?- parse_user_input("Voy a Cartago", Result).
+%Result = ok([svo(nominal('', "", ""), verbal([voy]), nominal(cartago, "cartago", "Cartago"))]).
+%Descripción: Toma un string input del usuario y lo separa en sus diferentes elementos 
 parse_user_input(Input, Result) :-
 	lex(Input, Tokens),
 	expand(Tokens, Expanded),
 	unbounded(Expanded, Result).
 
-%Regla: 
+%Regla: filler(Word).
 %Ejemplo:
-%Descripción:
+%?- filler(por).
+%true.
+%Descripción: Toma un átomo que representa una palabra e indica si la palabra es o no relevante para el análisis de lenguaje. 
 filler(Word) :-
 	unclassified(Word);
 	before_nominal(Word);
 	contraction(Word, _).
 
-%Regla: 
-%Ejemplo:
-%Descripción:
+%Regla: nominal(N).
+%Ejemplo: 
+%?- nominal(sanjose).
+%true.
+%Descripción: Toma un átomo que representa una palabra e indica si dicha palabra es o no un sustantivo.
 nominal(N) :-
 	not(exclamation(N)), not(verbal(N)), not(filler(N)).
 
-%Regla: 
+%Regla: expand(). 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 expand([], []).
 expand([word(Contraction, _) | Tokens], NextTokens) :-
@@ -36,9 +44,11 @@ expand([word(Contraction, _) | Tokens], NextTokens) :-
 expand([T | Tokens], [T | NextTokens]) :-
 	expand(Tokens, NextTokens).
 
-%Regla: 
-%Ejemplo:
-%Descripción:
+%Regla: atoms_to_words(Atoms, Words).
+%Ejemplo: 
+%?- atoms_to_words([sanjose, manzana, cartago],Words).
+%Words = [word(sanjose, "sanjose"), word(manzana, "manzana"), word(cartago, "cartago")].
+%Descripción: "Traduce" una lista de átomos a una lista de palabras word(átomo, traducción).
 atoms_to_words([], []) :-
 	!.
 atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
@@ -47,6 +57,8 @@ atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 lex(Input, Tokens) :-
 	string_chars(Input, Chars),
@@ -79,9 +91,11 @@ lex(Rest, Tokens, Previous, WordChars) :-
 	append(Previous, [word(Undecorated, WordString)], Next),
 	lex(Rest, Tokens, Next).
 
-%Regla: 
+%Regla: undecorate(Cs, Us).
 %Ejemplo:
-%Descripción:
+%?- undecorate(['á','é','í','ó','ú','ü'], Us).
+%Us = ['a','e','i','o','u','u'].
+%Descripción: Toma una lista de caracteres y obtiene su version sin decoraciones(acentos y diéresis) para evitar conflictos a la hora de procesar datos. 
 undecorate([], []).
 undecorate(['á' | Cs], ['a' | Us]) :- !, undecorate(Cs, Us).
 undecorate(['é' | Cs], ['e' | Us]) :- !, undecorate(Cs, Us).
@@ -93,6 +107,8 @@ undecorate([C | Cs], [C | Us])     :- undecorate(Cs, Us).
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 classify(punct(_), punct).
 classify(word(Atom, Orig), filler(Atom, Orig)) :-
@@ -108,6 +124,8 @@ classify(word(Atom, Original), nominal(Atom, Original)).
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 clause(verbal(_)) :-
 	!,
@@ -117,6 +135,8 @@ clause(Clause) :-
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 well_formed(exclamation(_)).
 well_formed(verbal([_ | _])).
@@ -130,6 +150,8 @@ well_formed(svo(S, V, O)) :-
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 ast_join(nomatch, nominal(A, Orig), nominal(A, Orig, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).
@@ -158,6 +180,8 @@ ast_join(Tree, filler(_, _), Tree).
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextOrig, NextBare)) :-
 	atom_concat(LA, RA, NextA),
@@ -168,6 +192,8 @@ nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextO
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 append_space("", "") :-
 	!.
@@ -176,6 +202,8 @@ append_space(String, WithSpace) :-
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 unbounded(Tokens, Result) :-
 	unbounded(Tokens, [], Result).
@@ -192,8 +220,10 @@ unbounded(Tokens, Previous, Result) :-
 	unbounded(Rest, Next, Result).
 unbounded([FailureHead | _], _, fail(FailureHead)).
 
-%Regla: 
+%Regla: sentence(T
 %Ejemplo:
+%?- 
+%
 %Descripción:
 sentence(Tokens, Rest, Sentence) :- sentence(Tokens, Rest, Sentence, nomatch).
 sentence([], [], Sentence, Sentence) :-
@@ -219,9 +249,13 @@ sentence([T | Tokens], Rest, Sentence, Ast) :-
 	sentence(Tokens, Rest, Sentence, NextAst).
 
 
-%Regla: 
-%Ejemplo:
-%Descripción:
+%Regla: key_nominal(SVO, nominal(A, Orig, Bare)).
+%Ejemplo: 
+%?- key_nominal([svo(nominal('', "", ""), verbal([voy]), nominal(alto, "el Alto", "Alto"))], nominal(A, Orig, Bare).
+%A = alto.
+%Orig = "el Alto".
+%Bare = "Alto".
+%Descripción: La regla toma una oración representada en SVO como una estructura sujeto-verbo-objeto y busca su sustantivo complemento. Mayoritariamente utilizada para obtener el nombre de una ciudad, el cual siempre se encuentra en la posición de complemento en la voz activa.
 key_nominal([nominal(A, Orig, Bare)], nominal(A, Orig, Bare)) :-
 	!.
 key_nominal([svo(_, _, O)], N) :-

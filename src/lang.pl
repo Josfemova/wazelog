@@ -3,6 +3,8 @@
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 sentence_sep('.').
 sentence_sep(',').
@@ -11,6 +13,8 @@ sentence_sep(':').
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 exclamation(si).
 exclamation(no).
@@ -20,6 +24,8 @@ exclamation(gracias).
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 verbal(esta).
 verbal(estoy).
@@ -36,6 +42,8 @@ verbal(gustaria).
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 before_nominal(el).
 before_nominal(los).
@@ -45,12 +53,16 @@ before_nominal(de).
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 contraction(al, [a, el]).
 contraction(del, [de, el]).
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 unclassified(me).
 unclassified(que).

@@ -2,6 +2,8 @@
 
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 city(sanjose, "San Jose").
 city(cartago, "Cartago").
@@ -20,6 +22,8 @@ city(sabana, "La Sabana").
 % El grafo es mixto
 %Regla: 
 %Ejemplo:
+%?- 
+%
 %Descripción:
 arco_bi(cartago,taras,3,5,25).
 arco_bi(cartago,paraiso,5,10,25).

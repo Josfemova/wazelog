@@ -3,15 +3,17 @@
 :- use_module(library(dicts)).
 :- use_module(routes).
 
-%Regla:
+%Regla: shortest_path_through(Source, Stops, Target, Result).
 %Ejemplo:
-%Descripción:
+%?- shortest_path_through(sanjose, [tresrios], cartago, Result). 
+%Result = [sanjose, sanpedro, tresrios, taras, cartago].
+%Descripción: Si existe una ruta de un punto origen Source a un punto destino Target, con las paradas intermedias Stops, la regla evalua las posibles rutas óptimas mediante una implementación del algoritmo del camino más corto de dijkstra adptado para tomar en cuenta la existencia de los destinos intermedios.
 shortest_path_through(Source, [], Target, shortest_path(Path, Cost, BestTime, WorstTime)) :-
 	shortest_path(Source, Target, Path, cost(Cost, BestTime, WorstTime)),
 	!.
 shortest_path_through(Source, [], Target, no_route(Source, Target)) :-
 	!.
-shortest_path_through(Source, [Stop | Stops], Target, Result) :-
+hortest_path_through(Source, [Stop | Stops], Target, Result) :-
 	shortest_path(Source, Stop, FirstPath, cost(FirstCost, FirstBestTime, FirstWorstTime)),
 	!,
 	shortest_path_through(Stop, Stops, Target, NextResult),
@@ -28,9 +30,12 @@ shortest_path_through(Source, [Stop | Stops], Target, Result) :-
 	!.
 shortest_path_through(Source, [Stop | _], _, no_route(Source, Stop)).
 
-%Regla:
-%Ejemplo:
-%Descripción:
+%Regla: shortest_path(Source, Target, Path, Cost).
+%Ejemplo: 
+%?- shortest_path(sanpedro, sanjose, Path, Cost).	
+%Path = [sanpedro, sanjose].
+%Cost = 3
+%Descripción: Si existen una o varias rutas del nodo Source al nodo Target, esta regla obtiene la ruta más corta entre dos nodos mediante una implementaión del algoritmo del camino más corto de Dijkstra. 
 shortest_path(Source, Target, Path, Cost) :-
 	empty_heap(Empty),
 	add_to_heap(Empty, 0, Source, Heap),
@@ -40,8 +45,10 @@ shortest_path(Source, Target, Path, Cost) :-
 	reverse(ReversePath, Path).
 
 
-%Regla:
+%Regla: traceback(Source, Target, Heap, Kown, Nodes)
 %Ejemplo:
+%?- 
+%
 %Descripción:
 traceback(Source, Source, _, [Source], cost(0, 0, 0)) :-
 	!.
@@ -60,6 +67,8 @@ shortest_path(Source, Target, Heap, Known, Nodes) :-
 
 %Regla:
 %Ejemplo:
+%?- 
+%
 %Descripción:
 visit(_, Target, Target, Distance, node(_, Distance, unvisited), _, Nodes, Nodes) :-
 	!.
@@ -74,6 +83,8 @@ visit(Source, Target, _, _, _, Heap, Known, Nodes) :-
 
 %Regla:
 %Ejemplo:
+%?- 
+%
 %Descripción:
 test_neighbors([], _, _, Heap, Known, Heap, Known).
 test_neighbors([Neighbor | Neighbors], Key, Distance, Heap, Known, NextHeap, NextKnown) :-
@@ -88,6 +99,8 @@ test_neighbors([Neighbor | Neighbors], Key, Distance, Heap, Known, NextHeap, Nex
 
 %Regla:
 %Ejemplo:
+%?- 
+%
 %Descripción:
 override_distance(Key, Distance, Neighbor, node(_, OldDistance, unvisited), Heap, Known, NextHeap, NextKnown) :-
 	arco(Key, Neighbor, Cost, _, _),
