@@ -32,9 +32,9 @@ linestretch: 1.5
 
 ## 1.1. Descripción de los hechos y reglas implementadas
 
-## 1.2. Descripción de las estructuras de datso desarrolladas
+## 1.2. Descripción de las estructuras de datos desarrolladas
 
-## 1.3. Descripción detallada de algortimos desarrollado
+## 1.3. Descripción detallada de algoritmos desarrollado
 
 ## 1.4. Problemas sin solución
 

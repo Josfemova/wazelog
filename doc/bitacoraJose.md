@@ -7,7 +7,7 @@
 
 - Se realizó una reunión de coordinación con el compañero.
 - Se organizó la base del plan de actividades y se asignaron las distintas tareas
-- Se creo el repositorio del proyecto y se crearon los archivos base de trabajo, incluídos los correspondientes a documentación
+- Se creo el repositorio del proyecto y se crearon los archivos base de trabajo, incluidos los correspondientes a documentación
 - Se investigó un poco sobre el procesamiento de las palabras para formular una idea de como podría estar llegando la información a la sección del sistema experto y el nivel de procesamiento de los datos del grafo
 
 ### 28 de Marzo
@@ -39,6 +39,10 @@
 - Se tradujeron varias de las reglas para mejorar la cohesión aparente del código, esto puesto que parte del código tenía reglas con argumentos y nombres en español, mientras otra sección se manejaba en inglés.
 - Se agregó documentación de algunas reglas principales
 
-### 3 de Aril
+### 3 de Abril
 
 - Se agregó mayor documentación de reglas, específicamente las correspondientes a la parte del programa que interactúa directamente con el usuario.
+
+### 4 de Abril
+
+- Se agregaron más secciones de documentación interna al código y se cambió ligeramente el formato para ilustrar mejor los ejemplos y hacer más manejable para formatear posteriormente.

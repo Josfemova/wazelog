@@ -33,11 +33,11 @@ spacing :-
 	string_repeat("=", Width, Repeated),
 	writeln(Repeated).
 
-%Regla:
+%Regla: string_repeat(Base, Times, Repeated).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%?- string_repeat("=", 5, B).
+%"=====".
+%Descripción: `Repeated` es un parámetro de salida el cuál toma el valor de la serie de caracteres especificados por `Base` repetidos `Times` veces. 
 string_repeat(_, 0, "") :-
 	!.
 string_repeat(Base, Times, Repeated) :-

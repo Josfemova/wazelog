@@ -3,12 +3,27 @@
 				 q_src/2, q_dest/2, q_direction/2, q_which/2, q_stops/2,
 				 farewell/1, user_title/1, display_path/3, display_no_route/3]).
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 supported_lang(es).
 supported_lang(en).
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 lang(es).
 :- dynamic lang/1.
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 set_lang(Lang) :-
 	supported_lang(Lang),
 	retractall(lang(_)),
@@ -160,6 +175,11 @@ unclassified(en, many).
 unclassified(en, lot).
 unclassified(en, lots).
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 q_src(Iteration, Prompt) :-
 	lang(Lang),
 	q_src(Lang, Iteration, Prompt).
@@ -177,8 +197,9 @@ q_dest(en, first, "Got it, where are you going to?").
 q_dest(en, again(_), "I'm sorry, but I failed to understand you. What's your destination?").
 
 %Regla: q_direction(Place).
-%Ejemplo: q_direction("AutoMercado"). ->>(mensaje por medio de wazelog_writeln)->>
-%			[wazelog]:::| Dónde se encuentra AutoMercado?  :::|
+%Ejemplo:
+%q_direction("AutoMercado").
+%[wazelog]:::| Dónde se encuentra AutoMercado?  :::|.
 %Descripción: Utiliza la regla de wazelog_writeln para comunicarle al usuario una pregunta sobre la localización de un lugar destino intermedio. 
 q_direction(Place, Prompt) :-
 	lang(Lang),
@@ -188,8 +209,9 @@ q_direction(es, Place, Prompt) :-
 q_direction(en, Place, Prompt) :-
 	format(string(Prompt), "Where is ~w located?", [Place]).
 
-%Ejemplo: q_which("supermercado"). ->>(mensaje por medio de wazelog_writeln)->>
-%			[wazelog]:::| Cuál supermercado?  :::|
+%Ejemplo: 
+%q_which("supermercado"). 
+%[wazelog]:::| Cuál supermercado?  :::|
 %Descripción: Utiliza la regla de wazelog_writeln para comunicar al usuario una pregunta para que se especifique precisamente cual lugar de tipo Place es el que quiere tomar como destino intermedio. 
 q_which(Place, Prompt) :-
 	lang(Lang),
@@ -199,6 +221,11 @@ q_which(es, Place, Prompt) :-
 q_which(en, Place, Prompt) :-
 	format(string(Prompt), "Which ~w?", [Place]).
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 q_stops(Iteration, Prompt) :-
 	lang(Lang),
 	q_stops(Lang, Iteration, Prompt).
@@ -211,18 +238,33 @@ q_stops(en, stops(_), "Any other stop?").
 q_stops(en, again(first), "Again, would you like to stop midway?").
 q_stops(en, again(stops(_)), "Again, would you like to stop another time?").
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 farewell(Farewell) :-
 	lang(Lang),
 	farewell(Lang, Farewell).
 farewell(es, "Muchas Gracias por utilizar WazeLog!").
 farewell(en, "Thanks for using WazeLog!").
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 user_title(Title) :-
 	lang(Lang),
 	user_title(Lang, Title).
 user_title(es, "Usuario").
 user_title(en, "User").
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 display_path(Path, Cost, Text) :-
 	lang(Lang),
 	display_path(Lang, Path, Cost, Text).
@@ -231,6 +273,11 @@ display_path(es, Path, cost(Cost, Min, Max), Text) :-
 display_path(en, Path, cost(Cost, Min, Max), Text) :-
 	format(string(Text), "This is your ~d-km path: ~s. It will take ~d to ~d minutes.", [Cost, Path, Min, Max]).
 
+%Regla:
+%Ejemplo:
+%?- 
+%
+%Descripción:
 display_no_route(From, To, Text) :-
 	lang(Lang),
 	display_no_route(Lang, From, To, Text).
