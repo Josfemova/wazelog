@@ -145,3 +145,13 @@
 - Se elimina `test.pdf`.
 - Se arregla bucle infinito de pregunta de destino introducido hace poco.
 - Se implementa cálculo de duraciones mínimas y máximas.
+- Ahora se clasifican los tipos de lugares intermedios, con tal de poder
+  diferenciar entre preguntas de "¿cuál [lugar]?" y "¿dónde se encuentra
+  [lugar]?"
+- Se arregla la autodetección de columnas de TTY, que anteriormente realmente
+  estaba contando filas.
+- Se generalizan las cadenas que se imprime al usuario, así como hechos sobre
+  el idioma, para ser todos específicos al español. La intención es soportar
+  internacionalización.
+- Se agrega soporte para el idioma inglés.
+- Se agrega una opción mandatoria de línea de comandos para escoger idioma.

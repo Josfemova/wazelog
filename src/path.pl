@@ -8,12 +8,12 @@
 %?- shortest_path_through(sanjose, [tresrios], cartago, Result). 
 %Result = [sanjose, sanpedro, tresrios, taras, cartago].
 %Descripción: Si existe una ruta de un punto origen Source a un punto destino Target, con las paradas intermedias Stops, la regla evalua las posibles rutas óptimas mediante una implementación del algoritmo del camino más corto de dijkstra adptado para tomar en cuenta la existencia de los destinos intermedios.
-shortest_path_through(Source, [], Target, shortest_path(Path, Cost, BestTime, WorstTime)) :-
-	shortest_path(Source, Target, Path, cost(Cost, BestTime, WorstTime)),
+shortest_path_through(Source, [], Target, shortest_path(Path, Cost)) :-
+	shortest_path(Source, Target, Path, Cost),
 	!.
 shortest_path_through(Source, [], Target, no_route(Source, Target)) :-
 	!.
-hortest_path_through(Source, [Stop | Stops], Target, Result) :-
+shortest_path_through(Source, [Stop | Stops], Target, Result) :-
 	shortest_path(Source, Stop, FirstPath, cost(FirstCost, FirstBestTime, FirstWorstTime)),
 	!,
 	shortest_path_through(Stop, Stops, Target, NextResult),
