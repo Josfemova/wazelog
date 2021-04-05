@@ -163,8 +163,8 @@ ask_city(Prompter, repeat(Iteration, done(Out))) :-
 		Out = bye;
 
 		Input = ok(CityRaw),
-		key_nominal(CityRaw, nominal(City, _, _)),
-		city(City, _),
+		key_nominal(CityRaw, Nominal),
+		pinpoint(Nominal, City),
 		Out = city(City)
 	).
 

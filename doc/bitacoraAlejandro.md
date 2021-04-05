@@ -155,3 +155,9 @@
   internacionalización.
 - Se agrega soporte para el idioma inglés.
 - Se agrega una opción mandatoria de línea de comandos para escoger idioma.
+
+## 5 de abril
+
+- Se extienden preguntas de especificidad («¿cuál ...?», «¿dónde se encuentra
+  ...?») a orígenes y destinos. Anteriormente solo ocurría con nodos
+  intermedios.
