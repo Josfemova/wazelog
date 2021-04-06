@@ -3,15 +3,15 @@
 				 q_src/2, q_dest/2, q_direction/2, q_which/2, q_stops/2,
 				 farewell/1, user_title/1, display_path/3, display_no_route/3]).
 
-%Regla:
+%Hecho: supported_lang(lenguaje).
 %Ejemplo:
-%?- 
-%
+%?- supported_lang(es).
+%true.
 %Descripción:
 supported_lang(es).
 supported_lang(en).
 
-%Regla:
+%Regla: 
 %Ejemplo:
 %?- 
 %

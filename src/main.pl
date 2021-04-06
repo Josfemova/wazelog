@@ -4,6 +4,11 @@
 :- use_module(lang).
 :- initialization(main, main).
 
+%Regla: 
+%Ejemplo:
+%?- 
+%
+%Descripción:
 main(['--lang', Lang]) :-
 	set_lang(Lang),
 	!,
@@ -11,6 +16,11 @@ main(['--lang', Lang]) :-
 main(_) :-
 	writeln("Usage: main.pl --lang <lang>").
 
+%Regla: 
+%Ejemplo:
+%?- 
+%
+%Descripción:
 loop :-
 	start(Out),
 	(

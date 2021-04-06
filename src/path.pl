@@ -4,7 +4,7 @@
 :- use_module(routes).
 
 %Regla: shortest_path_through(Source, Stops, Target, Result).
-%Ejemplo:
+%Ejemplo: 
 %?- shortest_path_through(sanjose, [tresrios], cartago, Result). 
 %Result = [sanjose, sanpedro, tresrios, taras, cartago].
 %Descripción: Si existe una ruta de un punto origen Source a un punto destino Target, con las paradas intermedias Stops, la regla evalua las posibles rutas óptimas mediante una implementación del algoritmo del camino más corto de dijkstra adptado para tomar en cuenta la existencia de los destinos intermedios.

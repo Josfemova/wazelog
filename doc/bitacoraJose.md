@@ -46,3 +46,7 @@
 ### 4 de Abril
 
 - Se agregaron más secciones de documentación interna al código y se cambió ligeramente el formato para ilustrar mejor los ejemplos y hacer más manejable para formatear posteriormente.
+
+### 5 de Abril
+
+- Se agregó documentación interna de código correspondiente a funciones varias de las secciones de código que manejan el procesamiento de lenguaje

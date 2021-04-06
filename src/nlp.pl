@@ -29,11 +29,11 @@ filler(Word) :-
 nominal(N) :-
 	not(exclamation(N, _)), not(verbal(N)), not(filler(N)).
 
-%Regla: expand(). 
+%Regla: expand(Tokens, Expanded). 
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%?- expand([word(al, "al"), word(del, "del"), word(alto, "Alto")], Expanded).
+%Expanded = [word(a, "a"), word(el, "el"), word(de, "de"), word(el, "el"), word(alto, "Alto")].
+%Descripción: La regla toma una lista de palabras respresentadas en la lista `Tokens` como elementos `word(átomo, string)` y separa las palabras que sean identificadas como contracciones en tokens distintos, la lista conformada por las palabras procesadas por `expand` es el argumento de salida Expanded.
 expand([], []).
 expand([word(Contraction, _) | Tokens], NextTokens) :-
 	contraction(Contraction, Expanded),
@@ -48,18 +48,18 @@ expand([T | Tokens], [T | NextTokens]) :-
 %Ejemplo: 
 %?- atoms_to_words([sanjose, manzana, cartago],Words).
 %Words = [word(sanjose, "sanjose"), word(manzana, "manzana"), word(cartago, "cartago")].
-%Descripción: "Traduce" una lista de átomos a una lista de palabras word(átomo, traducción).
+%Descripción: "Traduce" una lista de átomos `Atoms` a una lista de palabras `word(átomo, string)`.
 atoms_to_words([], []) :-
 	!.
 atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
 	atom_string(Atom, Orig),
 	atoms_to_words(Atoms, NextWords).
 
-%Regla: 
+%Regla: lex(Input, Tokens).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%?- lex("voy a San José", Tokens).
+%Tokens = [word(voy, "voy"), word(a, "a"), word(san, "San"), word(jose, "José")].
+%Descripción: Toma un string `Input` que representa una oración y obtiene una lista de tokens `word(átomo, string)`, con cada token correspondiente a una de las palabras de la oración.
 lex(Input, Tokens) :-
 	string_chars(Input, Chars),
 	lex(Chars, Tokens, []).
@@ -108,11 +108,11 @@ undecorate(['ú' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate(['ü' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate([C | Cs], [C | Us])     :- undecorate(Cs, Us).
 
-%Regla: 
+%Regla: classify(word(Atom, Orig), Type).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%?- classify(word(encuentro, "encuentro"), Type).
+%Type = verbal(encuentro). 
+%Descripción: Clasifica palabras según su función en una oración, ya sea en tipo verbal, nominal, exclamación o relleno.
 classify(punct(_), punct).
 classify(word(Atom, Orig), filler(Atom, Orig)) :-
 	filler(Atom),
@@ -136,11 +136,11 @@ clause(verbal(_)) :-
 clause(Clause) :-
 	well_formed(Clause).
 
-%Regla: 
+%Regla: well_formed(Expresion). 
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%?- well_formed(nominal(yo,"yo","yo")).
+%true.
+%Descripción: Evalúa si una expresión está formada de manera correcta. La expresión puede ser de tipo verbal, nominal, exclamación, u otro tipo. 
 well_formed(exclamation(_)).
 well_formed(verbal([_ | _])).
 well_formed(nominal('', _, _)) :-
