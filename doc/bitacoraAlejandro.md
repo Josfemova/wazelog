@@ -161,3 +161,7 @@
 - Se extienden preguntas de especificidad («¿cuál ...?», «¿dónde se encuentra
   ...?») a orígenes y destinos. Anteriormente solo ocurría con nodos
   intermedios.
+
+## 8 de abril
+
+- Se cambia el grafo de prueba por el grafo indicado por el profesor.
