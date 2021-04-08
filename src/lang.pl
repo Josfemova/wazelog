@@ -168,6 +168,7 @@ unclassified(es, por).
 unclassified(es, muchas).
 unclassified(en, a).
 unclassified(en, an).
+unclassified(en, at).
 unclassified(en, in).
 unclassified(en, to).
 unclassified(en, by).
@@ -183,16 +184,16 @@ unclassified(en, lots).
 q_src(Iteration, Prompt) :-
 	lang(Lang),
 	q_src(Lang, Iteration, Prompt).
-q_src(es, first, "Bienvenido a WazeLog, la mejor logica de llegar a su destino, por favor indiqueme donde se encuentra.").
-q_src(es, again(_), "Creo que hay un malentendido, por favor, me puede repetir, cual es su ubicacion actual?").
+q_src(es, first, "Bienvenido a WazeLog, la mejor lógica de llegar a su destino. Por favor, indíqueme donde se encuentra.").
+q_src(es, again(_), "Creo que hay un malentendido. Por favor, me puede repetir, ¿cuál es su ubicación actual?").
 q_src(en, first, "Welcome to WazeLog, the best logic to arrive at your destination. Where are you?").
 q_src(en, again(_), "Sorry, I couldn't understand you. Where are you right now?").
 
 q_dest(Iteration, Prompt) :-
 	lang(Lang),
 	q_dest(Lang, Iteration, Prompt).
-q_dest(es, first, "Perfecto, cual es su destino?").
-q_dest(es, again(_), "Mis disculpas, no le he entendido, puede reformular su respuesta? A donde se dirige?").
+q_dest(es, first, "Perfecto, ¿cuál es su destino?").
+q_dest(es, again(_), "Mis disculpas, no le he entendido. ¿Puede reformular su respuesta? ¿A dónde se dirige?").
 q_dest(en, first, "Got it, where are you going to?").
 q_dest(en, again(_), "I'm sorry, but I failed to understand you. What's your destination?").
 
@@ -205,7 +206,7 @@ q_direction(Place, Prompt) :-
 	lang(Lang),
 	q_direction(Lang, Place, Prompt).
 q_direction(es, Place, Prompt) :-
-	format(string(Prompt), "Donde se encuentra ~w?", [Place]).
+	format(string(Prompt), "¿Dónde se encuentra ~w?", [Place]).
 q_direction(en, Place, Prompt) :-
 	format(string(Prompt), "Where is ~w located?", [Place]).
 
@@ -217,7 +218,7 @@ q_which(Place, Prompt) :-
 	lang(Lang),
 	q_which(Lang, Place, Prompt).
 q_which(es, Place, Prompt) :-
-	format(string(Prompt), "Cual ~w?", [Place]).
+	format(string(Prompt), "¿Cuál ~w?", [Place]).
 q_which(en, Place, Prompt) :-
 	format(string(Prompt), "Which ~w?", [Place]).
 
@@ -229,10 +230,10 @@ q_which(en, Place, Prompt) :-
 q_stops(Iteration, Prompt) :-
 	lang(Lang),
 	q_stops(Lang, Iteration, Prompt).
-q_stops(es, first, "Genial, Algun destino intermedio?").
-q_stops(es, stops(_), "Algun otro destino intermedio?").
-q_stops(es, again(first), "Perdon, no he podido entenderle, desea un destino intermedio?").
-q_stops(es, again(stops(_)), "Perdon, no he podido entenderle, desea otro destino intermedio?").
+q_stops(es, first, "Genial, ¿algún destino intermedio?").
+q_stops(es, stops(_), "¿Algún otro destino intermedio?").
+q_stops(es, again(first), "Perdón, no he podido entenderle. ¿Desea un destino intermedio?").
+q_stops(es, again(stops(_)), "Perdón, no he podido entenderle. ¿Desea otro destino intermedio?").
 q_stops(en, first, "Great, is there some stop in between?").
 q_stops(en, stops(_), "Any other stop?").
 q_stops(en, again(first), "Again, would you like to stop midway?").
@@ -246,7 +247,7 @@ q_stops(en, again(stops(_)), "Again, would you like to stop another time?").
 farewell(Farewell) :-
 	lang(Lang),
 	farewell(Lang, Farewell).
-farewell(es, "Muchas Gracias por utilizar WazeLog!").
+farewell(es, "¡Muchas gracias por utilizar WazeLog!").
 farewell(en, "Thanks for using WazeLog!").
 
 %Regla:
@@ -282,6 +283,6 @@ display_no_route(From, To, Text) :-
 	lang(Lang),
 	display_no_route(Lang, From, To, Text).
 display_no_route(es, From, To, Text) :-
-	format(string(Text), "No hay una ruta conocida entre ~s y ~s.", [From, To]).
+	format(string(Text), "No hay una ruta conocida de ~s a ~s.", [From, To]).
 display_no_route(en, From, To, Text) :-
 	format(string(Text), "There's no path from ~s to ~s.", [From, To]).

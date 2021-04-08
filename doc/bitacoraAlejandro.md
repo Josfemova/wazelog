@@ -165,3 +165,4 @@
 ## 8 de abril
 
 - Se cambia el grafo de prueba por el grafo indicado por el profesor.
+- Se arregla forma y gramática de algunas consultas predefinidas.
