@@ -46,11 +46,13 @@ shortest_path(Source, Target, Path, Cost) :-
 	!.
 
 
-%Regla: traceback(Source, Target, Heap, Kown, Nodes)
+%Regla: traceback(origen, destino, nodos, Ruta, Costo).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%  ?- traceback(a, a, nodes{}, R, C).
+%  R = [a],
+%  C = cost(0, 0, 0).
+%Descripción: Reconstruye una ruta y su costo a partir de
+%%una solución dada por el algoritmo de Dijkstra.
 traceback(Source, Source, _, [Source], cost(0, 0, 0)) :-
 	!.
 traceback(Source, Target, Nodes, [Target | ReversePath], cost(Cost, BestTime, WorstTime)) :-
@@ -66,11 +68,9 @@ shortest_path(Source, Target, Heap, Known, Nodes) :-
 	get_dict(Key, Known, State),
 	visit(Source, Target, Key, Distance, State, NextHeap, Known, Nodes).
 
-%Regla:
-%Ejemplo:
-%?- 
-%
-%Descripción:
+%Regla: visit(origen, destino, actual, distancia, nodo, pila, nodos, SiguientesNodos).
+%Ejemplo: Se omite, el predicado es de uso interno.
+%Descripción: Visita un nodo (parte del algoritmo de Dijkstra).
 visit(_, Target, Target, Distance, node(_, Distance, unvisited), _, Nodes, Nodes) :-
 	!.
 visit(Source, Target, Key, Distance, node(Parent, Distance, unvisited), Heap, Known, Nodes) :-
@@ -82,11 +82,11 @@ visit(Source, Target, Key, Distance, node(Parent, Distance, unvisited), Heap, Kn
 visit(Source, Target, _, _, _, Heap, Known, Nodes) :-
 	shortest_path(Source, Target, Heap, Known, Nodes).
 
-%Regla:
-%Ejemplo:
-%?- 
-%
-%Descripción:
+%Regla: test_neighbors(vecinos, actual, distancia, pila, nodos, NuevaPila, NuevosNodos).
+%Ejemplo: Se omite, el predicado es de uso interno.
+%Descripción: Considera cada uno de los vecinos de un nodo
+%que está siendo expandido y de ser suficientes las condiciones
+%los agrega a nodos abiertos. Parte del algoritmo de Dijkstra.
 test_neighbors([], _, _, Heap, Known, Heap, Known).
 test_neighbors([Neighbor | Neighbors], Key, Distance, Heap, Known, NextHeap, NextKnown) :-
 	get_dict(Neighbor, Known, State),
@@ -98,11 +98,12 @@ test_neighbors([Neighbor | Neighbors], Key, Distance, Heap, Known, NextHeap, Nex
 	override_distance(Key, Distance, Neighbor, FakeNode, Heap, Known, HeapWithNeighbor, KnownWithNeighbor),
 	test_neighbors(Neighbors, Key, Distance, HeapWithNeighbor, KnownWithNeighbor, NextHeap, NextKnown).
 
-%Regla:
-%Ejemplo:
-%?- 
-%
-%Descripción:
+%Regla: override_distance(actual, distancia, vecino, nodo, pila, nodos, NuevaPila, NuevosNodos).
+%Ejemplo: Se omite, el predicado es de uso interno.
+%Descripción: Si la distancia a un nodo a través de otro
+%resulta ser menor, entonces cambia su mejor padre conocido.
+%De lo contrario no realiza ninguna acción. Parte del algoritmo
+%de Dijkstra.
 override_distance(Key, Distance, Neighbor, node(_, OldDistance, unvisited), Heap, Known, NextHeap, NextKnown) :-
 	arco(Key, Neighbor, Cost, _, _),
 	NewDistance is Distance + Cost,

@@ -170,3 +170,6 @@
   evitar problemas con caracteres Unicode en Windows.
 - Se arregla un bug menor en pathfinding relacionado a la descomposición
   de tuplas de costo.
+
+## 9 de abril
+- Se finaliza documentación interna.
