@@ -18,12 +18,12 @@ shortest_path_through(Source, [Stop | Stops], Target, Result) :-
 	!,
 	shortest_path_through(Stop, Stops, Target, NextResult),
 	(
-		NextResult = shortest_path([Stop | NextPath], NextCost, NextBestTime, NextWorstTime),
+		NextResult = shortest_path([Stop | NextPath], cost(NextCost, NextBestTime, NextWorstTime)),
 		Cost is FirstCost + NextCost,
 		BestTime is FirstBestTime + NextBestTime,
 		WorstTime is FirstWorstTime + NextWorstTime,
 		append(FirstPath, NextPath, Path),
-		Result = shortest_path(Path, Cost, BestTime, WorstTime);
+		Result = shortest_path(Path, cost(Cost, BestTime, WorstTime));
 
 		NextResult = Result
 	),
@@ -42,7 +42,8 @@ shortest_path(Source, Target, Path, Cost) :-
 	dict_create(Initial, nodes, [Source: node('', 0, unvisited)]),
 	shortest_path(Source, Target, Heap, Initial, Nodes),
 	traceback(Source, Target, Nodes, ReversePath, Cost),
-	reverse(ReversePath, Path).
+	reverse(ReversePath, Path),
+	!.
 
 
 %Regla: traceback(Source, Target, Heap, Kown, Nodes)

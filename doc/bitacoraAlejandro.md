@@ -166,3 +166,7 @@
 
 - Se cambia el grafo de prueba por el grafo indicado por el profesor.
 - Se arregla forma y gramática de algunas consultas predefinidas.
+- Se crea una copia del código fuente en codificación ISO-8859-1 para
+  evitar problemas con caracteres Unicode en Windows.
+- Se arregla un bug menor en pathfinding relacionado a la descomposición
+  de tuplas de costo.
