@@ -3,19 +3,19 @@
 %Hechos: city(lugar, nombre).
 %Ejemplo:
 %  ?- city(sanjose, N).
-%  N = "San José".
-%Descripción: Declara las ciudades conocidas y sus nombres.
-city(sanjose, "San José").
+%  N = "San Jose".
+%Descripcion: Declara las ciudades conocidas y sus nombres.
+city(sanjose, "San Jose").
 city(corralillo, "Corralillo").
 city(musgoverde, "Musgo Verde").
-city(tresrios, "Tres Ríos").
+city(tresrios, "Tres Rios").
 city(cartago, "Cartago").
 city(pacayas, "Pacayas").
-city(paraiso, "Paraíso").
+city(paraiso, "Paraiso").
 city(orosi, "Orosi").
 city(cervantes, "Cervantes").
-city(cachi, "Cachí").
-city(juanviñas, "Juan Viñas").
+city(cachi, "Cachi").
+city(juanvinias, "Juan Vinias").
 city(turrialba, "Turrialba").
 
 %Hechos: arco_bi(lugar1, lugar2, distancia, tiempo, con_presa).
@@ -24,7 +24,7 @@ city(turrialba, "Turrialba").
 %  D = 20,
 %  Tmin = 20,
 %  Tmax = 40.
-%Descripción: Declara arcos bidireccionales (el grafo es mixto).
+%Descripcion: Declara arcos bidireccionales (el grafo es mixto).
 arco_bi(sanjose, corralillo, 22, 22, 44).
 arco_bi(sanjose, cartago, 20, 20, 40).
 arco_bi(corralillo, musgoverde, 6, 6, 12).
@@ -44,14 +44,14 @@ arco_bi(cachi, turrialba, 40, 40, 80).
 %  D = 10,
 %  Tmin = 10,
 %  Tmax = 20.
-%Descripción: Declara arcos unidireccionales (el grafo es mixto).
+%Descripcion: Declara arcos unidireccionales (el grafo es mixto).
 arco(tresrios, sanjose, 8, 8, 16).
 arco(cartago, tresrios, 8, 8, 16).
 arco(cartago, paraiso, 10, 10, 20).
 arco(paraiso, cervantes, 4, 4, 8).
 arco(turrialba, pacayas, 18, 18, 36).
-arco(cervantes, juanviñas, 5, 5, 10).
-arco(juanviñas, turrialba, 4, 4, 8).
+arco(cervantes, juanvinias, 5, 5, 10).
+arco(juanvinias, turrialba, 4, 4, 8).
 
 %Regla: arco(origen, destino, distancia, tiempo, con_presa).
 %Ejemplo:
@@ -59,8 +59,8 @@ arco(juanviñas, turrialba, 4, 4, 8).
 %  D = 20,
 %  Tmin = 20,
 %  Tmax = 40.
-%Descripción: Descompone arcos bidireccionales en dos
-%arcos unidireccionales, simplificando la lógica de grafo.
+%Descripcion: Descompone arcos bidireccionales en dos
+%arcos unidireccionales, simplificando la logica de grafo.
 arco(Source, Target, Cost, BestTime, WorstTime) :-
 	arco_bi(Source, Target, Cost, BestTime, WorstTime);
 	arco_bi(Target, Source, Cost, BestTime, WorstTime).

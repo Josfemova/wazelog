@@ -5,7 +5,7 @@
 %Ejemplo: 
 %?- parse_user_input("Voy a Cartago", Result).
 %Result = ok([svo(nominal('', "", ""), verbal([voy]), nominal(cartago, "cartago", "Cartago"))]).
-%Descripción: Toma un string input del usuario y lo separa en sus diferentes elementos 
+%Descripcion: Toma un string input del usuario y lo separa en sus diferentes elementos 
 parse_user_input(Input, Result) :-
 	lex(Input, Tokens),
 	expand(Tokens, Expanded),
@@ -15,7 +15,7 @@ parse_user_input(Input, Result) :-
 %Ejemplo:
 %?- filler(por).
 %true.
-%Descripción: Toma un átomo que representa una palabra e indica si la palabra es o no relevante para el análisis de lenguaje. 
+%Descripcion: Toma un atomo que representa una palabra e indica si la palabra es o no relevante para el analisis de lenguaje. 
 filler(Word) :-
 	unclassified(Word);
 	before_nominal(Word);
@@ -25,7 +25,7 @@ filler(Word) :-
 %Ejemplo: 
 %?- nominal(sanjose).
 %true.
-%Descripción: Toma un átomo que representa una palabra e indica si dicha palabra es o no un sustantivo.
+%Descripcion: Toma un atomo que representa una palabra e indica si dicha palabra es o no un sustantivo.
 nominal(N) :-
 	not(exclamation(N, _)), not(verbal(N)), not(filler(N)).
 
@@ -33,7 +33,7 @@ nominal(N) :-
 %Ejemplo:
 %?- expand([word(al, "al"), word(del, "del"), word(alto, "Alto")], Expanded).
 %Expanded = [word(a, "a"), word(el, "el"), word(de, "de"), word(el, "el"), word(alto, "Alto")].
-%Descripción: La regla toma una lista de palabras respresentadas en la lista `Tokens` como elementos `word(átomo, string)` y separa las palabras que sean identificadas como contracciones en tokens distintos, la lista conformada por las palabras procesadas por `expand` es el argumento de salida Expanded.
+%Descripcion: La regla toma una lista de palabras respresentadas en la lista `Tokens` como elementos `word(atomo, string)` y separa las palabras que sean identificadas como contracciones en tokens distintos, la lista conformada por las palabras procesadas por `expand` es el argumento de salida Expanded.
 expand([], []).
 expand([word(Contraction, _) | Tokens], NextTokens) :-
 	contraction(Contraction, Expanded),
@@ -48,7 +48,7 @@ expand([T | Tokens], [T | NextTokens]) :-
 %Ejemplo: 
 %?- atoms_to_words([sanjose, manzana, cartago],Words).
 %Words = [word(sanjose, "sanjose"), word(manzana, "manzana"), word(cartago, "cartago")].
-%Descripción: "Traduce" una lista de átomos `Atoms` a una lista de palabras `word(átomo, string)`.
+%Descripcion: "Traduce" una lista de atomos `Atoms` a una lista de palabras `word(atomo, string)`.
 atoms_to_words([], []) :-
 	!.
 atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
@@ -57,9 +57,9 @@ atoms_to_words([Atom | Atoms], [word(Atom, Orig) | NextWords]) :-
 
 %Regla: lex(Input, Tokens).
 %Ejemplo:
-%?- lex("voy a San José", Tokens).
-%Tokens = [word(voy, "voy"), word(a, "a"), word(san, "San"), word(jose, "José")].
-%Descripción: Toma un string `Input` que representa una oración y obtiene una lista de tokens `word(átomo, string)`, con cada token correspondiente a una de las palabras de la oración.
+%?- lex("voy a San Jose", Tokens).
+%Tokens = [word(voy, "voy"), word(a, "a"), word(san, "San"), word(jose, "Jose")].
+%Descripcion: Toma un string `Input` que representa una oracion y obtiene una lista de tokens `word(atomo, string)`, con cada token correspondiente a una de las palabras de la oracion.
 lex(Input, Tokens) :-
 	string_chars(Input, Chars),
 	lex(Chars, Tokens, []).
@@ -96,23 +96,22 @@ lex(Rest, Tokens, Previous, WordChars) :-
 
 %Regla: undecorate(Cs, Us).
 %Ejemplo:
-%?- undecorate(['á','é','í','ó','ú','ü'], Us).
-%Us = ['a','e','i','o','u','u'].
-%Descripción: Toma una lista de caracteres y obtiene su version sin decoraciones(acentos y diéresis) para evitar conflictos a la hora de procesar datos. 
+%?- undecorate(['a','e','i','o','u'], Us).
+%Us = ['a','e','i','o','u'].
+%Descripcion: Toma una lista de caracteres y obtiene su version sin decoraciones(acentos y dieresis) para evitar conflictos a la hora de procesar datos. 
 undecorate([], []).
-undecorate(['á' | Cs], ['a' | Us]) :- !, undecorate(Cs, Us).
-undecorate(['é' | Cs], ['e' | Us]) :- !, undecorate(Cs, Us).
-undecorate(['í' | Cs], ['i' | Us]) :- !, undecorate(Cs, Us).
-undecorate(['ó' | Cs], ['o' | Us]) :- !, undecorate(Cs, Us).
-undecorate(['ú' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
-undecorate(['ü' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['a' | Cs], ['a' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['e' | Cs], ['e' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['i' | Cs], ['i' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['o' | Cs], ['o' | Us]) :- !, undecorate(Cs, Us).
+undecorate(['u' | Cs], ['u' | Us]) :- !, undecorate(Cs, Us).
 undecorate([C | Cs], [C | Us])     :- undecorate(Cs, Us).
 
 %Regla: classify(word(Atom, Orig), Type).
 %Ejemplo:
 %?- classify(word(encuentro, "encuentro"), Type).
 %Type = verbal(encuentro). 
-%Descripción: Clasifica palabras según su función en una oración, ya sea en tipo verbal, nominal, exclamación o relleno.
+%Descripcion: Clasifica palabras segun su funcion en una oracion, ya sea en tipo verbal, nominal, exclamacion o relleno.
 classify(punct(_), punct).
 classify(word(Atom, Orig), filler(Atom, Orig)) :-
 	filler(Atom),
@@ -125,16 +124,16 @@ classify(word(Atom, _), exclamation(Type)) :-
 	!.
 classify(word(Atom, Original), nominal(Atom, Original)).
 
-%Regla: clause(oración).
+%Regla: clause(oracion).
 %Ejemplo:
 %  ?- clause(nominal(yo, "yo", "yo")).
 %  true.
 %  ?- clause(exclamation(affirmative)).
 %  true.
-%Descripción: Tiene éxito solo si la oración en
-%cuestión es una oración válida. Esto ocurre para
-%todas las subexpresiones válidas, excepto formas
-%verbales solitarias sin asociación jerárquica.
+%Descripcion: Tiene exito solo si la oracion en
+%cuestion es una oracion valida. Esto ocurre para
+%todas las subexpresiones validas, excepto formas
+%verbales solitarias sin asociacion jerarquica.
 clause(verbal(_)) :-
 	!,
 	fail.
@@ -145,7 +144,7 @@ clause(Clause) :-
 %Ejemplo:
 %?- well_formed(nominal(yo,"yo","yo")).
 %true.
-%Descripción: Evalúa si una expresión está formada de manera correcta. La expresión puede ser de tipo verbal, nominal, exclamación, u otro tipo. 
+%Descripcion: Evalua si una expresion esta formada de manera correcta. La expresion puede ser de tipo verbal, nominal, exclamacion, u otro tipo. 
 well_formed(exclamation(_)).
 well_formed(verbal([_ | _])).
 well_formed(nominal('', _, _)) :-
@@ -161,11 +160,11 @@ well_formed(svo(S, V, O)) :-
 %  ?- ast_join(nomatch, filler(la, "la"), R1), ast_join(R1, nominal(mesa, "mesa"), R2).
 %  R1 = nominal('', "la", ""),
 %  R2 = nominal(mesa, "la mesa", "mesa").
-%Descripción: Construye un árbol de sintaxis, con algunas
-%interpretaciones semánticas incluidas, a partir de un estado
-%previo del mismo árbol y un componente siguiente a agregar.
-%El átomo `nomatch` se utiliza como árbol previo para indicar
-%que no existía uno anteriormente.
+%Descripcion: Construye un arbol de sintaxis, con algunas
+%interpretaciones semanticas incluidas, a partir de un estado
+%previo del mismo arbol y un componente siguiente a agregar.
+%El atomo `nomatch` se utiliza como arbol previo para indicar
+%que no existia uno anteriormente.
 ast_join(nomatch, nominal(A, Orig), nominal(A, Orig, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).
 ast_join(nomatch, filler(F, Orig), nominal('', Orig, "")) :-
@@ -195,7 +194,7 @@ ast_join(Tree, filler(_, _), Tree).
 %Ejemplo:
 %  ?- nominal_join(nominal('', "la", ""), nominal("sabana", sabana), R).
 %  R = nominal(sabana, "la sabana", "sabana").
-%Descripción: Concatena dos formas nominales en un nominal compuesto.
+%Descripcion: Concatena dos formas nominales en un nominal compuesto.
 nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextOrig, NextBare)) :-
 	atom_concat(LA, RA, NextA),
 	append_space(LOrig, OrigWithSpace),
@@ -207,8 +206,8 @@ nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextO
 %Ejemplo:
 %  ?- append_space("a", "a ").
 %  true.
-%Descripción: Agrega un espacio al final de una cadena
-%solamente si la entrada no es la cadena vacía.
+%Descripcion: Agrega un espacio al final de una cadena
+%solamente si la entrada no es la cadena vacia.
 append_space("", "") :-
 	!.
 append_space(String, WithSpace) :-
@@ -216,9 +215,9 @@ append_space(String, WithSpace) :-
 
 %Regla: unbounded(tokens, Salida).
 %Ejemplo: Ver `sentence/3`.
-%Descripción: Parsea una entrada completa ("no delimitada",
+%Descripcion: Parsea una entrada completa ("no delimitada",
 %por tanto el nombre del predicada). El resultado es o
-%una lista de oraciones o una indicación de fallo.
+%una lista de oraciones o una indicacion de fallo.
 unbounded(Tokens, Result) :-
 	unbounded(Tokens, [], Result).
 unbounded([], Sentences, ok(Sentences)) :-
@@ -234,15 +233,15 @@ unbounded(Tokens, Previous, Result) :-
 	unbounded(Rest, Next, Result).
 unbounded([FailureHead | _], _, fail(FailureHead)).
 
-%Regla: sentence(tokens, Resto, Oración).
+%Regla: sentence(tokens, Resto, Oracion).
 %Ejemplo:
 %  ?- sentence([word(yo, "Yo"), word(estoy, "estoy"), word(en, "en"), word(cartago, "Cartago"), punct('.')], R, S).
 %  R = [],
 %  S = svo(nominal(yo, "Yo", "Yo"), verbal([estoy]), nominal(cartago, "Cartago", "Cartago")) ;
-%Descripción: Parsea una oración a partir de un flujo
-%de entrada. Su salida es tanto la oración como la lista
+%Descripcion: Parsea una oracion a partir de un flujo
+%de entrada. Su salida es tanto la oracion como la lista
 %de tokens que la suceden y que deben luego parsearse como
-%más oraciones. Una oración puede ser una forma exclamativa,
+%mas oraciones. Una oracion puede ser una forma exclamativa,
 %una forma nominal independiente o una estructura
 %subjeto-verbo-objeto (SVO).
 sentence(Tokens, Rest, Sentence) :- sentence(Tokens, Rest, Sentence, nomatch).
@@ -275,7 +274,7 @@ sentence([T | Tokens], Rest, Sentence, Ast) :-
 %A = alto.
 %Orig = "el Alto".
 %Bare = "Alto".
-%Descripción: La regla toma una oración representada en SVO como una estructura sujeto-verbo-objeto y busca su sustantivo complemento. Mayoritariamente utilizada para obtener el nombre de una ciudad, el cual siempre se encuentra en la posición de complemento en la voz activa.
+%Descripcion: La regla toma una oracion representada en SVO como una estructura sujeto-verbo-objeto y busca su sustantivo complemento. Mayoritariamente utilizada para obtener el nombre de una ciudad, el cual siempre se encuentra en la posicion de complemento en la voz activa.
 key_nominal([nominal(A, Orig, Bare)], nominal(A, Orig, Bare)) :-
 	!.
 key_nominal([svo(_, _, O)], N) :-

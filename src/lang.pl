@@ -7,20 +7,20 @@
 %Ejemplo:
 %  ?- supported_lang(es).
 %  true.
-%Descripción: Enumera los idiomas soportados por la aplicación.
+%Descripcion: Enumera los idiomas soportados por la aplicacion.
 supported_lang(es).
 supported_lang(en).
 
-%Hecho dinámico: lang(lenguaje).
+%Hecho dinamico: lang(lenguaje).
 % Ejemplo:
 %   ?- lang(L), farewell(L, F).
-%   F = "¡Muchas gracias por utilizar WazeLog!".
+%   F = "Muchas gracias por utilizar WazeLog!".
 %   ?- set_lang(en), lang(L), farewell(L, F).
 %   F = "Thank you for using WazeLog!".
-%Descripción: `lang/1` es un predicado dinámico, es decir, cuyos hechos pueden
-%ser alterados en tiempo de ejecución.  Esto permite, de manera conveniente,
+%Descripcion: `lang/1` es un predicado dinamico, es decir, cuyos hechos pueden
+%ser alterados en tiempo de ejecucion.  Esto permite, de manera conveniente,
 %escoger un idioma sin tener que acarrear una variable de lenguaje por toda la
-%aplicación. El idioma se altera con `set_lang/1`.
+%aplicacion. El idioma se altera con `set_lang/1`.
 plang(es).
 :- dynamic lang/1.
 
@@ -28,8 +28,8 @@ plang(es).
 %Ejemplo:
 %  ?- set_lang(es).
 %  true.
-%Descripción: Cambia el idioma en uso. El idioma ingresado
-%debe ser soportado según reporte `supported_lang/1`.
+%Descripcion: Cambia el idioma en uso. El idioma ingresado
+%debe ser soportado segun reporte `supported_lang/1`.
 set_lang(Lang) :-
 	supported_lang(Lang),
 	retractall(lang(_)),
@@ -39,12 +39,11 @@ set_lang(Lang) :-
 %Ejemplo:
 %  ?- sentence_sep('.').
 %  true.
-%Descripción: Enuncia los tokens que separan oraciones.
+%Descripcion: Enuncia los tokens que separan oraciones.
 sentence_sep('.').
 sentence_sep(',').
 sentence_sep(';').
 sentence_sep(':').
-sentence_sep('¡').
 sentence_sep('!').
 
 %Regla: place_type(lugar).
@@ -53,9 +52,9 @@ sentence_sep('!').
 %  true.
 %  ?- place_type(automercado).
 %  false.
-%Descripción: Enuncia las formas nominales que se conoce
+%Descripcion: Enuncia las formas nominales que se conoce
 %             que se refieren siempre a tipos de lugares
-%             en vez de lugares específicos. Se cumple si
+%             en vez de lugares especificos. Se cumple si
 %             existe un hecho correspondiente para el
 %             idioma en uso.
 place_type(PlaceType) :-
@@ -84,9 +83,9 @@ place_type(en, institute).
 %Ejemplo:
 %  ?- exclamation(hola, T).
 %  T = greeting.
-%Descripción: Relaciona palabras clave de oraciones
+%Descripcion: Relaciona palabras clave de oraciones
 % consideradas como exclamativas con el tipo interno
-% de exclamación. Al mismo tiempo, esta regla identifica
+% de exclamacion. Al mismo tiempo, esta regla identifica
 % el hecho de que tales palabres clave conformen este
 % tipo de oraciones.
 exclamation(Exclamation, Type) :-
@@ -110,7 +109,7 @@ exclamation(en, thanks, misc).
 %Ejemplo:
 %  ?- verbal(estoy).
 %  true.
-%Descripción: Tiene éxito si el token en cuestión
+%Descripcion: Tiene exito si el token en cuestion
 %es un componente de forma verbal. Es decir, esta
 %regla identifica a los verbos.
 verbal(Verb) :-
@@ -144,14 +143,14 @@ verbal(en, like).
 %Ejemplo:
 %  ?- before_nominal(el).
 %  true.
-%Descripción: Enumera palabras de relleno
-%que se espera serán seguidas inmediatamente
+%Descripcion: Enumera palabras de relleno
+%que se espera seran seguidas inmediatamente
 %por una forma nominal. Esto incluye en el
-%caso del español a los artículos y algunas
+%caso del espaniol a los articulos y algunas
 %preposiciones. Esto permite incluir estas
 %palabras en la forma articulada original del
-%término nominal sin afectar tener que afectar
-%su átomo identificante con respecto a no haber
+%termino nominal sin afectar tener que afectar
+%su atomo identificante con respecto a no haber
 %escrito la palabra antecesora.
 before_nominal(Word) :-
 	lang(Lang),
@@ -164,11 +163,11 @@ before_nominal(es, de).
 before_nominal(en, the).
 before_nominal(en, of).
 
-%Regla: contraction(token, Expansión).
+%Regla: contraction(token, Expansion).
 %Ejemplo:
 %  ?- contraction(al, C).
 %  C = [a, el].
-%Descripción: Expande contracciones en formas equivalentes.
+%Descripcion: Expande contracciones en formas equivalentes.
 contraction(Word, Expanded) :-
 	lang(Lang),
 	contraction(Lang, Word, Expanded).
@@ -180,9 +179,9 @@ contraction(en, 'i\'m', [i, am]).
 %Ejemplo:
 %  ?- unclassified(que).
 %  true.
-%Descripción: Declara que una palabra es explícitamente no clasificada
+%Descripcion: Declara que una palabra es explicitamente no clasificada
 %y por tanto debe considerarse como de relleno (ver `filler/1`) en vez
-%de como nominal, ya que lo último se asume por defecto.
+%de como nominal, ya que lo ultimo se asume por defecto.
 unclassified(Word) :-
 	lang(Lang),
 	unclassified(Lang, Word).
@@ -206,76 +205,76 @@ unclassified(en, many).
 unclassified(en, lot).
 unclassified(en, lots).
 
-%Regla: q_src(iteración, Prompt).
+%Regla: q_src(iteracion, Prompt).
 %Ejemplo:
 %   ?- q_src(first, Prompt).
-%   Prompt = "Bienvenido a WazeLog, la mejor lógica de llegar a su destino. Por favor, in    díqueme donde se encuentra.".
-%Descripción: Define la pregunta de origen. Esta pregunta
+%   Prompt = "Bienvenido a WazeLog, la mejor logica de llegar a su destino. Por favor, in    diqueme donde se encuentra.".
+%Descripcion: Define la pregunta de origen. Esta pregunta
 %puede cambiar si se ingresa una respuesta incorrecta la
-%primera vez, lo cual se expresa en el parámetro de iteración.
+%primera vez, lo cual se expresa en el parametro de iteracion.
 q_src(Iteration, Prompt) :-
 	lang(Lang),
 	q_src(Lang, Iteration, Prompt).
-q_src(es, first, "Bienvenido a WazeLog, la mejor lógica de llegar a su destino. Por favor, indíqueme donde se encuentra.").
-q_src(es, again(_), "Creo que hay un malentendido. Por favor, me puede repetir, ¿cuál es su ubicación actual?").
+q_src(es, first, "Bienvenido a WazeLog, la mejor logica de llegar a su destino. Por favor, indiqueme donde se encuentra.").
+q_src(es, again(_), "Creo que hay un malentendido. Por favor, me puede repetir, cual es su ubicacion actual?").
 q_src(en, first, "Welcome to WazeLog, the best logic to arrive at your destination. Where are you?").
 q_src(en, again(_), "Sorry, I couldn't understand you. Where are you right now?").
 
-%Regla: q_src(iteración, Prompt).
+%Regla: q_src(iteracion, Prompt).
 %Ejemplo:
 %  ?- q_dest(first, Prompt).
-%  Prompt = "Perfecto, ¿cuál es su destino?".
-%Descripción: Define la pregunta de destino. Esta pregunta
+%  Prompt = "Perfecto, cual es su destino?".
+%Descripcion: Define la pregunta de destino. Esta pregunta
 %puede cambiar si se ingresa una respuesta incorrecta la
-%primera vez, lo cual se expresa en el parámetro de iteración.
+%primera vez, lo cual se expresa en el parametro de iteracion.
 q_dest(Iteration, Prompt) :-
 	lang(Lang),
 	q_dest(Lang, Iteration, Prompt).
-q_dest(es, first, "Perfecto, ¿cuál es su destino?").
-q_dest(es, again(_), "Mis disculpas, no le he entendido. ¿Puede reformular su respuesta? ¿A dónde se dirige?").
+q_dest(es, first, "Perfecto, cual es su destino?").
+q_dest(es, again(_), "Mis disculpas, no le he entendido. Puede reformular su respuesta? A donde se dirige?").
 q_dest(en, first, "Got it, where are you going to?").
 q_dest(en, again(_), "I'm sorry, but I failed to understand you. What's your destination?").
 
 %Regla: q_direction(lugar, Prompt).
 %Ejemplo:
 %  ?- q_direction("AutoMercado").
-%  Prompt = "¿Dónde se encuentra AutoMercado?".
-%Descripción: Define la pregunta de ubicación de un lugar.
+%  Prompt = "Donde se encuentra AutoMercado?".
+%Descripcion: Define la pregunta de ubicacion de un lugar.
 q_direction(Place, Prompt) :-
 	lang(Lang),
 	q_direction(Lang, Place, Prompt).
 q_direction(es, Place, Prompt) :-
-	format(string(Prompt), "¿Dónde se encuentra ~w?", [Place]).
+	format(string(Prompt), "Donde se encuentra ~w?", [Place]).
 q_direction(en, Place, Prompt) :-
 	format(string(Prompt), "Where is ~w located?", [Place]).
 
 %Regla: q_which(lugar, Prompt).
 %Ejemplo:
 %  ?- q_which("supermercado"). 
-%  Prompt = "¿Cuál supermercado?".
-%Descripción: Define la pregunta para especificar una
-%ubicación concreta a partir de un tipo de ubicación.
+%  Prompt = "Cual supermercado?".
+%Descripcion: Define la pregunta para especificar una
+%ubicacion concreta a partir de un tipo de ubicacion.
 q_which(Place, Prompt) :-
 	lang(Lang),
 	q_which(Lang, Place, Prompt).
 q_which(es, Place, Prompt) :-
-	format(string(Prompt), "¿Cuál ~w?", [Place]).
+	format(string(Prompt), "Cual ~w?", [Place]).
 q_which(en, Place, Prompt) :-
 	format(string(Prompt), "Which ~w?", [Place]).
 
-%Regla: q_stops(iteración, Prompt).
+%Regla: q_stops(iteracion, Prompt).
 %Ejemplo:
 %  ?- q_stops(first, Prompt).
-%  Prompt = "Genial, ¿algún destino intermedio?".
-%Descripción: Define las preguntas que solicitan el
-%primer y los demás destinos intermedios.
+%  Prompt = "Genial, algun destino intermedio?".
+%Descripcion: Define las preguntas que solicitan el
+%primer y los demas destinos intermedios.
 q_stops(Iteration, Prompt) :-
 	lang(Lang),
 	q_stops(Lang, Iteration, Prompt).
-q_stops(es, first, "Genial, ¿algún destino intermedio?").
-q_stops(es, stops(_), "¿Algún otro destino intermedio?").
-q_stops(es, again(first), "Perdón, no he podido entenderle. ¿Desea un destino intermedio?").
-q_stops(es, again(stops(_)), "Perdón, no he podido entenderle. ¿Desea otro destino intermedio?").
+q_stops(es, first, "Genial, algun destino intermedio?").
+q_stops(es, stops(_), "Algun otro destino intermedio?").
+q_stops(es, again(first), "Perdon, no he podido entenderle. Desea un destino intermedio?").
+q_stops(es, again(stops(_)), "Perdon, no he podido entenderle. Desea otro destino intermedio?").
 q_stops(en, first, "Great, is there some stop in between?").
 q_stops(en, stops(_), "Any other stop?").
 q_stops(en, again(first), "Again, would you like to stop midway?").
@@ -284,19 +283,19 @@ q_stops(en, again(stops(_)), "Again, would you like to stop another time?").
 %Regla: farewell(Salida).
 %Ejemplo:
 %  ?- farewell(O).
-%  O = "¡Muchas gracias por utilizar WazeLog!".
-%Descripción: Define la despedida.
+%  O = "Muchas gracias por utilizar WazeLog!".
+%Descripcion: Define la despedida.
 farewell(Farewell) :-
 	lang(Lang),
 	farewell(Lang, Farewell).
-farewell(es, "¡Muchas gracias por utilizar WazeLog!").
+farewell(es, "Muchas gracias por utilizar WazeLog!").
 farewell(en, "Thank you for using WazeLog!").
 
 %Regla: user_title(Titulo).
 %Ejemplo:
 %  ?- user_title(T).
 %  T = "Usuario".
-%Descripción: Define el título del usuario.
+%Descripcion: Define el titulo del usuario.
 user_title(Title) :-
 	lang(Lang),
 	user_title(Lang, Title).
@@ -305,15 +304,15 @@ user_title(en, "User").
 
 %Regla: display_path(ruta, costo, Salida).
 %Ejemplo:
-%  ?- display_path("San José, Cartago", cost(1, 2, 3), T).
-%  Salida = "Su ruta sería San José, Cartago. Longitud estimada de 1 Km. Duración 2-3 min.".
-%Descripción: Define el mensaje de ruta y costos a partir de
-%esta misma información.
+%  ?- display_path("San Jose, Cartago", cost(1, 2, 3), T).
+%  Salida = "Su ruta seria San Jose, Cartago. Longitud estimada de 1 Km. Duracion 2-3 min.".
+%Descripcion: Define el mensaje de ruta y costos a partir de
+%esta misma informacion.
 display_path(Path, Cost, Text) :-
 	lang(Lang),
 	display_path(Lang, Path, Cost, Text).
 display_path(es, Path, cost(Cost, Min, Max), Text) :-
-	format(string(Text), "Su ruta sería ~s. Longitud estimada de ~d km. Duración ~d-~d min.", [Path, Cost, Min, Max]).
+	format(string(Text), "Su ruta seria ~s. Longitud estimada de ~d km. Duracion ~d-~d min.", [Path, Cost, Min, Max]).
 display_path(en, Path, cost(Cost, Min, Max), Text) :-
 	format(string(Text), "This is your ~d-km path: ~s. It will take ~d to ~d minutes.", [Cost, Path, Min, Max]).
 
@@ -321,7 +320,7 @@ display_path(en, Path, cost(Cost, Min, Max), Text) :-
 %Ejemplo:
 %  ?- display_no_route("A", "B", T).
 %  T = "No hay una ruta conocida de A a B.".
-%Descripción: Define el texto que se muestra cuando
+%Descripcion: Define el texto que se muestra cuando
 %no existe una ruta entre un origen y un destino.
 display_no_route(From, To, Text) :-
 	lang(Lang),
