@@ -1025,6 +1025,12 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 
 ## 1.5. Actividades realizadas por estudiante
 
+![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/planActividades1.png)
+
+![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/planActividades2.png)
+
+![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/planActividades3.png)
+
 ## 1.6. Problemas solucionados
 
 1. Errores con caracteres especiales del idioma español
@@ -1036,9 +1042,8 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 		- Si se quiere evitar problemas de codificación de consola con SWI-Prolog, es preferible utilizar un sistema basado en GNU/Linux, puesto que el problema parece ser único de la plataforma de Windows.
 		- Si se quiere conservar la posibilidad de una interacción con tildes y eñes, una alternativa recomendable es codificar los archivos en latin1, pues parece que la compatibilidad de esta codificación con Windows es capaz de proveer esta posibilidad.
 	* _Conclusiones_:
-		- Se confirma como una
+		- Es una buena práctica probar en todos los ambientes de ejecución posible para poder lidiar con problemas inherentes a una plataforma de manera efectiva y oportuna
 	* _Bibliografía_:
-		
 		- <https://www.swi-prolog.org/pldoc/doc_for?object=encoding/1>
 
 2. 
@@ -1053,7 +1058,6 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 ## 1.7. Conclusiones y Recomendaciones del Proyecto
 
 - Dado su estatus relativamente estándar en el mercado, es recomendable utilizar BNF's para describir una gramática libre de contexto en caso de que se esté utilizando una, esto pues permite modelar el procesamiento de lenguaje de forma agnóstica respecto al lenguaje de implementación, y al mismo tiempo sirve de guía para la implementación en cualquier lenguaje. 
-
 
 
 ## 1.8. Bibliografía
@@ -1071,3 +1075,4 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 
 
 ## 1.9. Bitácoras
+
