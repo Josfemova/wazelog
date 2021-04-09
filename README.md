@@ -183,7 +183,8 @@ R2 = nominal(mesa, "la mesa", "mesa").
 
 ```prolog
 ?- atoms_to_words([sanjose, manzana, cartago],Words).
-Words = [word(sanjose, "sanjose"), word(manzana, "manzana"), word(cartago, "cartago")].
+Words = [word(sanjose, "sanjose"), word(manzana, "manzana"), 
+        word(cartago, "cartago")].
 ```
 
 **Descripción:** "Traduce" una lista de átomos `Atoms` a una lista de palabras `word(átomo, string)`.
@@ -251,7 +252,8 @@ T = "No hay una ruta conocida de A a B.".
 
 ```prolog
 ?- display_path("San José, Cartago", cost(1, 2, 3), T).
-Salida = "Su ruta sería San José, Cartago. Longitud estimada de 1 Km. Duración 2-3 min.".
+Salida = "Su ruta sería San José, Cartago. 
+          Longitud estimada de 1 Km. Duración 2-3 min.".
 ```
 
 **Descripción:** Define el mensaje de ruta y costos a partir de esta misma información.
@@ -265,7 +267,7 @@ Salida = "Su ruta sería San José, Cartago. Longitud estimada de 1 Km. Duració
 T = greeting.
 ```
 
-**Descripción:** Relaciona palabras clave de oraciones consideradas como exclamativas con el tipo interno de exclamación. Al mismo tiempo, esta regla identifica el hecho de que tales palabres clave conformen este tipo de oraciones.
+**Descripción:** Relaciona palabras clave de oraciones consideradas como exclamativas con el tipo interno de exclamación. Al mismo tiempo, esta regla identifica el hecho de que tales palabres clave conformen este tipo de oraciones.ast_
 
 ### Regla: `expand(Tokens, Expanded).`
 
@@ -273,7 +275,8 @@ T = greeting.
 
 ```prolog
 ?- expand([word(al, "al"), word(del, "del"), word(alto, "Alto")], Expanded).
-Expanded = [word(a, "a"), word(el, "el"), word(de, "de"), word(el, "el"), word(alto, "Alto")].
+Expanded = [word(a, "a"), word(el, "el"), word(de, "de"),
+           word(el, "el"), word(alto, "Alto")].
 ```
 
 **Descripción:** La regla toma una lista de palabras representadas en la lista `Tokens` como elementos `word(átomo, string)` y separa las palabras que sean identificadas como contracciones en tokens distintos, la lista conformada por las palabras procesadas por `expand` es el argumento de salida Expanded.
@@ -305,7 +308,8 @@ true.
 **Ejemplo:**
 
 ```prolog
-?- key_nominal([svo(nominal('', "", ""), verbal([voy]), nominal(alto, "el Alto", "Alto"))], nominal(A, Orig, Bare).
+?- key_nominal([svo(nominal('', "", ""), verbal([voy]), 
+    nominal(alto, "el Alto", "Alto"))], nominal(A, Orig, Bare).
 A = alto.
 Orig = "el Alto".
 Bare = "Alto".
@@ -395,7 +399,8 @@ Se omite, el predicado es de uso interno.
 
 ```prolog
 ?- parse_user_input("Voy a Cartago", Result).
-Result = ok([svo(nominal('', "", ""), verbal([voy]), nominal(cartago, "cartago", "Cartago"))]).
+Result = ok([svo(nominal('', "", ""), 
+              verbal([voy]), nominal(cartago, "cartago", "Cartago"))]).
 ```
 
 **Descripción:** Toma un string input del usuario y lo separa en sus diferentes elementos.
@@ -453,7 +458,8 @@ Prompt = "¿Dónde se encuentra AutoMercado?".
 
 ```prolog
 ?- q_src(first, Prompt).
-Prompt = "Bienvenido a WazeLog, la mejor lógica de llegar a su destino. Por favor, indíqueme dónde se encuentra.".
+Prompt = "Bienvenido a WazeLog, la mejor lógica de llegar a su destino. 
+          Por favor, indíqueme dónde se encuentra.".
 ```
 
 **Descripción:** Define la pregunta de origen. Esta pregunta puede cambiar si se ingresa una respuesta incorrecta la primera vez, lo cual se expresa en el parámetro de iteración.
@@ -487,7 +493,8 @@ Prompt = "¿Cuál supermercado?".
 ```prolog
 ?- read_user_input(R).
 @usuario: yo voy a la sabana.
-R = ok([svo(nominal(yo, "yo", "yo"), verbal([voy]), nominal(sabana, "la sabana", "sabana"))]).
+R = ok([svo(nominal(yo, "yo", "yo"), verbal([voy]), 
+        nominal(sabana, "la sabana", "sabana"))]).
 ```
 
 **Descripción:** Una entrada de un usuario se puede descomponer en una estructura definida por la gramática libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Si esta descomposición es exitosa, `R` será `ok(Descomp)` donde `Descomp` es esta descomposición. `R` es `bye` si el usuario detiene la entrada, y `fail(T)` si hay un fallo sintáctico, donde `T` es un token.
@@ -509,9 +516,11 @@ R = stop.
 **Ejemplo:**
 
 ```prolog
-?- sentence([word(yo, "Yo"), word(estoy, "estoy"), word(en, "en"), word(cartago, "Cartago"), punct('.')], R, S).
+?- sentence([word(yo, "Yo"), word(estoy, "estoy"), word(en, "en"), 
+            word(cartago, "Cartago"), punct('.')], R, S).
 R = [],
-S = svo(nominal(yo, "Yo", "Yo"), verbal([estoy]), nominal(cartago, "Cartago", "Cartago")) ;
+S = svo(nominal(yo, "Yo", "Yo"), verbal([estoy]), 
+        nominal(cartago, "Cartago", "Cartago")) ;
 ```
 
 **Descripción:** Parsea una oración a partir de un flujo de entrada. Su salida es tanto la oración como la lista de tokens que la suceden y que deben luego parsearse como más oraciones. Una oración puede ser una forma exclamativa, una forma nominal independiente o una estructura subjeto-verbo-objeto (SVO).
@@ -819,7 +828,8 @@ componentes. Ejemplo:
 % Yo estoy en Cartago => clave es 'cartago'
 SVO = svo(nominal(yo, "yo", "yo"), verbal([estoy]), nominal(cartago, "Cartago")).
 % Yo estoy en el parque yendo a tres ríos => clave es 'tresrios'
-SVO = svo(nominal(yo, "yo", "yo"), verbal([estoy]), svo(nominal(parque, "parque"), verbal([yendo]), nominal(tresrios, "Tres ríos"))).
+SVO = svo(nominal(yo, "yo", "yo"), verbal([estoy]), 
+          svo(nominal(parque, "parque"), verbal([yendo]), nominal(tresrios, "Tres ríos"))).
 ```
 Las estructuras SVO son el elemento clave en la identificación de respuestas a
 preguntas hechas al usuario, ya que la tendencia del idioma español es a
@@ -837,7 +847,8 @@ aparecen, construyendo un árbol SVO de necesitarse, siendo el resultado un
 árbol SVO validado o una forma nominal, pero nunca una forma verbal. Ejemplos:
 ```prolog
 ?- parse_user_input("Hola wazelog estoy en Cartago.", R).
-R = ok([exclamation(greeting), svo(nominal('', "", ""), verbal([estoy]), nominal(cartago, "Cartago", "Cartago"))]).
+R = ok([exclamation(greeting), svo(nominal('', "", ""), 
+        verbal([estoy]), nominal(cartago, "Cartago", "Cartago"))]).
 
 ?- parse_user_input("Sí, Tres Ríos", R).
 R = ok([exclamation(affirmative), nominal(tresrios, "Tres Ríos", "Tres Ríos")]).
@@ -881,7 +892,7 @@ de estas dos formas:
 Nodo = node(padre, costo, visited).
 Nodo = node(padre, costo, unvisited).
 ```
-Es decir, contiene al mejor padre y mejor costo conocido hasta el momento, asṕi
+Es decir, contiene al mejor padre y mejor costo conocido hasta el momento, así
 como si el nodo ya ha sido visitado. Se define luego una cola de prioridad de
 estos nodos, según requiere el algoritmo, y diccionario de nodos conocidos (ya
 expandidos o a expandir) cuyas llaves son los identificadores de nodos (átomos
