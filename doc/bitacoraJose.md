@@ -37,7 +37,7 @@
 ### 1 de Abril
 
 - Se tradujeron varias de las reglas para mejorar la cohesión aparente del código, esto puesto que parte del código tenía reglas con argumentos y nombres en español, mientras otra sección se manejaba en inglés.
-- Se agregó documentación de algunas reglas principales
+- Se agregó documentación de algunas reglas principales.
 
 ### 3 de Abril
 
@@ -51,7 +51,15 @@
 
 - Se agregó documentación interna de código correspondiente a funciones varias de las secciones de código que manejan el procesamiento de lenguaje
 
+### 8 de Abril
+
+- Se confeccionó el diagrama de la solución general del algoritmo.
+- Se agregó parte de la descripción detallada del algoritmo de resolución
+- Se realizaron pruebas de calidad en diferentes sistemas operativos para asegurar la calidad del código y resolver posibles errores no encontrados hasta el momento.
+
+
 ### 9 de Abril
 
-- Se confeccionó la mayor parte del diagrama del programa.
-- Se agregó parte de la descripción detallada del algoritmo de resolución
+- Se agregaron las imágenes que corresponden al plan de actividades a la documentación.
+- Se integró la documentación interna de reglas y hechos a la documentación externa.
+- Se retocaron algunas secciones del manual de usuario y otras secciones de la documentación externa.
