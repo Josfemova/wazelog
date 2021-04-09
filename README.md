@@ -143,7 +143,7 @@ Antes de proceder con la explicación del algoritmo que describe el funcionamien
 Reglas y hechos son definidos en el programa para parsear la entrada de usuario basados en la gramática descrita por el BNF. En los diagramas que se muestran posteriormente el resto de reglas que se ven involucradas en el programa, se presenta el como se procesa la gramática para evitar saturar los diagramas con esta información, pero se debe tener presente que es con las reglas derivadas del BNF anterior que se realiza el proceso de parsing con el que funcionan reglas como `parse_user_input` y `unbounded`
 
 
-![]()
+![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/DiagramaSolGeneral.png)
 
 Se puede utilizar el diagrama anterior para navegar el algoritmo general de resolución. Nótese que el diagrama no contiene absolutamente todo el programa, sin embargo, las partes omitidas se consideran de una relevancia menor (impresión y contenido de mensajes mayormente), o se desarrollarán más adelante en esta sección.
 
@@ -163,6 +163,7 @@ Luego de la rutina inicial, se entra al estado raíz, dado en la regla `run`. Es
 
 Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento adicional posible, en casos de que el destino dado no sea lo suficientemente claro para el programa, pero igual sea identificable que el usuario se refiere a un lugar. Estos casos son manejados por la regla `pinpoint`, la cual trata de obtener la ciudad concreta en la cual se encuentra el destino de un usuario. E.g., el usuario puede querer dirigirse al mercado, pero al existir la posibilidad de que varias ciudades tengan mercados, pinpoint se encarga de resolver las preguntas de cuál mercado, y en qué ciudad queda dicho mercado. 
 
+![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/DiagramalPath.png)
 
 ## 1.4. Problemas sin solución
 
