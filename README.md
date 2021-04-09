@@ -993,14 +993,43 @@ No se reportan problemas sin solución.
 		
 		- <https://www.swi-prolog.org/pldoc/doc_for?object=encoding/1>
 
-2. 
+2. Pathfinding omite el ubicación inicial
 	
-	* _Descripción_:
-	* _Intentos de solución_:
-	* _Solución encontrada_:
-	* _Recomendaciones_:
+	* _Descripción_: Durante pruebas finales no relacionadas, se encontró que
+	  para origen de Corralillo, destino de Cartago e intermedio de Tres Ríos
+	  se reporta una ruta de Tres Ríos, San José, Cartago. Es decir, como si el
+	  origen fuera Tres Ríos.
+
+	* _Intentos de solución_: No hubo intentos sin éxito.
+
+	* _Solución encontrada_: Se decidió utilizar `trace/0`, ya que la lógica de
+	  pathfinding es no trivial y altamente recursivamente, por lo cual el
+	  problema no es evidente a simple vista. Utilizando esta herramienta, se
+	  notó que falla una unificación contra una llamada recursiva de
+	  `shortest_path_through` a sí misma. La razón de ello fue que en un commit
+	  anterior se había hecho que los tres costos de una arista (distancia,
+	  tiempo mínimo y tiempo máximo) estuviesen contenidos en una estructura
+	  llamada `cost` en vez de parámetros distintas. Sin embargo, este cambio
+	  no se aplicó en la línea donde se encontró el problema. Como Prolog es no
+	  tipado, y además permite tener distintos predicados con el mismo nombre
+	  mientras tengan distinto número de parámetros, esto no fue detectado en
+	  ninguna forma por SWI-Prolog.  Se arregla el error.
+
 	* _Conclusiones_:
+	  - `trace/0` es una herramienta de depuración útil.
+	  - Como Prolog es un lenguaje no tipado, pueden surgir problemas sutiles
+		que en un lenguaje tipado provocarían un error claro en tiempo de
+		compilación o ejecución.
+
+	* _Recomendaciones_:
+	  - Realizar pruebas de código no trivial que se escriba en Prolog, ya que
+		la confianza que el programador puede tener en aspectos de correctitud
+		es menor.
+
 	* _Bibliografía_:
+	  - <https://www.swi-prolog.org/pldoc/man?section=debugger>.
+
+No se encontraron otros problemas.
 
 ## 1.7. Conclusiones y Recomendaciones del Proyecto
 
