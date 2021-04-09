@@ -163,7 +163,7 @@ Luego de la rutina inicial, se entra al estado raíz, dado en la regla `run`. Es
 
 Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento adicional posible, en casos de que el destino dado no sea lo suficientemente claro para el programa, pero igual sea identificable que el usuario se refiere a un lugar. Estos casos son manejados por la regla `pinpoint`, la cual trata de obtener la ciudad concreta en la cual se encuentra el destino de un usuario. E.g., el usuario puede querer dirigirse al mercado, pero al existir la posibilidad de que varias ciudades tengan mercados, pinpoint se encarga de resolver las preguntas de cuál mercado, y en qué ciudad queda dicho mercado. 
 
-![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/DiagramalPath.png)
+![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/DiagramaPath.png)
 
 ## 1.4. Problemas sin solución
 
