@@ -202,15 +202,16 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 
 ## 1.8. Bibliografía
 
-<https://www.swi-prolog.org/pldoc/man?section=readutil>
-<https://www.swi-prolog.org/pldoc/man?section=dicts>
-<https://www.swi-prolog.org/pldoc/doc/_SWI_/library/heaps.pl>
-<>
-<>
-<>
-<>
-<>
-<>
+- Especificación.
+- Presentaciones, grabaciones y material de clase.
+- <https://www.swi-prolog.org/pldoc/man?section=readutil>.
+- <https://www.swi-prolog.org/pldoc/man?section=dicts>.
+- <https://www.swi-prolog.org/pldoc/doc/_SWI_/library/heaps.pl>.
+- <https://www.swi-prolog.org/pldoc/man?section=encoding>.
+- <https://www.swi-prolog.org/pldoc/man?section=strings>.
+- <https://www.swi-prolog.org/pldoc/man?section=strings>.
+- <https://www.swi-prolog.org/pldoc/man?section=dynpreds>.
+- <https://www.swi-prolog.org/pldoc/man?predicate=format/3>.
 
 
 ## 1.9. Bitácoras
