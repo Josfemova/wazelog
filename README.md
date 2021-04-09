@@ -723,6 +723,173 @@ true.
 
 ## 1.2. Descripción de las estructuras de datos desarrolladas
 
+### *Tokens*
+
+La entrada de usuario se toma como una cadena de texto.  Esta cadena incurre
+análisis léxico para transformarse en una lista de tokens, cada uno de los
+cuales puede tomar una de dos formas: palabra o puntuación, siendo ejemplos los
+siguientes:
+```prolog
+Palabra = word(paraiso, "Paraíso").
+Punct = punct('.').
+```
+Nótese que los elementos de puntuación se conforman solo por átomos dados por
+el respectivo carácter, mientras que las palabras incluyen tanto un átomo
+"reducido" como la cadena original. El átomo reducido o no decorado, concepto
+del que depende gran parte de la lógica de la aplicación, se obtiene al
+convertir la cadena a minúscula y eliminar acentos, para luego atomizar tal
+cadena intermedia. Esto significa que, para el programa, es lo mismo decir
+`"paraiso"`, `"PARAISO"`, `"Paraíso"`, `"PáRÁÍsO"`, etc. La intención de ello
+es mejorar las probabilidades de que el programa entienda al usuario si es que
+el usuario no es gramaticalmente pedante.
+
+Las palabras se clasifican en varios tipos según una base de hechos. Pueden
+clasificarse como verbos, indicaciones exclamativas, palabras de relleno sin
+clasificar, palabras de relleno prepuestas a nominales, contracciones
+expandibles y, asumido por defecto en el caso común de que para una palabra no
+se cumple ninguna de las anteriores, se asumen como forma nominal de término
+individual.
+
+### *Formas verbales*
+
+Durante el proceso de parsing, una lista de tokens puede ensamblarse en una
+de varias estructuras de mayor significado. Las formas verbales se definen
+como verbos individuales o secuencias consecutivas de verbos, posiblemente
+separados por palabras de relleno. El principal propósito de las formas
+verbales, para aspectos de la interpretación que debe dar el programa a las
+entradas, es la de servir como indicadores de división entre formas nominales.
+Un ejemplo de forma verbal sigue:
+```prolog
+% Se obtiene de [word(Me, "me"), word(gustaria, "gustaría", word(ir, "ir")]
+FormaVerbal = verbal([gustaria, ir]).
+```
+Nótese que las formas verbales descartan la cadena original que `word` incluye.
+Esto se debe a que esta información ya no es necesaria una vez que se tiene una
+forma verbal, y solo se utiliza en otros casos, como por ejemplo las formas
+nominales. La lista de verbos no puede estar vacía, y que lo estuviera se
+considera un error de forma de la entrada.
+
+### *Formas nominales*
+
+Son análogas a las formas verbales, siendo construidas a partir de uno o más
+tokens que fueron clasificados como nominales. Las formas nominales sí
+preservan el texto original de `word` producido por el análisis léxico. Existen
+dos variantes de formas nominales, ambas mostradas a continuación:
+```prolog
+Individual = nominal(cartago, "Cartago").
+Completa = nominal(cartago, "Cartago", "Cartago").
+Completa = nominal(sanjosé, "San José", "San José").
+Completa = nominal(sabana, "La Sabana", "Sabana").
+```
+La forma "individual" solamente existe como un paso intermedio durante
+parsing, y se origina directamente de la clasificación de tokens. Los
+artículos y otros tokens de relleno prepuestos a nominales no se clasifican
+como nominales individuales. Conforme se construye un árbol sintáctico,
+se van conformando formas nominales completas a partir de secuencias
+consecutivas, posiblemente con palabras de relleno de por medio, de
+nominales individuales y tokens de relleno prepuestos a nominales. En
+el caso del ejemplo anterior, el nominal individual `"Cartago"` es
+promovido a nominal completo. En otro ejemplo también presentado,
+dos nominales individuales debieron concatenarse para formar `"San José"`.
+
+En el último ejemplo se evidencia la necesidad de la separación entre nominales
+individuales y completos, ya que `"La Sabana"` incluye un término que no es
+nominal ("la"). En ocasiones, el programa necesitará utilizar una forma sin
+artículos o con artículos de una expresión nominal, justificando lo anterior.
+Nótese que "la" no forma parte del átomo que identifica al nominal completo.
+Esto quiere decir que oraciones como "ir a TEC" e "ir al TEC" se interpretan de
+prácticamente la misma forma, ya que el átomo identificante no varía. Un átomo
+vacío puede surgir a partir de una palabra de relleno prepuesta a nominal que
+no es realmente seguida por un nominal, lo cual se considera un error de forma.
+
+### *Árboles subjeto-verbo-objeto (SVO)*
+
+Las formas verbales y nominales tienen la restricción de solo poder ser
+constituidas por palabras consecutivas del mismo régimen (excluyendo palabras
+de relleno). Cuando una forma verbal sigue a una forma nominal, o viceversa, se
+forma una estructura SVO. Si una oración es iniciada por una forma verbal, el
+sujeto del SVO de primer nivel será tácito. Si una forma verbal no es sucedida
+por una forma nominal, se forma una un SVO sin predicado, lo cual nunca es
+válido. Las estructuras SVO forman árboles de sí mismas, acumulándose las
+subestructuras en los predicados/objetos. Por ejemplo, una secuencia de la
+forma verbal-nominal-verbal-nominal resulta en un SVO de primer nivel con
+sujeto tácito, y cuyo predicado es a su vez un SVO que posee completos los tres
+componentes. Ejemplo:
+```prolog
+% Yo estoy en Cartago => clave es 'cartago'
+SVO = svo(nominal(yo, "yo", "yo"), verbal([estoy]), nominal(cartago, "Cartago")).
+% Yo estoy en el parque yendo a tres ríos => clave es 'tresrios'
+SVO = svo(nominal(yo, "yo", "yo"), verbal([estoy]), svo(nominal(parque, "parque"), verbal([yendo]), nominal(tresrios, "Tres ríos"))).
+```
+Las estructuras SVO son el elemento clave en la identificación de respuestas a
+preguntas hechas al usuario, ya que la tendencia del idioma español es a
+colocar la misma en lo que termina siendo el predicado más profundo del árbol.
+
+### *Oraciones*
+
+Una oración puede ser de naturaleza exclamativa o no exclamativa. Se parsea una
+oración exclamativa al encontrar un token exclamativo ("no", "adiós") y luego
+se descartan tokens mientras se encuentren tokens de relleno, tokens nominales
+o hasta encontrar un separador explícito de oración. La última oración en una
+entrada no necesita terminar con un separador. Si no se cumple la condición
+para una oración exclamativa, se parsean formas verbales y nominales conforme
+aparecen, construyendo un árbol SVO de necesitarse, siendo el resultado un
+árbol SVO validado o una forma nominal, pero nunca una forma verbal. Ejemplos:
+```prolog
+?- parse_user_input("Hola wazelog estoy en Cartago.", R).
+R = ok([exclamation(greeting), svo(nominal('', "", ""), verbal([estoy]), nominal(cartago, "Cartago", "Cartago"))]).
+
+?- parse_user_input("Sí, Tres Ríos", R).
+R = ok([exclamation(affirmative), nominal(tresrios, "Tres Ríos", "Tres Ríos")]).
+
+?- parse_user_input("adiós, muchas gracias!", R).
+R = ok([exclamation(bye), exclamation(misc)]).
+```
+En este ejemplo, la lista dentro de cada `ok` es una lista de oraciones.
+
+### *Lugares conocidos y grafo de rutas*
+
+Cada lugar (llamado "ciudad" en código) se identifica por el átomo reducido que
+se conoce resultará a partir de su nombre real, así como la forma correcta del
+nombre real. Por ejemplo,
+```prolog
+city(sanjose, "San José").
+```
+El grafo mixto que define las posibles rutas entre lugares conocidos se
+establece como una base de hechos. Cada arista del grafo tiene un origen, un
+destino, una distancia, un tiempo mínimo de ruta y un tiempo máximo, en ese
+orden. Las aristas realmente son siempre unidireccionales, y simplemente se
+agrega una regla para transformar aristas bidireccionales en dos aristas
+unidireccionales.
+```prolog
+arco_bi(sanjose, cartago, 20, 20, 40).
+% Equivalente a las siguientes dos
+arco(sanjose, cartago, 20, 20, 40).
+arco(cartago, sanjose, 20, 20, 40).
+```
+La búsqueda de mejor ruta se realiza utilizando el algoritmo de Dijkstra, según
+se describe en la respectiva sección de este documento.
+
+### *Estructuras misceláneas para pathfinding*
+
+Existen algunas estructuras de datos, casi todas implementadas por los autores
+de SWI-Prolog y no los autores de este documento, que se requieren en la
+implementación del algoritmo de Dijkstra para propósitos de pathfinding.
+Primeramente, se define una estructura de nodo, la cual puede tomar una
+de estas dos formas:
+```prolog
+Nodo = node(padre, costo, visited).
+Nodo = node(padre, costo, unvisited).
+```
+Es decir, contiene al mejor padre y mejor costo conocido hasta el momento, asṕi
+como si el nodo ya ha sido visitado. Se define luego una cola de prioridad de
+estos nodos, según requiere el algoritmo, y diccionario de nodos conocidos (ya
+expandidos o a expandir) cuyas llaves son los identificadores de nodos (átomos
+reducidos). Este último es necesario para llevar cuenta de cambios a mejores
+padres/costos para un nodo dado. Si un nodo no se encuentra en el diccionario,
+se asume mejor padre indefinido, costo infinito y no visitado.
+
+
 ## 1.3. Descripción detallada de algoritmos desarrollado
 
 Para comprender el diseño de la solución, es necesario una descripción general primero. El objetivo de la asignación era la creación de un sistema experto capaz de interactuar con un agente humano para proveerle de la mejor ruta posible para una ubicación actual, un destino, y una serie de paradas intermedias posibles.
