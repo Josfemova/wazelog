@@ -1,6 +1,6 @@
 ---
 title: Instituto Tecnológico de Costa Rica\endgraf\bigskip \endgraf\bigskip\bigskip\
- Tarea Corta 2 - wazelog \endgraf\bigskip\bigskip\bigskip\bigskip
+ Tarea Corta 2 - Wazelog \endgraf\bigskip\bigskip\bigskip\bigskip
 author: 
 - José Morales Vargas 
 - Alejandro Soto Chacón
