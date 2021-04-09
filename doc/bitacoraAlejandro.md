@@ -174,3 +174,4 @@
 ## 9 de abril
 - Se finaliza documentación interna.
 - Se agrega bibliografía.
+- Se documentan estructuras de datos desarrolladas.
