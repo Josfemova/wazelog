@@ -221,6 +221,13 @@ q_src(es, again(_), "Creo que hay un malentendido. Por favor, me puede repetir, 
 q_src(en, first, "Welcome to WazeLog, the best logic to arrive at your destination. Where are you?").
 q_src(en, again(_), "Sorry, I couldn't understand you. Where are you right now?").
 
+%Regla: q_src(iteración, Prompt).
+%Ejemplo:
+%  ?- q_dest(first, Prompt).
+%  Prompt = "Perfecto, ¿cuál es su destino?".
+%Descripción: Define la pregunta de destino. Esta pregunta
+%puede cambiar si se ingresa una respuesta incorrecta la
+%primera vez, lo cual se expresa en el parámetro de iteración.
 q_dest(Iteration, Prompt) :-
 	lang(Lang),
 	q_dest(Lang, Iteration, Prompt).
