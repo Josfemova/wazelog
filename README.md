@@ -32,6 +32,43 @@ linestretch: 1.5
 
 ## 1.1. Descripción de los hechos y reglas implementadas
 
+### Hechos: `arco(origen, destino, distancia, tiempo, con_presa).`
+
+**Ejemplo:**
+
+```prolog
+?- arco(cartago, paraiso, D, Tmin, Tmax).
+D = 10,
+Tmin = 10,
+Tmax = 20.
+```
+
+**Descripción:** Declara arcos unidireccionales (el grafo es mixto).
+
+### Hechos: `arco_bi(lugar1, lugar2, distancia, tiempo, con_presa).`
+
+**Ejemplo:**
+
+```prolog
+?- arco_bi(sanjose, cartago, D, Tmin, Tmax).
+D = 20,
+Tmin = 20,
+Tmax = 40.
+```
+
+**Descripción:** Declara arcos bidireccionales (el grafo es mixto).
+
+### Hechos: `city(lugar, nombre).`
+
+**Ejemplo:**
+
+```prolog
+?- city(sanjose, N).
+N = "San José".
+```
+
+**Descripción:** Declara las ciudades conocidas y sus nombres.
+
 ### Hechos: `supported_lang(lenguaje).`
 
 **Ejemplo:**
@@ -77,6 +114,19 @@ true.
 ```
 
 **Descripción:** Agrega un espacio al final de una cadena solamente si la entrada no es la cadena vacía.
+
+### Regla: `arco(origen, destino, distancia, tiempo, con_presa).`
+
+**Ejemplo:**
+
+```prolog
+?- arco(cartago, sanjose, D, Tmin, Tmax).
+D = 20,
+Tmin = 20,
+Tmax = 40.
+```
+
+**Descripción:** Descompone arcos bidireccionales en dos arcos unidireccionales, simplificando la lógica de grafo.
 
 ### Regla: `ask_city(prompter, repeat(estado, Siguiente)).`
 
