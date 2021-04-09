@@ -1,6 +1,6 @@
 ---
 title: Instituto Tecnológico de Costa Rica\endgraf\bigskip \endgraf\bigskip\bigskip\
- Tarea Corta 2 - BlaCEJack \endgraf\bigskip\bigskip\bigskip\bigskip
+ Tarea Corta 2 - wazelog \endgraf\bigskip\bigskip\bigskip\bigskip
 author: 
 - José Morales Vargas 
 - Alejandro Soto Chacón
@@ -171,7 +171,28 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 
 ## 1.6. Problemas solucionados
 
-### Errores con caracteres especiales del idioma español
+1. Errores con caracteres especiales del idioma español
+	
+	* _Descripción_: Mientras se realizaban pruebas de comprobación de calidad se identificó un problema con la codificación en el ambiente de Windows 10. Ni la consola ni el software de SWI-Prolog parecen ser compatibles con UTF-8 en la plataforma de Windows, a pesar de no ser así en linux. Esta incompatibilidad significa que las interacciones usuario-sistema se veían afectadas ya que no había errores en la interpretación de la entrada de usuario y en la escritura de mensaje para el usuario. 
+	* _Intentos de solución_: Se trató de utilizar la regla de encoding para forzar un reconocimiento de UTF-8, y aunque esto permitía ya que la interpretación correcta del archivo, igual se daban problema en la lectura de la entrada de usuario, porque la codificación del stream permanece en otro formato. 
+	* _Solución encontrada_: Se consiguió una doble solución. Ambas se implementaron. Una versión del programa evita los caracteres especiales como la ñ y la tilde, mientras que otro se codificó en latin1 y se logró mantener la interacción en español con caracteres especiales incluídos.
+	* _Recomendaciones_:
+		- Si se quiere evitar problemas de codificación de consola con SWI-Prolog, es preferible utilizar un sistema basado en GNU/Linux, puesto que el problema parece ser único de la plataforma de Windows.
+		- Si se quiere conservar la posibilidad de una interacción con tildes y eñes, una alternativa recomendable es codificar los archivos en latin1, pues parece que la compatibilidad de esta codificación con Windows es capaz de proveer esta posibilidad.
+	* _Conclusiones_:
+		- Se confirma como una
+	* _Bibliografía_:
+		
+		- <https://www.swi-prolog.org/pldoc/doc_for?object=encoding/1>
+
+2. 
+	
+	* _Descripción_:
+	* _Intentos de solución_:
+	* _Solución encontrada_:
+	* _Recomendaciones_:
+	* _Conclusiones_:
+	* _Bibliografía_:
 
 ## 1.7. Conclusiones y Recomendaciones del Proyecto
 
@@ -181,6 +202,15 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 
 ## 1.8. Bibliografía
 
-<https://www.swi-prolog.org/pldoc/doc_for?object=read_line_to_string/2>
+<https://www.swi-prolog.org/pldoc/man?section=readutil>
+<https://www.swi-prolog.org/pldoc/man?section=dicts>
+<https://www.swi-prolog.org/pldoc/doc/_SWI_/library/heaps.pl>
+<>
+<>
+<>
+<>
+<>
+<>
+
 
 ## 1.9. Bitácoras
