@@ -973,6 +973,8 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 
 ## 1.4. Problemas sin solución
 
+No se reportan problemas sin solución.
+
 ## 1.5. Actividades realizadas por estudiante
 
 ## 1.6. Problemas solucionados
