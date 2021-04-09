@@ -143,7 +143,7 @@ Antes de proceder con la explicación del algoritmo que describe el funcionamien
 Reglas y hechos son definidos en el programa para parsear la entrada de usuario basados en la gramática descrita por el BNF. En los diagramas que se muestran posteriormente el resto de reglas que se ven involucradas en el programa, se presenta el como se procesa la gramática para evitar saturar los diagramas con esta información, pero se debe tener presente que es con las reglas derivadas del BNF anterior que se realiza el proceso de parsing con el que funcionan reglas como `parse_user_input` y `unbounded`
 
 
-![](link diagrama)
+![]()
 
 Se puede utilizar el diagrama anterior para navegar el algoritmo general de resolución. Nótese que el diagrama no contiene absolutamente todo el programa, sin embargo, las partes omitidas se consideran de una relevancia menor (impresión y contenido de mensajes mayormente), o se desarrollarán más adelante en esta sección.
 
