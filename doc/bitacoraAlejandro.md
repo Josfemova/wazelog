@@ -175,3 +175,6 @@
 - Se finaliza documentación interna.
 - Se agrega bibliografía.
 - Se documentan estructuras de datos desarrolladas.
+- Se documentan problemas sin solución (ninguno).
+- Se documentan conclusiones y recomendaciones.
+- Se documentan problemas encontrados.

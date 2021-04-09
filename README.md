@@ -1023,6 +1023,8 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 
 ## 1.4. Problemas sin solución
 
+No se reportan problemas sin solución.
+
 ## 1.5. Actividades realizadas por estudiante
 
 ![](https://raw.githubusercontent.com/Josfemova/wazelog/main/doc/planActividades1.png)
@@ -1046,19 +1048,99 @@ Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento 
 	* _Bibliografía_:
 		- <https://www.swi-prolog.org/pldoc/doc_for?object=encoding/1>
 
-2. 
+2. Pathfinding omite el ubicación inicial
 	
-	* _Descripción_:
-	* _Intentos de solución_:
-	* _Solución encontrada_:
-	* _Recomendaciones_:
+	* _Descripción_: Durante pruebas finales no relacionadas, se encontró que
+	  para origen de Corralillo, destino de Cartago e intermedio de Tres Ríos
+	  se reporta una ruta de Tres Ríos, San José, Cartago. Es decir, como si el
+	  origen fuera Tres Ríos.
+
+	* _Intentos de solución_: No hubo intentos sin éxito.
+
+	* _Solución encontrada_: Se decidió utilizar `trace/0`, ya que la lógica de
+	  pathfinding es no trivial y altamente recursivamente, por lo cual el
+	  problema no es evidente a simple vista. Utilizando esta herramienta, se
+	  notó que falla una unificación contra una llamada recursiva de
+	  `shortest_path_through` a sí misma. La razón de ello fue que en un commit
+	  anterior se había hecho que los tres costos de una arista (distancia,
+	  tiempo mínimo y tiempo máximo) estuviesen contenidos en una estructura
+	  llamada `cost` en vez de parámetros distintas. Sin embargo, este cambio
+	  no se aplicó en la línea donde se encontró el problema. Como Prolog es no
+	  tipado, y además permite tener distintos predicados con el mismo nombre
+	  mientras tengan distinto número de parámetros, esto no fue detectado en
+	  ninguna forma por SWI-Prolog.  Se arregla el error.
+
 	* _Conclusiones_:
+	  - `trace/0` es una herramienta de depuración útil.
+	  - Como Prolog es un lenguaje no tipado, pueden surgir problemas sutiles
+		que en un lenguaje tipado provocarían un error claro en tiempo de
+		compilación o ejecución.
+
+	* _Recomendaciones_:
+	  - Realizar pruebas de código no trivial que se escriba en Prolog, ya que
+		la confianza que el programador puede tener en aspectos de correctitud
+		es menor.
+
 	* _Bibliografía_:
+	  - <https://www.swi-prolog.org/pldoc/man?section=debugger>.
+
+No se encontraron otros problemas.
 
 ## 1.7. Conclusiones y Recomendaciones del Proyecto
 
-- Dado su estatus relativamente estándar en el mercado, es recomendable utilizar BNF's para describir una gramática libre de contexto en caso de que se esté utilizando una, esto pues permite modelar el procesamiento de lenguaje de forma agnóstica respecto al lenguaje de implementación, y al mismo tiempo sirve de guía para la implementación en cualquier lenguaje. 
+### Conclusiones
 
+- Dado su estatus relativamente estándar en el mercado, es recomendable
+  utilizar BNFs para describir una gramática libre de contexto en caso de que
+  se esté utilizando una, esto pues permite modelar el procesamiento de
+  lenguaje de forma agnóstica respecto al lenguaje de implementación, y al
+  mismo tiempo sirve de guía para la implementación en cualquier lenguaje. 
+
+- El paradigma lógico, al menos en la forma de Prolog, puede provocar efectos
+  secundarios sutiles a veces difíciles de encontrar, específicamente en tomar
+  caminos y alternativas no deseadas o innecesarias. El corte `!` resuelve la
+  mayoría de estos problemas, pero al hacerlo difiere la responsabilidad al
+  programador.
+
+- La biblioteca extendida de SWI-Prolog dispuso de todo lo necesario para la
+  implementación del proyecto, considerándose suficientemente extensa, por lo
+  cual no se requirieron dependencias externas ni tampoco la implementación por
+  parte de estos autores de boilerplate.
+
+- Se encontró la posibilidad de extender el sistema experto para almacenar sus
+  inferencias de manera persistente en un sistema de archivos. Este soporte no
+  se implementó en nuestra implementación de la especificación, pero se
+  considera importante mencionarlo.
+
+- El soporte para Unicode y codificaciones distintas a la nativa por parte de
+  SWI-Prolog es incompleto.
+
+- El procesamiento de lenguaje natural es un proceso que rápidamente se vuelve
+  extremadamente complicado, inherentemente imperfecto y, aunque funcional en
+  casos probados, existen en cantidades innombrables casos que no funcionarían.
+
+### Recomendaciones
+
+- Utilizar SWI-Prolog en caso de que se necesite una implementación
+  del lenguaje Prolog, ya que sus extensiones al estándar son útiles
+  en casos comunes.
+
+- Considerar la mayor responsabilidad en temas de correctitud que, en general,
+  posee un programador al escribir en Prolog que en lenguajes de mayor uso.
+
+- Tomar en cuenta al desarrollar un sistema experto que la extensibilidad a
+  escala del usuario es importante, no debe esperarse que este edite
+  directamente el código fuente u otros detalles internos, por lo cual es
+  deseable la persistencia y mutabilidad de la base de hechos.
+
+- Probar sistemas a usarse con SWI-Prolog bajo sistemas con distintas
+  codificaciones. En caso de ocurrir problemas, dirigirse hacia la forma en que
+  SWI-Prolog espera que se codifique código fuente, entrada y salida y lo que
+  espera el sistema operativo en búsqueda de inconsistencias.
+
+- Escoger una solución basada en procesamiento de lenguaje natural solo cuando
+  esto sea verdaderamente deseable, incluyendo las complicaciones que
+  necesariamente ocurrirán. De no cumplirse esto, escoger un lenguaje formal.
 
 ## 1.8. Bibliografía
 
