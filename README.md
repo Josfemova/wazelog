@@ -47,10 +47,6 @@ La infraestructura básica de un sistema experto se puede separar en la base de 
 
 El solución final cumple con esta especificación. Se provee un programa cuya modularidad permite una fácil modificación y adaptación del sistema, y una separación lógica que hace de la toma de decisiones un proceso que sucede de modo fácil de seguir, explicar, y modificar según los requisitos del sistema.
 
-
-![](link diagrama)
-
-
 Para la resolución general del problema se identificaron tres secciones esenciales para el funcionamiento del programa: 
  
  * Análisis de lenguaje natural mediante gramáticas libres de contexto.
@@ -61,6 +57,112 @@ El centro del programa es la interfaz, puesto que administra el flujo de evaluac
 
 El flujo del programa es uno en que de manera incremental se va obteniendo información respecto al problema que se quiere solucionar, y la rutina de obtención de información termina hasta que el usuario haya dado de manera implícita una indicación de que ya no hay más datos para procesar. Una vez determinado que no es necesario procesar más datos de entrada, se obtiene la solución al problema modelado por la información dada por el usuario, en este caso, la búsqueda de una ruta óptima entre dos puntos en un grafo.
 
+Antes de proceder con la explicación del algoritmo que describe el funcionamiento del programa, es esencial ver como interpreta el programa la entrada provista por el usuario. En el caso de la versión de wazelog desarrollada, se utiliza una gramática libre de contexto descrita por el siguiente Bach-Naur Form (BNF):
+
+```BNF
+<input> ::= <sentence-sep> <input>
+          | <sentence> <extra-input>
+
+<extra-input> ::= <sentence-sep> <extra-input>
+                | EOF
+                | <sentece> <extra-input>
+
+<sentence> ::= <filler> <sentence>
+             | <exclamation> <after-exclamation>
+             | <svo>
+
+<svo> ::= <verbal> <after-verbal>
+        | <nominal> <after-nominal>
+
+<after-verbal> ::= <filler> <after-verbal>
+                 | <svo>
+
+<after-nominal> ::= <filler> <after-nominal>
+                  | EOF
+                  | <sentence-sep>
+                  | <svo>
+
+<after-exclamation> ::= EOF
+                      | <sentence-sep>
+                      | <nominal> <after-exclamation>
+                      | <filler> <after-exclamation>
+                      | <verbal> <after-verbal>
+
+<filler> ::= <unclassified>
+           | <before-nominal>
+           | <contraction>
+
+<sentence-sep> ::= '.'
+                 | ','
+                 | ';'
+                 | ':'
+
+<exclamation> ::= 'si'
+                | 'no'
+                | 'hola'
+                | 'adios'
+                | 'gracias'
+
+<nominal> ::= <(todo token que no sea <verbal> | <exclamation> | <filler>)>
+
+<verbal> ::= 'esta'
+           | 'estoy'
+           | 'encuentro'
+           | 'encuentra'
+           | 'voy'
+           | 'necesito'
+           | 'ir'
+           | 'es'
+           | 'llegar'
+           | 'pasar'
+           | 'ubica'
+           | 'gustaria'
+
+<unclassified> ::= 'me'
+                 | 'que'
+                 | 'a'
+                 | 'se'
+                 | 'en'
+                 | 'un'
+                 | 'una'
+                 | 'tengo'
+                 | 'por'
+                 | 'muchas'
+
+<before-nominal> ::= 'el'
+                   | 'los'
+                   | 'la'
+                   | 'las'
+                   | 'de'
+
+<contraction> ::= 'al'
+                | 'del'
+
+```
+
+Reglas y hechos son definidos en el programa para parsear la entrada de usuario basados en la gramática descrita por el BNF. En los diagramas que se muestran posteriormente el resto de reglas que se ven involucradas en el programa, se presenta el como se procesa la gramática para evitar saturar los diagramas con esta información, pero se debe tener presente que es con las reglas derivadas del BNF anterior que se realiza el proceso de parsing con el que funcionan reglas como `parse_user_input` y `unbounded`
+
+
+![](link diagrama)
+
+Se puede utilizar el diagrama anterior para navegar el algoritmo general de resolución. Nótese que el diagrama no contiene absolutamente todo el programa, sin embargo, las partes omitidas se consideran de una relevancia menor (impresión y contenido de mensajes mayormente), o se desarrollarán más adelante en esta sección.
+
+Primero, se puede observar una etapa inicial relativamente lineal. El punto de entrada por medio de la regla `main` permite especificar un lenguaje para la operación del programa, luego de esto, se configuran las opciones de operación por medio de la regla `set_lang` y otras configuraciones menores, y luego de esto se entra al programa en sí por medio de la regla `start`, la cual indica si el programa se encuentra en un estado activo. La condición en el que el programa es inactivo se da una vez que el usuario le indique al sistema mediante una exclamacion de despedida que no es necesaria mayor interacción. De lo contrario, el sistema se dispondrá a atender a un nuevo usuario o una nueva consulta en caso de ser necesario.
+
+Luego de la rutina inicial, se entra al estado raíz, dado en la regla `run`. Esta útlima es el punto intermedio entre los 5 estados principales del sistema, los cuales se explican a continuación:
+
+1. Solicitud de ubicación: El programa le pregunta al usuario cual es su ubicación actual; en el diagrama denotado como `src`. Una vez obtenida una respuesta válida o exclamación de despedida, procede con el siguiente estado. En el diagrama, se observa que primero se llaman a reglas auxiliares que manejan las preguntas al usuario, y posterior a la evaluación de estas reglas es que se lee y parsea la entrada del usuario. 
+
+2. Solicitud de destino: Casi la misma rutina que la de solicitud de ubicación, pero en esta instancia la incógnita a resolverse es el destino del usuario. El programa seguirá preguntando un destino hasta obtener una respuesta válida. El flujo es prácticamente el mismo que en el primer estado, pero las preguntas al usuario cambian.
+
+3. Solicitud de destinos intermedios: Se entra en un ciclo que repite una rutina similar a los estados anteriores, solo que esta vez se dan preguntas continuas hasta obtener una indicación de parte del usuario que no quedan más destinos intermedios por procesar. 
+
+4. Procesamiento: Obtenidos los datos de ubicación, destino, y una lista de paradas intermedias, el programa calcula la mejor ruta a tomar mediante el uso de las reglas `shortest_path_through` y `shortest_path`. La primera regla se encargar de la inferencia de la ruta en sí, mientras que `shortest_path` evalúa otros datos relevantes para el usuario, tal como la distancia abarcada por la ruta, entre otras cosas.
+
+5. Emisión de la respuesta: Obtenida la ruta y los datos correspondientes a la misma, se le comunica al usuario el resultado obtenido y el sistema retorna al estado 1 para responder futuras consultas.
+
+Algo a tomar en cuenta para los estados 1, 2 y 3 es que el hay un procesamiento adicional posible, en casos de que el destino dado no sea lo suficientemente claro para el programa, pero igual sea identificable que el usuario se refiere a un lugar. Estos casos son manejados por la regla `pinpoint`, la cual trata de obtener la ciudad concreta en la cual se encuentra el destino de un usuario. E.g., el usuario puede querer dirigirse al mercado, pero al existir la posibilidad de que varias ciudades tengan mercados, pinpoint se encarga de resolver las preguntas de cuál mercado, y en qué ciudad queda dicho mercado. 
+
 
 ## 1.4. Problemas sin solución
 
@@ -68,7 +170,13 @@ El flujo del programa es uno en que de manera incremental se va obteniendo infor
 
 ## 1.6. Problemas solucionados
 
+### Errores con caracteres especiales del idioma español
+
 ## 1.7. Conclusiones y Recomendaciones del Proyecto
+
+- Dado su estatus relativamente estándar en el mercado, es recomendable utilizar BNF's para describir una gramática libre de contexto en caso de que se esté utilizando una, esto pues permite modelar el procesamiento de lenguaje de forma agnóstica respecto al lenguaje de implementación, y al mismo tiempo sirve de guía para la implementación en cualquier lenguaje. 
+
+
 
 ## 1.8. Bibliografía
 

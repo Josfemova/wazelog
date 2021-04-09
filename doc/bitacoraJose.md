@@ -50,3 +50,8 @@
 ### 5 de Abril
 
 - Se agregó documentación interna de código correspondiente a funciones varias de las secciones de código que manejan el procesamiento de lenguaje
+
+### 9 de Abril
+
+- Se confeccionó la mayor parte del diagrama del programa.
+- Se agregó parte de la descripción detallada del algoritmo de resolución
