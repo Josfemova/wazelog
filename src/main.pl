@@ -8,9 +8,9 @@
 %Ejemplo:
 %  ?- main(["--lang", es]).
 %  ...
-%Descripción: Entrypoint de la aplicación.
+%Descripcion: Entrypoint de la aplicacion.
 %Se debe proporcionar un lenguaje por la
-%línea de comandos (parámetro `Argv`).
+%linea de comandos (parametro `Argv`).
 main(['--lang', Lang]) :-
 	set_lang(Lang),
 	!,
@@ -22,9 +22,9 @@ main(_) :-
 %Ejemplo:
 %  ?- loop. 
 %  ...
-%Descripción: Bucle principal. Ejecuta en repetición
+%Descripcion: Bucle principal. Ejecuta en repeticion
 %la rutina conversacional de WazeLog hasta que el usuario
-%indique que desea salir de la aplicación.
+%indique que desea salir de la aplicacion.
 loop :-
 	start(Out),
 	(

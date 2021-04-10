@@ -19,7 +19,7 @@
 %Ejemplo: 
 %?- wazelog_writeln("Hola, gracias por usar wazelog").
 %[wazelog]:::| Hola, gracias por usar wazelog :::|
-%Descripción: Un mensaje de wazelog se compone por un string, el cual se imprime en pantalla utilizando el stream de salida por defecto.
+%Descripcion: Un mensaje de wazelog se compone por un string, el cual se imprime en pantalla utilizando el stream de salida por defecto.
 wazelog_writeln(Msg) :-
 	format("[Wazelog]:::| ~s :::|\n", [Msg]).
 
@@ -27,7 +27,7 @@ wazelog_writeln(Msg) :-
 %Ejemplo: 
 %?- spacing.
 %=========================================================================================
-%Descripción: Un espaciado es un agregado estético a la salida en en stream de salida por defecto conformado por una cadena de símbolos '='
+%Descripcion: Un espaciado es un agregado estetico a la salida en en stream de salida por defecto conformado por una cadena de simbolos '='
 spacing :-
 	tty_size(_, Width),
 	string_repeat("=", Width, Repeated),
@@ -37,7 +37,7 @@ spacing :-
 %Ejemplo:
 %?- string_repeat("=", 5, B).
 %"=====".
-%Descripción: `Repeated` es un parámetro de salida el cuál toma el valor de la serie de caracteres especificados por `Base` repetidos `Times` veces. 
+%Descripcion: `Repeated` es un parametro de salida el cual toma el valor de la serie de caracteres especificados por `Base` repetidos `Times` veces. 
 string_repeat(_, 0, "") :-
 	!.
 string_repeat(Base, Times, Repeated) :-
@@ -50,7 +50,7 @@ string_repeat(Base, Times, Repeated) :-
 %?- read_user_input(R).
 %@usuario: yo voy a la sabana.
 %R = ok([svo(nominal(yo, "yo", "yo"), verbal([voy]), nominal(sabana, "la sabana", "sabana"))]).
-%Descripción: Una entrada de un usuario se puede descomponer en una estructura definida por la gramática libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Si esta descomposición es exitosa, `R` será `ok(Descomp)` donde `Descomp` es esta descomposición. `R` es `bye` si el usuario detiene la entrada, y `fail(T)` si hay un fallo sintáctico, donde `T` es un token.
+%Descripcion: Una entrada de un usuario se puede descomponer en una estructura definida por la gramatica libre de contexto, la cual se compone por sujeto, verbo y objeto-complemento. Si esta descomposicion es exitosa, `R` sera `ok(Descomp)` donde `Descomp` es esta descomposicion. `R` es `bye` si el usuario detiene la entrada, y `fail(T)` si hay un fallo sintactico, donde `T` es un token.
 read_user_input(Result) :-
 	user_title(Title),
 	format("@~s: ", [Title]),
@@ -73,8 +73,8 @@ read_user_input(Result) :-
 %Regla: translate(lista_nombres, salida, estado)
 %Ejemplo:
 %  ?- translate([cartago, paraiso], R).
-%  R = "Cartago, Paraíso".
-%Descripción: Une una lista de ciudades por coma,
+%  R = "Cartago, Paraiso".
+%Descripcion: Une una lista de ciudades por coma,
 %convirtiendo a su forma mostrable en el proceso.
 translate(Path, SRes) :-
 	translate(Path, [], SRes).
@@ -90,8 +90,8 @@ translate([City | Path], S, SRes) :-
 %  ?- start(R).
 %  ...
 %  R = stop.
-%Descripción: Realiza una iteración de
-%la rutina de la aplicación. La salida es
+%Descripcion: Realiza una iteracion de
+%la rutina de la aplicacion. La salida es
 %`stop` si el usuario decide salir, de lo
 %contrario `continue`.
 start(Then) :-
@@ -103,7 +103,7 @@ start(Then) :-
 %  ?- run(start, start, R).
 %  ...
 %  R = stop.
-%Descripción: Máquina de estados finitos que
+%Descripcion: Maquina de estados finitos que
 %constituye las distintas transiciones en la
 %rutina conversacional de WazeLog. El estado
 %inicial es `start`. El predicado se invoca
@@ -143,16 +143,16 @@ run(stops(Paradas), src_dest(Src, Dest), continue) :-
 %  ?- ask_in_loop(ask_stops, Paradas).
 %  ...
 %  Paradas = stops([cartago, tresrios]).
-%Descripción: Ejecuta `predicado` con un parámetro
-%de la forma `repeat(It, Then)`. `It` es la iteración
+%Descripcion: Ejecuta `predicado` con un parametro
+%de la forma `repeat(It, Then)`. `It` es la iteracion
 %actual, inicialmente `first`. `Then` debe ser unificado
 %por el predicado invocado, y puede ser `done(Salida)`,
 %en cuyo caso `ask_in_loop` termina, o cualquier otro.
 %Si es cualquier otro, se repite el bucle con ese `Then`
-%como entrada del predicado, lo cual permite formar máquinas
+%como entrada del predicado, lo cual permite formar maquinas
 %de estados finitos. Si el predicado falla, se vuelve a
 %ejecutar con la misma entrada si es que esta entrada ya
-%tenía la forma `done(_)`. De lo contrario, se vuelve a
+%tenia la forma `done(_)`. De lo contrario, se vuelve a
 %ejecutar con entrada `done(EntradaAnterior)`.
 ask_in_loop(Predicate, Input) :-
 	ask_in_loop(first, Predicate, Input).
@@ -176,14 +176,14 @@ ask_in_loop(Iteration, Predicate, Input) :-
 %  ?- ask_city(q_src, repeat(first, Then))
 %  ...
 %  Then = done(ok(cartago)).
-%Descripción: Hace una iteración del proceso de
+%Descripcion: Hace una iteracion del proceso de
 %preguntar una ciudad (origen o destino). A ser
 %utilizada con `ask_in_loop/2`. El "prompter" es
-%un predicado que acepta el estado de iteración actual
-%en un primer parámetro y una variable sin unificar en
+%un predicado que acepta el estado de iteracion actual
+%en un primer parametro y una variable sin unificar en
 %el segundo, unificando esta variable con la cadena de
 %pregunta respectiva. Esto permite unificar preguntas de
-%origen y destino en un único predicado.
+%origen y destino en un unico predicado.
 ask_city(Prompter, repeat(Iteration, done(Out))) :-
 	call(Prompter, Iteration, Prompt),
 	wazelog_writeln(Prompt),
@@ -204,7 +204,7 @@ ask_city(Prompter, repeat(Iteration, done(Out))) :-
 %  Then = stops([primera]).
 %  ?- ask_stops(repeat(stops([primera]), Then))
 %  Then = done(stops([primera, segunda])).
-%Descripción: Realiza una iteración de la rutina
+%Descripcion: Realiza una iteracion de la rutina
 %conversacional que pregunta la lista de paradas
 %intermedias que desea el usuario. A ser utilizada
 %con `ask_in_loop/2`. La salida final es de la
@@ -232,14 +232,14 @@ ask_stops(repeat(Iteration, Then)) :-
 		)
 	).
 
-%Regla: last_stops(iteración, Paradas).
+%Regla: last_stops(iteracion, Paradas).
 %Ejemplo:
 %  ?- last_stops(first, []).
 %  true.
 %  ?- last_stops(stops(X), Y).
 %  X = Y.
-%Descripción: Extrae una lista de paradas a
-%partir de una iteración dada en un bucle de
+%Descripcion: Extrae una lista de paradas a
+%partir de una iteracion dada en un bucle de
 %`ask_in_loop/2`. Utilizado por `ask_stops`.
 last_stops(first, []).
 last_stops(stops(Stops), Stops).
@@ -251,9 +251,9 @@ last_stops(again(Iteration), Stops) :-
 %  ?- pinpoint(nominal(banco, "banco", "banco"), Stop).
 %  ...
 %  Stop = tresrios.
-%Descripción: Pregunta en recursión al usuario
-%por la ubicación de un lugar desconocido. La
-%pregunta varía según si WazeLog es capaz de
+%Descripcion: Pregunta en recursion al usuario
+%por la ubicacion de un lugar desconocido. La
+%pregunta varia segun si WazeLog es capaz de
 %reconocer que la entrada se trata de un tipo
 %de lugar.
 pinpoint(nominal(Stop, _, _), Stop) :-
@@ -276,7 +276,7 @@ pinpoint(nominal(Place, Orig, Bare), Stop) :-
 %Ejemplo: 
 %?- stop_asking_intermed([exclamation(negative)]).
 %true.
-%Descripción: Describe si se debe dejar de preguntar al usuario por destinos intermedios. Esta condición se da solo si una exclamación negativa forma parte de la respuesta del usuario (la cual se encuentra descompuesta en Input).
+%Descripcion: Describe si se debe dejar de preguntar al usuario por destinos intermedios. Esta condicion se da solo si una exclamacion negativa forma parte de la respuesta del usuario (la cual se encuentra descompuesta en Input).
 stop_asking_intermed(Input) :- 
 	contains_term(exclamation(negative), Input).
 
@@ -286,8 +286,8 @@ stop_asking_intermed(Input) :-
 %  true.
 %  ?- stop([]).
 %  false.
-%Descripción: Tiene éxito solamente si existe
-%una exclamación de terminación en la entrada,
+%Descripcion: Tiene exito solamente si existe
+%una exclamacion de terminacion en la entrada,
 %indicando por tanto que el programa debe terminar.
 stop(Input) :- 
 	contains_term(exclamation(bye), Input).

@@ -1165,5 +1165,255 @@ No se encontraron otros problemas.
 - <https://www.swi-prolog.org/pldoc/man?predicate=format/3>.
 
 
-## 1.9. Bitácoras
+# 2. Bitácoras
 
+## *José Morales*
+
+### 19 de Marzo
+
+- Ambos miembros del equipo acordamos posponer el desarrollo hasta la siguiente semana debido a diferentes actividades en nuestros itinerarios.
+- Se realizó un análisis base de los requisitos del proyecto para tenerlos listos previo a la reunión de  de coordinación que se acordó para el 27 de marzo.
+
+### 27 de Marzo
+
+- Se realizó una reunión de coordinación con el compañero.
+- Se organizó la base del plan de actividades y se asignaron las distintas tareas
+- Se creo el repositorio del proyecto y se crearon los archivos base de trabajo, incluidos los correspondientes a documentación
+- Se investigó un poco sobre el procesamiento de las palabras para formular una idea de como podría estar llegando la información a la sección del sistema experto y el nivel de procesamiento de los datos del grafo
+
+### 28 de Marzo
+
+- Se agregaron algunas cláusulas de hechos, aunque las mismas probablemente tengan que cambiarse. Funcionan más como una guía para facilitar desarrollo posterior.
+- Se agregaron algunas cláusulas base de manejo del grafo.
+  
+### 29 de Marzo
+
+- Se agregaron mensajes de interfaz gráfica.
+- Se trabajo un poco en la parte de búsqueda de ruta en paralelo con el compañero Alejandro. En la tarde se realizó una reunión para conversar sobre los diferentes acercamientos al problema y se decidió mantener la implementación de la búsqueda de ruta hecha por el compañero. En esta misma reunión se decidió que mi persona trabajaría en la programación del autómata de que interactúa con el usuario.
+
+### 30 de Marzo
+
+- Se realizó gran parte de la implementación del autómata, incluyendo las preguntas de origen, destino, y las paradas intermedias en un viaje. 
+- Se realizaron pruebas de calidad relacionadas al desempeño del autómata y el acoplamiento con el procesador de lenguaje natural de manera que posteriormente se puedan hacer ajustes para mejorar la coherencia de los mensajes del autómata.
+
+### 31 de Marzo
+
+- Se integro la parte de pathfinding con el autómata. 
+- Se resolvieron la mayoría de problemas relacionados al funcionamiento del autómata. Falta cubrir algunos corner cases pero en su mayoría parece estar listo.
+- Se agregaron algunas clausulas para facilitar la traducción de átomos correspondientes a ciudades. Esto podría ser innecesario de modificarse un poco el código para procesar los elementos del pathfinding conservando los strings originales obtenidos del parser. 
+- Se agregaron adornos a la comunicación entre el usuario y WazeLog para hacer la comunicación con el usuario más clara y agradable.
+- De la parte de pathfinding noté que se deben resolver casos bidireccionales, le comuniqué al compañero al respecto para que pueda procesarlo a como lo vea mejor. 
+- Seria agradable agregar los datos de tiempo de viaje en caso de ser necesarios. Debo discutir esto con el compañero.
+
+### 1 de Abril
+
+- Se tradujeron varias de las reglas para mejorar la cohesión aparente del código, esto puesto que parte del código tenía reglas con argumentos y nombres en español, mientras otra sección se manejaba en inglés.
+- Se agregó documentación de algunas reglas principales.
+
+### 3 de Abril
+
+- Se agregó mayor documentación de reglas, específicamente las correspondientes a la parte del programa que interactúa directamente con el usuario.
+
+### 4 de Abril
+
+- Se agregaron más secciones de documentación interna al código y se cambió ligeramente el formato para ilustrar mejor los ejemplos y hacer más manejable para formatear posteriormente.
+
+### 5 de Abril
+
+- Se agregó documentación interna de código correspondiente a funciones varias de las secciones de código que manejan el procesamiento de lenguaje
+
+### 8 de Abril
+
+- Se confeccionó el diagrama de la solución general del algoritmo.
+- Se agregó parte de la descripción detallada del algoritmo de resolución
+- Se realizaron pruebas de calidad en diferentes sistemas operativos para asegurar la calidad del código y resolver posibles errores no encontrados hasta el momento.
+
+
+### 9 de Abril
+
+- Se agregaron las imágenes que corresponden al plan de actividades a la documentación.
+- Se integró la documentación interna de reglas y hechos a la documentación externa.
+- Se retocaron algunas secciones del manual de usuario y otras secciones de la documentación externa.
+
+## *Alejandro Soto*
+
+### 19 de marzo
+
+- Se publica la especificación del trabajo.
+- Se forman grupos de trabajo.
+- El equipo de trabajo realiza una sesión de discusión inicial, en la cual se
+  detallan algunas aclaraciones sobre aspectos de la especificación. En
+  respuesta a lo mismo, se decide que será necesaria otra reunión, a definir en
+  el futuro, antes de poder definir actividades asignadas.
+- Se completa la teoría académica necesaria para la realización del proyecto.
+
+### 27 de marzo
+
+- El equipo de trabajo, disponiendo ahora de más información y aclaración sobre
+  la intención general en lo que respecta al diseño del proyecto, realiza una
+  llamada para acordar la estructura general planteada, el diseño propuesto, el
+  plan de actividades y fechas estimadas de entrega.
+- El otro compañero de equipo realiza sus actividades recién asignadas durante
+  la misma llamada. Las actividades que me fueron asignadas serán realizadas en
+  momentos posteriores.
+
+### 29 de marzo
+
+- Se definen los hechos de un grafo de ejemplo, el cual será utilizado para
+  probar la futura implementación de búsqueda de mejor ruta. El grafo fue
+  tomado de
+  <https://upload.wikimedia.org/wikipedia/commons/5/57/Dijkstra_Animation.gif>.
+- Se agrega un predicado para buscar la ruta más corta de un origen a un
+  destino, pasando obligatoriamente por una lista de paradas intermedias.  De
+  momento el predicado siempre falla, ya que está escrito en términos de un
+  algoritmo de búsqueda de ruta más corta entre solamente dos nodos que no ha
+  sido implementado. Específicamente, mientras que la lista de intermedios no
+  sea vacía, busca la ruta más corta entre el origen y el primer intermedio, y
+  la une con la ruta más corta dada por el mismo predicado cuando el origen es
+  lo que antes era el primer intermedio, los intermedios son los mismos excepto
+  que ya no contienen al que antes era el primero, y el destino se preserva.
+  Para el caso donde la lista de intermedios es vacía, se define a la ruta más
+  corta pasando por cero intermedios como la ruta «directa» más corta entre el
+  origen y el destino.
+- Se define el costo de la ruta con paradas como la suma de los costos mínimos
+  de las subrutas, las cuales a su vez se definen como la suma de las
+  distancias entre nodos en kilómetros. Lo anterior es en respuesta a
+  indicaciones generales del profesor a los grupos de trabajo.
+- Tras realizar pruebas de viabilidad, se escoge al algoritmo de Dijkstra para
+  el cálculo de rutas directas más cortas entre nodos. Las alternativas,
+  incluyendo algunos abusos de las técnicas de backtracking de Prolog, fueron
+  descartadas por múltiples inconvenientes. El más importante de ellos es que
+  no existen garantías de terminación correcta con tamaños de grafo no
+  particularmente grandes, pero tampoco triviales. Además, el compañero de
+  trabajo intentó prototipar una solución basada en filtrado de todas las
+  posibles rutas, pero encontramos problemas análogos.
+- Para la implementación del algoritmo de Dijkstra se decide utilizar las
+  siguientes bibliotecas, ambas ofrecidas por SWI-Prolog:
+  - `library(dicts)`: Se utilizarán diccionarios para llevar cuenta de las
+	mejores distancias, los mejores padres y el estado de visitado.
+  - `library(heaps)`: Se utilizará para la cola de prioridad de nodos sin
+	visitar que requiere el algoritmo de Dijkstra.
+- Se implementan las condiciones iniciales del algoritmo de Dijkstra, con lo
+  cual se ponen a prueba inicial ambas bibliotecas, en intención de encontrar
+  si la solución será eficaz.
+- Se termina la implementación del algoritmo de Dijkstra. Se prueba la misma
+  contra el grafo de prueba y se obtienen resultados satisfactorios,
+  demostrando que la idea original es funcional.
+- Para el procesamiento de lenguaje natural, se diseña de manera informal una
+  gramática libre de contexto, que será declarada en forma EBNF posteriormente.
+  La entrada de usuario se parseará como una lista de oraciones. Se definen
+  hechos para los tokens que separarán oraciones.
+- Se define un tipo especial de oración: las «exclamativas». Estas incluyen a
+  palabras como «sí», «no» y «hola». Todas las demás oraciones esperan una
+  estructura sujeto-verbo-objeto potencialmente recursiva. Las oraciones
+  exclamativas pueden terminarse sin un separador explícito, con tal de
+  acomodar errores gramaticales que posee la especificación. Se incluyen
+  algunas formas verbales y palabras de relleno que se observan en la
+  especificación.
+- Se implementa análisis léxico de cadenas de entrada. Los caracteres
+  alfabéticos consecutivos se vuelven tokens que contienen a tanto un átomo
+  reducido (reduciendo, por ejemplo, mayúsculas) y una cadena con la forma
+  original, ya que esta última puede ser necesaria a futuro.  Todos los demás
+  caracteres no vacíos se vuelven tokens de puntuación.
+- Se implementa la reducción de tildes al transformar segmentos de caracteres
+  en átomos.
+- Se implementa el parsing de una lista de oraciones a partir de una lista de
+  tokens. Las oraciones pueden partirse por separadores explícitos, y la última
+  oración de la entrada no necesita separador final. No se implementa todavía
+  el parsing de oraciones propiamente, por lo cual esto no sirve de momento.
+- Se agrega la implementación de parseo de oraciones, siguiendo las reglas
+  gramaticales establecidas con anterioridad. Todavía hace falta agrupar grupos
+  de árboles sintácticos para estructurar propiamente las oraciones, así como
+  la unión de formas nominales en compuestos.
+- Se agrega la lógica faltante para construir árboles sintácticos SVO conforme
+  se parsean las oraciones no exclamativas. Esta lógica toma en cuenta
+  situaciones como predicados anidados, así como mantener una sola estructura
+  SVO sin anidación al agregar un nominal inmediatamente después de un SVO con
+  objeto tácito.
+- Se agrega un prototipo de predicado para determinar si un AST construido es
+  válido o no. Se implementará luego.
+
+  ### 30 de marzo
+
+- La clasificación de formas nominales ahora resulta en tres elementos en vez
+  de los dos anteriores: un átomo, una cadena «original» y una cadena con
+  artículos eliminados. Esto resuelve un problema con conversaciones donde
+  lugares como «La Sabana» tienen al artículo como parte de su nombre completo,
+  pero otros como «el TEC» no lo tienen.
+- Se ajustan aspectos de la interfaz de usuario necesarios para acomodar el
+  cambio anterior.
+- El cambio anterior rompió el manejo de oraciones exclamativas debido a que no
+  se cambió un `nominal(_, _)` por un `nominal(_, _, _)`. Se arregla esto.
+
+### 2 de abril
+
+- Se termina de implementar la verificación de validez de oraciones que fue
+  propuesta el 29 de marzo. En particular, las estructuras SVO deben de cumplir
+  las siguientes condiciones. Si hay un componente verbal presente, deben tener
+  un objeto/predicado válido según aplicación recursiva de estas reglas. Si no
+  hay un verbo presente, debe haber un sujeto válido según estas reglas. Un
+  nominal se considera válido si su átomo no es el átomo vacío. Una forma
+  verbal es válida si no está constituida por una lista vacía. Una forma
+  nominal de primer nivel es una oración válida, pero una forma verbal de
+  primer nivel, sin estructura SVO, es un error.
+
+### 3 de abril
+
+- Se elimina el grafo de prueba original, ya que ahora puede ser reemplazado
+  con uno más apropiado al contexto del proyecto.
+- Se separan los hechos contextuales (lenguaje y rutas) de la lógica.
+- Se implementan aspectos de conversación para casos donde no existe una ruta
+  con los puntos solicitados.
+- Se limpian y reescriben partes de `wazelog.pl`. No se altera la lógica
+  observable.
+
+### 4 de abril
+
+- Se reestructura el predicado `parse_user_input/3`, ahora
+  `parse_user_input/2`, para contener su salida en una sola unidad estructural,
+  en vez de tener dos parámetros de salida para ello. Se modifica código
+  relacionado para considerar este cambio.
+- Se agrega el verbo «está» a la lista de formas verbales.
+- Se implementa repetición de la rutina principal del programa. De momento no
+  existe suficiente transfondo para que esto funcione correctamente.
+- Se implementa el bucle recién mencionado, así como condiciones de terminación
+  con exclamaciones como «adiós» y variantes.
+- Se unifica `ask_src/2` y `ask_dest/2` en `ask_city/3`, ya que eran
+  prácticamente los mismos predicados.
+- Se escribe la gramática libre de contexto en forma BNF.
+- Se elimina `test.pdf`.
+- Se arregla bucle infinito de pregunta de destino introducido hace poco.
+- Se implementa cálculo de duraciones mínimas y máximas.
+- Ahora se clasifican los tipos de lugares intermedios, con tal de poder
+  diferenciar entre preguntas de "¿cuál [lugar]?" y "¿dónde se encuentra
+  [lugar]?"
+- Se arregla la autodetección de columnas de TTY, que anteriormente realmente
+  estaba contando filas.
+- Se generalizan las cadenas que se imprime al usuario, así como hechos sobre
+  el idioma, para ser todos específicos al español. La intención es soportar
+  internacionalización.
+- Se agrega soporte para el idioma inglés.
+- Se agrega una opción mandatoria de línea de comandos para escoger idioma.
+
+### 5 de abril
+
+- Se extienden preguntas de especificidad («¿cuál ...?», «¿dónde se encuentra
+  ...?») a orígenes y destinos. Anteriormente solo ocurría con nodos
+  intermedios.
+
+### 8 de abril
+
+- Se cambia el grafo de prueba por el grafo indicado por el profesor.
+- Se arregla forma y gramática de algunas consultas predefinidas.
+- Se crea una copia del código fuente en codificación ISO-8859-1 para
+  evitar problemas con caracteres Unicode en Windows.
+- Se arregla un bug menor en pathfinding relacionado a la descomposición
+  de tuplas de costo.
+
+### 9 de abril
+- Se finaliza documentación interna.
+- Se agrega bibliografía.
+- Se documentan estructuras de datos desarrolladas.
+- Se documentan problemas sin solución (ninguno).
+- Se documentan conclusiones y recomendaciones.
+- Se documentan problemas encontrados.

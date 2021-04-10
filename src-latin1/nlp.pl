@@ -125,11 +125,16 @@ classify(word(Atom, _), exclamation(Type)) :-
 	!.
 classify(word(Atom, Original), nominal(Atom, Original)).
 
-%Regla: 
+%Regla: clause(oración).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%  ?- clause(nominal(yo, "yo", "yo")).
+%  true.
+%  ?- clause(exclamation(affirmative)).
+%  true.
+%Descripción: Tiene éxito solo si la oración en
+%cuestión es una oración válida. Esto ocurre para
+%todas las subexpresiones válidas, excepto formas
+%verbales solitarias sin asociación jerárquica.
 clause(verbal(_)) :-
 	!,
 	fail.
@@ -151,11 +156,16 @@ well_formed(svo(S, V, O)) :-
 	(not(well_formed(V)); well_formed(O)),
 	(well_formed(V); well_formed(S)).
 
-%Regla: 
+%Regla: ast_join(existente, agregado, Salida).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%  ?- ast_join(nomatch, filler(la, "la"), R1), ast_join(R1, nominal(mesa, "mesa"), R2).
+%  R1 = nominal('', "la", ""),
+%  R2 = nominal(mesa, "la mesa", "mesa").
+%Descripción: Construye un árbol de sintaxis, con algunas
+%interpretaciones semánticas incluidas, a partir de un estado
+%previo del mismo árbol y un componente siguiente a agregar.
+%El átomo `nomatch` se utiliza como árbol previo para indicar
+%que no existía uno anteriormente.
 ast_join(nomatch, nominal(A, Orig), nominal(A, Orig, Orig)).
 ast_join(nomatch, verbal(V), verbal([V])).
 ast_join(nomatch, filler(F, Orig), nominal('', Orig, "")) :-
@@ -181,11 +191,11 @@ ast_join(svo(S, V, O), Term, svo(S, V, NextO)) :-
 	ast_join(O, Term, NextO).
 ast_join(Tree, filler(_, _), Tree).
 
-%Regla: 
+%Regla: nominal_join(izquierdo, derecho, Salida).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%  ?- nominal_join(nominal('', "la", ""), nominal("sabana", sabana), R).
+%  R = nominal(sabana, "la sabana", "sabana").
+%Descripción: Concatena dos formas nominales en un nominal compuesto.
 nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextOrig, NextBare)) :-
 	atom_concat(LA, RA, NextA),
 	append_space(LOrig, OrigWithSpace),
@@ -193,21 +203,22 @@ nominal_join(nominal(LA, LOrig, LBare), nominal(RA, ROrig), nominal(NextA, NextO
 	string_concat(OrigWithSpace, ROrig, NextOrig),
 	string_concat(BareWithSpace, ROrig, NextBare).
 
-%Regla: 
+%Regla: append_space(sin_espacio, ConEspacio).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%  ?- append_space("a", "a ").
+%  true.
+%Descripción: Agrega un espacio al final de una cadena
+%solamente si la entrada no es la cadena vacía.
 append_space("", "") :-
 	!.
 append_space(String, WithSpace) :-
 	string_concat(String, " ", WithSpace).
 
-%Regla: 
-%Ejemplo:
-%?- 
-%
-%Descripción:
+%Regla: unbounded(tokens, Salida).
+%Ejemplo: Ver `sentence/3`.
+%Descripción: Parsea una entrada completa ("no delimitada",
+%por tanto el nombre del predicada). El resultado es o
+%una lista de oraciones o una indicación de fallo.
 unbounded(Tokens, Result) :-
 	unbounded(Tokens, [], Result).
 unbounded([], Sentences, ok(Sentences)) :-
@@ -223,11 +234,17 @@ unbounded(Tokens, Previous, Result) :-
 	unbounded(Rest, Next, Result).
 unbounded([FailureHead | _], _, fail(FailureHead)).
 
-%Regla: sentence(T
+%Regla: sentence(tokens, Resto, Oración).
 %Ejemplo:
-%?- 
-%
-%Descripción:
+%  ?- sentence([word(yo, "Yo"), word(estoy, "estoy"), word(en, "en"), word(cartago, "Cartago"), punct('.')], R, S).
+%  R = [],
+%  S = svo(nominal(yo, "Yo", "Yo"), verbal([estoy]), nominal(cartago, "Cartago", "Cartago")) ;
+%Descripción: Parsea una oración a partir de un flujo
+%de entrada. Su salida es tanto la oración como la lista
+%de tokens que la suceden y que deben luego parsearse como
+%más oraciones. Una oración puede ser una forma exclamativa,
+%una forma nominal independiente o una estructura
+%subjeto-verbo-objeto (SVO).
 sentence(Tokens, Rest, Sentence) :- sentence(Tokens, Rest, Sentence, nomatch).
 sentence([], [], Sentence, Sentence) :-
 	!,
