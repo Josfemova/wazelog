@@ -95,6 +95,7 @@ exclamation(es, si, affirmative).
 exclamation(es, no, negative).
 exclamation(es, hola, greeting).
 exclamation(es, adios, bye).
+exclamation(es, chao, bye).
 exclamation(es, gracias, misc).
 exclamation(en, yes, affirmative).
 exclamation(en, no, negative).
@@ -121,6 +122,7 @@ verbal(es, encuentro).
 verbal(es, encuentra).
 verbal(es, voy).
 verbal(es, necesito).
+verbal(es, requiero).
 verbal(es, ir).
 verbal(es, es).
 verbal(es, tengo).
@@ -128,6 +130,7 @@ verbal(es, llegar).
 verbal(es, pasar).
 verbal(es, ubica).
 verbal(es, gustaria).
+verbal(es, quisiera).
 verbal(en, is).
 verbal(en, am).
 verbal(en, have).
@@ -218,7 +221,7 @@ q_src(Iteration, Prompt) :-
 q_src(es, first, "Bienvenido a WazeLog, la mejor logica de llegar a su destino. Por favor, indiqueme donde se encuentra.").
 q_src(es, again(_), "Creo que hay un malentendido. Por favor, me puede repetir, cual es su ubicacion actual?").
 q_src(en, first, "Welcome to WazeLog, the best logic to arrive at your destination. Where are you?").
-q_src(en, again(_), "Sorry, I couldn't understand you. Where are you right now?").
+q_src(en, again(_), "Sorry, I could not understand you. Where are you right now?").
 
 %Regla: q_src(iteracion, Prompt).
 %Ejemplo:
@@ -233,7 +236,7 @@ q_dest(Iteration, Prompt) :-
 q_dest(es, first, "Perfecto, cual es su destino?").
 q_dest(es, again(_), "Mis disculpas, no le he entendido. Puede reformular su respuesta? A donde se dirige?").
 q_dest(en, first, "Got it, where are you going to?").
-q_dest(en, again(_), "I'm sorry, but I failed to understand you. What's your destination?").
+q_dest(en, again(_), "I am sorry, but I failed to understand you. What is your destination?").
 
 %Regla: q_direction(lugar, Prompt).
 %Ejemplo:

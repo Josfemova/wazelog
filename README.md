@@ -2,8 +2,8 @@
 title: Instituto Tecnológico de Costa Rica\endgraf\bigskip \endgraf\bigskip\bigskip\
  Tarea Corta 2 - Wazelog \endgraf\bigskip\bigskip\bigskip\bigskip
 author: 
-- José Morales Vargas 
-- Alejandro Soto Chacón
+- José Morales Vargas, carné 2019024270
+- Alejandro Soto Chacón, carné 2019008164
 date: \bigskip\bigskip\bigskip\bigskip Area Académica de\endgraf Ingeniería en Computadores \endgraf\bigskip\bigskip\ Lenguajes, Compiladores \endgraf e intérpretes (CE3104) \endgraf\bigskip\bigskip Profesor Marco Rivera Meneses \endgraf\vfill  Semestre I
 header-includes:
 - \setlength\parindent{24pt}
@@ -11,9 +11,9 @@ lang: es-ES
 papersize: letter
 classoption: fleqn
 geometry: margin=1in
-fontfamily: sans
+#fontfamily: sans
 fontsize: 12pt
-monofont: "Noto Mono"
+monofont: "Noto Sans Mono"
 linestretch: 1.15
 ...
 
@@ -265,7 +265,7 @@ Salida = "Su ruta sería San José, Cartago.
 T = greeting.
 ```
 
-**Descripción:** Relaciona palabras clave de oraciones consideradas como exclamativas con el tipo interno de exclamación. Al mismo tiempo, esta regla identifica el hecho de que tales palabres clave conformen este tipo de oraciones.ast_
+**Descripción:** Relaciona palabras clave de oraciones consideradas como exclamativas con el tipo interno de exclamación. Al mismo tiempo, esta regla identifica el hecho de que tales palabres clave conformen este tipo de oraciones.
 
 ### Regla: `expand(Tokens, Expanded).`
 
