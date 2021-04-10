@@ -11,12 +11,10 @@ lang: es-ES
 papersize: letter
 classoption: fleqn
 geometry: margin=1in
-mainfont: Arial
-sansfont: Arial
-monofont: DejaVuSansMono.ttf 
-mathfont: texgyredejavu-math.otf 
+fontfamily: sans
 fontsize: 12pt
-linestretch: 1.5
+monofont: "Noto Mono"
+linestretch: 1.15
 ...
 
 \maketitle

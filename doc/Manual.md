@@ -1,6 +1,6 @@
 ---
 title: Instituto Tecnológico de Costa Rica\endgraf\bigskip \endgraf\bigskip\bigskip\
- Tarea Corta 2 - Wazelog \endgraf\bigskip\bigskip\bigskip\bigskip
+ Tarea Corta 2 - Wazelog \endgraf\bigskip Manual de Usuario \endgraf\bigskip\bigskip
 author: 
 - José Morales Vargas 
 - Alejandro Soto Chacón
@@ -11,12 +11,10 @@ lang: es-ES
 papersize: letter
 classoption: fleqn
 geometry: margin=1in
-mainfont: Arial
-sansfont: Arial
-monofont: DejaVuSansMono.ttf 
-mathfont: texgyredejavu-math.otf 
+fontfamily: sans
 fontsize: 12pt
-linestretch: 1.5
+monofont: "Noto Mono"
+linestretch: 1.15
 ...
 
 \maketitle
@@ -78,7 +76,7 @@ Una vez cargado, la consulta para poder lanzar el programa tiene la siguiente fo
 
 Donde la variable Lang tiene que ser cambiada por el lenguaje deseado por el usuario, ya sea `es` para español o `en` para inglés (experimental).
 
-## 2.3.2 Interacción con el sistema
+## 2.3.2. Interacción con el sistema
 
 ### Generalidades sobre preguntas relacionadas a lugares
 
@@ -120,7 +118,7 @@ Al iniciar el programa Wazelog inmediatamente solicitará la ubicación actual, 
 @Usuario:
 ```
 
-una vez una entrada válida sea dada por el usuario, se pasa a la pregunta de destino.
+Una vez una entrada válida sea dada por el usuario, se pasa a la pregunta de destino.
 
 ### Pregunta de destino
 
@@ -149,7 +147,11 @@ Para detener las preguntas de destinos intermedios debe responder a la pregunta 
 La información provista por el usuario será utilizada para calcular la mejor ruta posible entre la ubicación actual, el destino, y con paradas intermedias en los lugares especificados. una vez completada la evaluación de la mejor ruta, Wazelog le comunicará la mejor ruta en una forma similar a la siguiente:
 
 ```prolog
-
+=============================================================================
+[Wazelog]:::| Su ruta sería Turrialba, Pacayas, Cartago, Tres Ríos, San José. 
+			  Longitud estimada de 47 km. Duración 47-94 min. :::|
+[Wazelog]:::| ¡Muchas gracias por utilizar WazeLog! :::|
+=============================================================================
 ```
 
 ### Terminando el programa
@@ -167,4 +169,10 @@ El usuario puede terminar ejecución del programa durante una pregunta de ubicac
 [Wazelog]:::| ¡Muchas gracias por utilizar WazeLog! :::|
 ```
 
+# 2.4. Notas sobre idioma y habilitación de caracteres especiales.
 
+Se adjuntan dos versiones del programa. 
+
+1. La carpeta "src" incluye una versión del programa libre de caracteres especiales que pueden resultar incompatibles con el sistema de windows por la codificación en UTF-8. Si se desea interactuar utilizando el idioma español en la plataforma de windows, deberá prescindir del uso de tildes, y en las palabras con ñ deberá usar el par de letras "ni" como sustitución de la eñe. 
+
+2. La carpeta "src-latin1", contiene el mismo programa, pero la codificación se adaptó de manera que se pueda ejecutar en Windows y conservar la funcionalidad de interpretación de tildes y eñes. Puede utilizar el programa de esta carpeta en caso de que crea más conveniente interactuar con el sistema usando tildes y eñes.
