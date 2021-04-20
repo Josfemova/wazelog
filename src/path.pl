@@ -1,4 +1,4 @@
-:- module(path, [shortest_path_through/5]).
+:- module(path, [shortest_path_through/4]).
 :- use_module(library(heaps)).
 :- use_module(library(dicts)).
 :- use_module(routes).
@@ -6,14 +6,25 @@
 %Regla:
 %Ejemplo:
 %Descripción:
-shortest_path_through(Source, [], Target, Path, Cost) :-
-	!,
-	shortest_path(Source, Target, Path, Cost).
-shortest_path_through(Source, [Stop | Stops], Target, Path, Cost) :-
+shortest_path_through(Source, [], Target, shortest_path(Path, Cost)) :-
+	shortest_path(Source, Target, Path, Cost),
+	!.
+shortest_path_through(Source, [], Target, no_route(Source, Target)) :-
+	!.
+shortest_path_through(Source, [Stop | Stops], Target, Result) :-
 	shortest_path(Source, Stop, FirstPath, FirstCost),
-	shortest_path_through(Stop, Stops, Target, [Stop | NextPath], NextCost),
-	Cost is FirstCost + NextCost,
-	append(FirstPath, NextPath, Path).
+	!,
+	shortest_path_through(Stop, Stops, Target, NextResult),
+	(
+		NextResult = shortest_path([Stop | NextPath], NextCost),
+		Cost is FirstCost + NextCost,
+		append(FirstPath, NextPath, Path),
+		Result = shortest_path(Path, Cost);
+
+		NextResult = Result
+	),
+	!.
+shortest_path_through(Source, [Stop | _], _, no_route(Source, Stop)).
 
 %Regla:
 %Ejemplo:

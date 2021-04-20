@@ -93,8 +93,21 @@ translate([City|Path], S, SRes):- city(City,Trad), translate(Path, [Trad|S], SRe
 %start(Src, Dest, Paradas):-
 start:-
 	ask_src(Src,1),ask_dest(Dest,1),intermed([],1,Paradas),
-	shortest_path_through(Src, Paradas,Dest, Ruta,Peso),inverse_list(Ruta, RutaInv),translate(RutaInv, [], StrPath), %falta hacer el el pathfinder sea no dirigido
-	spacing,format("Su ruta seria ~w. Longitud estimada de ~d Km.\nMuchas Gracias por utilizar WazeLog!\n", [StrPath, Peso]),
+	shortest_path_through(Src, Paradas,Dest, Result),
+	spacing,
+	(
+		Result = shortest_path(Ruta, Peso),
+		inverse_list(Ruta, RutaInv),
+		translate(RutaInv, [], StrPath),
+		format("Su ruta seria ~w. Longitud estimada de ~d Km.\n", [StrPath, Peso]);
+
+		Result = no_route(From, To),
+		city(From, StrFrom),
+		city(To, StrTo),
+		format("No hay una ruta conocida entre ~w y ~w.\n", [StrFrom, StrTo])
+	),
+	!,
+	format("Muchas Gracias por utilizar WazeLog!\n"),
 	spacing.
 
 %Regla:
